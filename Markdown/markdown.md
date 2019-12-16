@@ -63,7 +63,7 @@ Drag&Drop으로 넣으면 바로 경로설정이 뜸
 
 주의사항 : til폴더를 만들어 저장해둔 상태여야 함.
 
-![image-20191216132913666](C:\Users\student\AppData\Roaming\Typora\typora-user-images\image-20191216132913666.png)
+![image-20191216231651900](image/image-20191216231651900.png)
 
 ![Download](image/Download.png)
 
