@@ -90,9 +90,7 @@ class Circle {
 # Codes
 
 * [Animal](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Animal.java)
-
 * [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Dog.java)
-
 * [Inheritance Animal, Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test01_Inheritance.java)
-
 * [Casting](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test02_Type.java)
+* [HasA](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test03_hasa.java)

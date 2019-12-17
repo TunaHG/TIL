@@ -35,6 +35,7 @@
   ```
 
 * 만드는 Class에 맞도록 생성해주면 되는데, Eclipse에서 자동생성을 지원한다
+  
   * `Source`메뉴의 `Generate toString()`과 `Generate hashCode() and equals()`를 이용한다.
 
 # Codes
@@ -46,3 +47,7 @@
 
 * [print() Override](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test04_override.java)
 * [Animal Override](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/AnimalTest.java)
+
+* [Object Overriding ](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test04_equals.java)
+* [Object Overriding Automatically](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test05_generate.java)
+* [Polymorpism](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test06_parampoly.java)
