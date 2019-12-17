@@ -124,6 +124,8 @@ Date:   Mon Dec 16 14:24:23 2019 +0900
     Markdown and Git tutorial
 ```
 
+* `git log --oneline`을 사용하면 commit당 한줄씩 간단하게 표시된다.
+
 **항상 status 명령어를 통해 Git의 상태를 확인하자! Commit 이후에는 log 명령어를 통해 이력들을 확인하자!**
 
 ### 2. add + commit 실행
@@ -171,6 +173,30 @@ $ git push origin master
 * 설정된 원격 저장소(`origin`)으로 push!
 
 폴더의 내용을 수정 및 삭제, 생성 등을 하게 된다면, `add`, `commit` 명령어를 통해서 이력을 저장하고 `push` 명령어를 통해 업로드 한다.
+
+### 3. clone
+
+> 기존 환경과는 다른 환경에서 Github의 내용을 처음 이어하는 경우
+
+```bash
+$ git clone {clone url}
+```
+
+* `{clone url}`부분은 Repository Site에서 File List 오른쪽 위의 clone or Download을 클릭하여 나온 링크를 의미한다.
+* `clone` 이후 `git bash`에서 `cd foldername`을 통해 넘어가서 진행하면 된다. 혹은 켜져있던 `git bash`를 종료하고 `clone`으로 다운받은 폴더에서 다시 `git bash`를 실행시키면 된다.
+* 이후 새로운 내용을 추가하고 `add`, `commit`, `push`를 진행하면 업데이트 된다.
+* 이 때 주의할 것은 `git init`을 진행한 후 `clone`을 하는 것이 아니다. `clone`에는 `init`의 역할이 포함되어 있다.
+
+### 4. pull
+
+>다른 환경에서 작업한 내용을 기존 환경의 로컬에 Update하는 경우
+
+```bash
+$ git pull origin master
+```
+
+* 기존에 작업하던 파일에서 `Git Bash Here`을 진행하면 `.git`폴더가 이미 만들어진 상태이므로 `git init`을 진행할 필요 없이 바로 `(master)`가 켜져있으며 `pull`을 바로 진행하면 된다.
+* 해당 폴더의 내용을 변경하기 전에 `pull`을 진행하여 항상 원격 저장소와 동기화를 시켜놔야한다.
 
 ## 기타
 
