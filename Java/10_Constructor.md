@@ -80,3 +80,6 @@ a3.print();
 
 * [Account Test3](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/AccountTest3.java)
 
+* [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test03_Dog.java)
+  * 필요 Class [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Dog.java) [Animal](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Animal.java)
+
