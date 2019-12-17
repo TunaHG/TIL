@@ -126,6 +126,14 @@ Date:   Mon Dec 16 14:24:23 2019 +0900
 
 **항상 status 명령어를 통해 Git의 상태를 확인하자! Commit 이후에는 log 명령어를 통해 이력들을 확인하자!**
 
+### 2. add + commit 실행
+
+> Add와 Commit을 한번에 사용할 수 있다.
+
+```bash
+$ git commit -am "Update File" 
+```
+
 ## 2. 원격 저장소 활용하기
 
 > 원격 저장소(Remote Repository)를 제공하는 서비스는 다양하게 존재한다.
