@@ -17,3 +17,4 @@ a.txt  # 특정 파일
 잘 모르는 경우 해당 환경을 [gitignore.io](http://gitignore.io/)에서 검색하여 설정한다.
 ( ex) Eclipse, java, windows, ... )
 
+* VS Code에서 `.gitignore`파일 내에 특정 파일명을 입력하면 `Explore`부분에 회색으로 변경된다.
