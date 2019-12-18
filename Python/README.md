@@ -191,6 +191,7 @@ print(numbers)
 
 * 외부 모듈을 가져오는 `import`를 사용한다.
 * 값을 랜덤하게 뽑을 수 있는 `random.sample`을 사용하기 위해 `random`을 가져온다.
+  * `sample`에 대한 설명을 읽어보면 `Choos unique element`라고 나와있다. 이는 중복된 값이 없다는 뜻이다.
 * `random.sampe(range(1, 46), 6)`은 1~45까지의 숫자 중 6개를 뽑는다는 것이다.
 
 ## 6. Question
