@@ -25,6 +25,14 @@
 18. [Exception](./Java/18_Exception.md)
 19. [StringTokenizer](./Java/19_StringTokenizer.md)
 
+## [Python](./Python)
+
+* [Basic Python](./Python/Basic)
+* [Basic Examples](./Python/Examples)
+* [Crawling](./Python/Crawling)
+* [Flask](./Python/Flask_examples)
+* [Telegram](./Python/Telegram)
+
 ## [Git](./Git)
 
 * [Basic Git Usage](./Git/Git.md)
