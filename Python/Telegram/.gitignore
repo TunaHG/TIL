@@ -1,0 +1,8 @@
+# Python Virtual Environment
+telegram-venv/
+
+# Environment variable
+.env
+
+
+.vscode
