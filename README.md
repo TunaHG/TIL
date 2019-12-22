@@ -2,6 +2,13 @@
 
 > 매일 배운 내용을 정리하자!
 
+## 목록
+
+1. [Java](#java)
+2. [Python](#python)
+3. [Git](#git)
+4. [etc](#기타)
+
 ## [JAVA](./Java)
 
 0. [Java Environment](./Java/00_Java_Environment.md)
@@ -24,6 +31,7 @@
 17. [Inner Class](./Java/17_Inner_Class.md)
 18. [Exception](./Java/18_Exception.md)
 19. [StringTokenizer](./Java/19_StringTokenizer.md)
+20. [Collection](./Java/20_Collection.md)
 
 ## [Python](./Python)
 
