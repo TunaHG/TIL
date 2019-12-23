@@ -178,3 +178,5 @@ print(b + 123123)
 * `input()`을 `int()`로 묶어준다면 `String`이 `int`로 변환되어 결과값이 `int`형이 된다.
 
 * [Codes](./07_input.py)
+
+## [Example](./Example)
