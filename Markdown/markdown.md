@@ -57,7 +57,7 @@ def foo():
 
 ![Download](C:\Users\student\Downloads\Download.png)
 
-Drag&Drop으로 넣으면 바로 경로설정이 뜸
+Drag&Drop으로 넣으면 바로 경로설정이 뜸, 위의 사진은 절대경로로 설정되어 표시되지 않음
 
 이미지 환경설정 다음과 같이 진행할 것.
 
