@@ -67,6 +67,7 @@ url=
   * `Save password`를 체크한 후 `Test Connection`을 클릭
   * `Ping Succeeded`가 나타나면 성공한 것이니 `Connection url`을 복사한후 `Finish`
 
+## .properties 수정
 
 * 아까 만들었던 `.properties`파일로 진입하여 복사한 `Connection url`을 `url`부분에 붙여넣는다.
 
@@ -78,6 +79,8 @@ url=
   ```
 
   * 혹시 위에서 `url`을 복사하지 않았다면 `Data Source Explorer`부분에 있는 `{Name}`을 우클릭하고 `properties`에 진입하여 `driver properties`를 들어가면 `url`이 나와있다.
+
+## Eclipse에서 코드 실행
 
 * `SQL file`로 돌아와서 위 쪽에 `Type`을 `Oracle_11`로 선택한후 `Name`, `Database`를 선택한다.
 * 오른쪽에 `Connected`가 표시되면 실행하고 싶은 코드를 `Block`잡은 뒤 우클릭하여 `Execute Selected Text`를 클릭하거나 단축키 `Alt + X`를 누르면 코드가 실행되고 결과가 나타난다.
