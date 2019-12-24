@@ -18,7 +18,7 @@ select {Column} from {Table};
 
   * `sal`에 12를 곱하는 `Column`을 출력할 수 있다. 또한 `as`를 이용하여 `sal * 12`의 `Column name`을 지정해줄 수 있다. 이 때 `" "`를 이용한다. (이외의 Oracle에서 문자열은 전부 `''`를 사용한다.)
 
-### Select Function
+## Select Function
 
 * `distinct` : 중복된 데이터 제외
 
@@ -35,6 +35,10 @@ select {Column} from {Table};
 
   * 이 때 주의할 점은 `{Data}`의 데이터타입이 해당 `{Column}`의 데이터타입과 일치해야 한다.
 
+* `as` : 해당 `{Column Name}`을 다른 것으로 표시해주는 기능
+
+  * 하지만 `where`절에서 사용할 땐 기존의 `{Column Name}`을 사용해야 한다. `as`로 표시된 이름은 표시만 해주는 것일뿐 `Column Name`이 아니기 때문이다.
+
 * `||` : 문자열 연결 연산자
 
   ```sql
@@ -50,7 +54,7 @@ select {Column} from {Table};
   select count(ename) from emp;
   ```
 
-### From Function
+## From Function
 
 * `dual` : 가상의 `table`
 
@@ -60,8 +64,16 @@ select {Column} from {Table};
   ```
 
   * 특정 `table`을 입력하면 해당 `table`의 `row`수만큼 값이 출력된다. 해당 값을 단행출력하고 싶을 경우 `dual`이라는 가상의 `table`을 이용하여 출력한다.
+  
+* `계정명.table` : 다른 계정의 `table`
 
-### Where Function
+  ```sql
+  select * from SCOTT.emp;
+  ```
+
+  * `system`계정에서 `계정명.table`을 사용하여 다른 계정의 `table`에 접근이 가능하며, `system`이 아닌 다른 계정에서는 이런 방식의 접근이 불가능하다.
+
+## Where Function
 
 ```sql
 select {Column} from {Table} where {Condition}
@@ -121,6 +133,46 @@ select {Column} from {Table} where {Condition}
   * `'%A__'` : A뒤에 문자열 두 글자가 오는 `Column` 값
   * `'%'` : 어떤 문자열이 몇개든 올 수 있다.
   * `'_'` : 어떤 문자열이 하나만 올 수 있다.
+  
+* `is null` : 특정 `Column`의 값이 `null`인 `row`를 선택하는 기능
+
+  * `is not null` : 반대로, 값이 `null`이 아닌 `row`를 선택하는 기능
+
+## Order by
+
+```sql
+select ename, sal from emp order by sal;
+```
+
+* `sal`을 오름차순으로 정렬한다.
+
+* 내림차순으로 정렬하고 싶다면 뒤에 `desc`만 추가해주면 된다.
+
+  ```sql
+  select ename, sal from emp order by sal desc;
+  ```
+
+* `order by`로 정렬되는 기준은 여러가지가 될 수 있다.
+
+  ```sql
+  select ename, sal, comm from emp order by sal desc, comm desc;
+  ```
+
+  * 앞에 있는 기준이 먼저 적용되어 `sal`을 기준으로 정렬한 후 `sal`이 같은 값들을 정렬할 때 `comm`을 사용한다.
+
+* 꼭 정렬되는 기준을 출력하지 않아도 괜찮다.
+
+  ```sql
+  select ename from emp order by sal;
+  ```
+
+* `Select`로 호출하는 `{Column}`에 대하여 순서로 `order by`를 진행할 수 있다.
+
+  ```sql
+  select ename, sal, sal + nvl(comm, 0) from emp order by 2;
+  ```
+
+  * 2번째 `{Column}`인 `sal`을 기준으로 정렬한다.
 
 # Codes
 
