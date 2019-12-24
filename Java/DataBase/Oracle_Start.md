@@ -23,9 +23,6 @@
    SQL>
    ```
    
-2. SQL Developer Download
-
-   [SQL Developer](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
 
 ## Account
 
