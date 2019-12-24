@@ -5,18 +5,15 @@
 1. Database Download (19/12/23 기준)
 
    * [Database Express Edition Download](https://www.oracle.com/database/technologies/xe-downloads.html) 이 링크에서 최신 버전을 다운받을 수 있다. 하지만 Eclipse를 받을 때처럼 이전 버전을 다운로드 받는다.
-
-   * [Prior Release Archieve](https://www.oracle.com/database/technologies/xe-prior-releases.html) 이 링크를 이용하여 이전 버전을 받을 수 있다.
-
+* [Prior Release Archieve](https://www.oracle.com/database/technologies/xe-prior-releases.html) 이 링크를 이용하여 이전 버전을 받을 수 있다.
    * 다운받은 파일을 압축해제한 후 `setup.exe`파일을 통해 다운로드를 진행하면 된다.
-
-   * 주의할 점은 여기서 **관리자 비밀번호를 설정**하는데 이를 꼭 기억해둬야 한다는 것이다.
-
+* 주의할 점은 여기서 **관리자 비밀번호를 설정**하는데 이를 꼭 기억해둬야 한다는 것이다.
    * 설치가 완료되면, 명령프롬프트창에서 `sqlplus system/{Password}`를 입력하면 다음의 결과가 나타난다.
-
-   ```
-   SQL*Plus: Release 11.2.0.2.0 Production on 월 12월 23 10:09:32 2019
+  * 위와 같이 입력하는 이유는 명령프롬프트 창의 상단에 어떤 계정으로 사용하는지를 표시하기 위함이다. `sqlplus`명령어만 사용한 후 계정과 비밀번호를 입력하여도 로그인이 가능하다.
    
+```
+   SQL*Plus: Release 11.2.0.2.0 Production on 월 12월 23 10:09:32 2019
+
    Copyright (c) 1982, 2014, Oracle.  All rights reserved.
    
    
@@ -25,7 +22,7 @@
    
    SQL>
    ```
-
+   
 2. SQL Developer Download
 
    [SQL Developer](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
