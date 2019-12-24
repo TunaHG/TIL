@@ -39,6 +39,12 @@ select {Column} from {Table};
 
   * 하지만 `where`절에서 사용할 땐 기존의 `{Column Name}`을 사용해야 한다. `as`로 표시된 이름은 표시만 해주는 것일뿐 `Column Name`이 아니기 때문이다.
 
+  * `as`를 생략할 수 있다.
+
+    ```sql
+    select ename "사원명" from emp;
+    ```
+
 * `||` : 문자열 연결 연산자
 
   ```sql
@@ -53,6 +59,56 @@ select {Column} from {Table};
   ```sql
   select count(ename) from emp;
   ```
+  
+* `round()` : 반올림 해주는 기능
+
+  ```sql
+  select round(44.55, 1) from dual;
+  ```
+
+* `trunc()` : 소숫점이하를 버리는 기능
+
+  ```sql
+  select trunc(44.5) from dual;
+  ```
+
+* `substr()` : 문자열 내부를 추출하는 기능
+
+  ```sql
+  select substr(sysdate, 4, 2) from dual;
+  ```
+
+* `to_char()` : 원하는 형태에 맞도록 변환해주는 기능
+
+  ```sql
+  select sysdate, to_char(sysdate, {char}) from dual;
+  ```
+
+  * `{char}`로 올수 있는 형태
+    * `'YY'` : 연도의 맨끝 두자만 출력 (2019 -> 19)
+    * `'YYYY'` : 연도 출력
+    * `'day'` : 요일 출력
+    * `'mm'` : 월 출력
+    * `'dd'` : 일 출력
+
+* `to_date()` : 날짜로 변환하는 기능
+
+  ```sql
+  select sysdate, to_date('2019 12 24') from dual;
+  select sysdate, to_date('12/24/19', 'mm/dd/yy') from dual;
+  ```
+
+* `decode()` : `Java`의 `Switch-case`처럼 조건을 정하여 변환하는 코드
+
+  ```sql
+  select ename, sal, deptno, decode(deptno, 10, sal*1.2, 20, sal*0.7, sal) 
+  from emp 
+  order by deptno;
+  ```
+
+  * `decode()`의 첫번째 인자는 어떤 `{Column}`을 쓸것인지 정한다.
+  * 이후 두 인자씩 짝지어서 해당 `{Column}`이 어떤 값이면 어떤 값을 출력할 것인지 선언
+  * 마지막에 해당되지 않는 값들은 어떤값을 출력할 것인지 선언
 
 ## From Function
 
