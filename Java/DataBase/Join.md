@@ -93,7 +93,7 @@ where emp.deptno = dept.deptno;
   where e.deptno(+) = d.deptno;
   ```
 
-  * 기준이 되길 원하는 `Table`쪽으로 `where`절에 `(+)`를 추가한다.
+  * `NULL`값이 표시되길 바라는 쪽의 `where`절에 `(+)`를 추가한다.
 
 * ANSI Join
 
