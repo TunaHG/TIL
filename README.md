@@ -12,7 +12,7 @@
 ## [JAVA](./Java)
 
 * [Basic Java](./Java/Basic_Java)
-* [Database](./Java/Database)
+* [Database](./Java/DataBase)
 
 ## [Python](./Python)
 
