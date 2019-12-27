@@ -179,3 +179,7 @@ where emp.deptno = dept.deptno;
   ```
 
 * 위의 두 코드처럼 `Self Join`은 `from`절에서 서로 다른 명칭만을 가지고 사용하면 된다.
+
+# Codes
+
+* [Join](https://github.com/TunaHG/Database/blob/master/SQL/4_Join.sql)

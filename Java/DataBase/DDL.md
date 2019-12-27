@@ -174,3 +174,6 @@ SQL> truncate table book2;
 Table truncated.
 ```
 
+# Codes
+
+* [DDL Codes](https://github.com/TunaHG/Database/blob/master/SQL/7_DDL.sql)

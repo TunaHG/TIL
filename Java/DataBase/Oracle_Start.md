@@ -10,7 +10,7 @@
 * 주의할 점은 여기서 **관리자 비밀번호를 설정**하는데 이를 꼭 기억해둬야 한다는 것이다.
    * 설치가 완료되면, 명령프롬프트창에서 `sqlplus system/{Password}`를 입력하면 다음의 결과가 나타난다.
   * 위와 같이 입력하는 이유는 명령프롬프트 창의 상단에 어떤 계정으로 사용하는지를 표시하기 위함이다. `sqlplus`명령어만 사용한 후 계정과 비밀번호를 입력하여도 로그인이 가능하다.
-   
+  
 ```
    SQL*Plus: Release 11.2.0.2.0 Production on 월 12월 23 10:09:32 2019
 
@@ -21,8 +21,8 @@
    Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
    
    SQL>
-   ```
-   
+```
+
 
 ## Account
 
@@ -231,3 +231,7 @@ Warning: You are no longer conntected to ORACLE.
 
   * `col`명령어로 `size`를 지정하며 `ename`이란 변수는 `a` 10개의 크기만큼 공간을 차지한다.
   * `sal`이란 변수는 9999의 숫자만큼의 공간을 차지한다.
+
+# Codes
+
+* [Oracle Account](https://github.com/TunaHG/Database/blob/master/SQL/1_Oracle_Account.sql)

@@ -65,3 +65,6 @@ select deptno, round(avg(sal)) from emp group by deptno;
 * `Group by`가 선언되지 않았을 때, `select`에서 `Column`과 집계함수가 같이 쓰일 수 없다.
   * [ORA-00937 Error](./Error/ORA-00937.md)
 
+# Codes
+
+* [Group By](https://github.com/TunaHG/Database/blob/master/SQL/5_Groupby.sql)

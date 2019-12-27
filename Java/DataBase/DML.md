@@ -142,4 +142,7 @@ SQL> update book set title='~~~~~';
   1 row updated.
   ```
 
-  
+
+# Codes
+
+* [DML Codes](https://github.com/TunaHG/Database/blob/master/SQL/8_DML.sql)

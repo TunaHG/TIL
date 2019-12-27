@@ -38,3 +38,6 @@ select ename, sal from emp order by sal;
 
   * 2번째 `{Column}`인 `sal`을 기준으로 정렬한다.
 
+# Codes
+
+* [Order By](https://github.com/TunaHG/Database/blob/master/SQL/3_Orderby.sql)
