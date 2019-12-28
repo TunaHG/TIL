@@ -114,8 +114,9 @@
 
 * `user`, `pwd`, `driver`, `url`을 가져와서 고정적으로 연결을 진행하도록 한다.
 * `Connection`과 `close()`에서 `try-catch`를 사용하지 않고 `throws`로 보내서 `main`에서 예외처리를 진행하도록 만든다.
-* [JDBC Util]()
-  * [Test using util]()
+* [JDBC Util](https://github.com/TunaHG/Database/blob/master/src/util/jdbcUtil.java)
+  * [Test using util](https://github.com/TunaHG/Database/blob/master/src/test/Test02_emp.java)
+  * [Template using util](https://github.com/TunaHG/Database/blob/master/src/test/JDBC_Template.java)
 
 ## DAO
 
@@ -128,6 +129,7 @@
 * DB를 사용해 데이터를 조화하거나 조작하는 기능을 전담하도록 만든 오브젝트
 * 다수의 원격호출을 통한 오버헤드를 VO나 DTO를 통해 줄일 수 있고 다수의 DB 호출문제를 해결
 * 단순히 읽기만 하는 연산이므로 트랜잭션 간의 오버헤드를 감소
+* [Codes](https://github.com/TunaHG/Database/blob/master/src/DAO/DeptDAO.java)
 
 ## DTO
 
@@ -140,4 +142,8 @@
 * `Java`코드에서 `List<DTO>`를 활용하여 `DTO`를 저장한다.
 * 로직을 갖고 있지 않는 순수한 데이터 객체
 * VO는 DTO와 동일한 개념이지만 read only 속성을 가짐
-* [Codes]()
+* [Codes](https://github.com/TunaHG/Database/blob/master/src/DTO/DeptDTO.java)
+
+# Codes
+
+* [Test using DAO, DTO](https://github.com/TunaHG/Database/blob/master/src/test/Test03.java)
