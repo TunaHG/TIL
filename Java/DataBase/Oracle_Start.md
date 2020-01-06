@@ -232,6 +232,19 @@ Warning: You are no longer conntected to ORACLE.
   * `col`명령어로 `size`를 지정하며 `ename`이란 변수는 `a` 10개의 크기만큼 공간을 차지한다.
   * `sal`이란 변수는 9999의 숫자만큼의 공간을 차지한다.
 
+## Oracle DB Status
+
+> Oracle DB는 윈도우를 시작하면 자동으로 실행된다.
+>
+> 만약 노트북의 성능 문제나 사용하지 않을 때 Oracle DB를 종료해둘 수 있다.
+
+* 작업관리자의 서비스부분으로 들어간다.
+
+  ![image-20200106092448453](image/image-20200106092448453.png)
+
+  * 가운데부분의 OracleServiceXE와 OracleXETNSListener가 Oracle DB와 관련된 서비스다.
+  * 두 서비스가 실행 중이면 Oracle DB를 사용할 수 있고, 중지된 상태라면 사용할 수 없다.
+
 # Codes
 
 * [Oracle Account](https://github.com/TunaHG/Database/blob/master/SQL/1_Oracle_Account.sql)

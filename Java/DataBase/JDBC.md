@@ -50,6 +50,11 @@
      ```
 
      * `1`번째 순서의 `?`에 `30`이란 값을 넣겠다는 의미다.
+     
+   * `PreparedStatement`에는 `setXXX`와 `getXXX`가 존재한다. 이 때 `XXX`는 자료형을 의미한다.
+
+     * `setXXX`는 두 개의 인자를 받는다.
+     * `getXXX`는 한 개의 인자를 받는다. 이 때 인자는 `Index`혹은 `fieldName`이 온다. 하지만 `fieldName`을 사용하길 권장하며 이는 순서가 바뀌더라도 이름은 바뀌지 않기 때문이다.
 
 5. 생성된 Statement를 이용해서 SQL수행(execute, executeUpdate, executeQuery)
 
