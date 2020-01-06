@@ -6,7 +6,7 @@
 
 1. **Invite Collaborator**
 
-   ![image-20191217163537035](C:\Users\Tuna\AppData\Roaming\Typora\typora-user-images\image-20191217163537035.png)
+   ![image-20191217163537035](image/image-20191217163537035.png)
 
    * Github의 닉네임이나 이메일주소를 이용하여 초대
 
