@@ -38,6 +38,10 @@
         ```sql
         EXEC dbms_xdb.sethttpport(9090);
         ```
+  
+* Tomcat이 Error가 생겼다면 `Server`의 `Tomcat`에 우클릭하여 `Clean Tomcat Work Directory`를 진행해본다. 그래도 에러가 해결되지 않는다면, Tomcat에 우클릭하여 Clean후 Restart를 해본다.
+
+  * `Clean Tomcat Work Directory`는 `%TOMCAT%\work`해당 디렉토리를 초기화 시킨다는 의미다.
 
 ### Content Type
 
