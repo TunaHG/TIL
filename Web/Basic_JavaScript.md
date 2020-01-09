@@ -95,9 +95,15 @@ var bbyong = function(){
 	alert("뿅");
 }
 bbyong();
+
+function back(parameter){
+
+}
+back(argument)
 ```
 
 * `return`을 사용하여 반환값을 정해줄 수 있다.
+* 함수로 사용하므로 `parameter`를 선언해서 `argument`를 받도록 할 수 있다.
 
 ## Input/Output
 
