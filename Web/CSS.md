@@ -41,7 +41,11 @@ div#idName {
 
 > id > class > selector
 
-* id의 우선순위가 가장 높으며 선택자의 우선순위가 가장 낮다.
+* `<head>`에 선언되는`<style>`에서는 id의 우선순위가 가장 높으며 선택자의 우선순위가 가장 낮다.
+
+> Selector > Inline > Link
+
+* 선택자에 지정된 Style의 우선순위가 가장 높으며, `<head>`에서 `<style`>로 선언된 Inline이 둘째, `<link>`로 가져오는 외부 `CSS File`이 우선순위가 가장 낮다.
 
 ### In HTML
 
