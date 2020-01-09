@@ -71,4 +71,11 @@ div#idName {
     * 위 태그의 `margin-bottom`이 50이고 아래 태그의 `margin-top`이 100일 때 두 태그 사이의 `margin`은 150으로 적용되는 것이 아닌 큰 수치인 100으로 적용된다.
 
 * `color`관련 인자에서 `rgba`
+  
   * `(0, 0, 0, 0)`처럼 4개의 인자를 받는다. 앞의 세개는 r,g,b를 의미하며 0~255까지의 값을 가진다. 맨뒤의 값은 투명도를 의미하며 0~1까지의 값을 가진다.
+
+* `transform` : 웹의 형태를 변환하는 인자
+  * `-webkit-transform` : Chrome, Safari에 해당하는 `transform`
+  * `-moz-transform` : Firefox에 해당하는 `transform`
+  * `-ms-transform` : Explorer에 해당하는 `transform` 
+  * 값으로 올 수 있는 형태 : `rotate`, `skew`, `scale`
