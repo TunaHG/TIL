@@ -83,3 +83,6 @@ div#idName {
   * `-moz-transform` : Firefox에 해당하는 `transform`
   * `-ms-transform` : Explorer에 해당하는 `transform` 
   * 값으로 올 수 있는 형태 : `rotate`, `skew`, `scale`
+
+* `*` : Asterisk, 모든 형식을 말함
+* `*::`
