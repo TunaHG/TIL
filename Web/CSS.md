@@ -70,7 +70,7 @@ div#idName {
   * `top`, `right`, `bottom`, `left`순으로 선언되며 선언되지 않은 부분은 대칭된 부분의 값과 같다.
   * 하나의 값만 선언되면 모든 방향이 그 값으로 지정된다.
   * `px`단위는 생략될 수 있다. `px`가 아닌 `%`로 값을 지정할 수도 있다.
-  * 혹은 `margin-bottom`처럼 각 방향을 언급한 `parameter`를 사용할 수 있다.
+  * 혹은 `margin-bottom`처럼 각 방향을 언급한 `parameter`를 사용할 수 있ㅜ다.
   * 맞붙은 두 태그의 `margin`이 중첩될경우 두 `margin`중 수치가 큰 것 하나만 적용된다.
     * 위 태그의 `margin-bottom`이 50이고 아래 태그의 `margin-top`이 100일 때 두 태그 사이의 `margin`은 150으로 적용되는 것이 아닌 큰 수치인 100으로 적용된다.
 
