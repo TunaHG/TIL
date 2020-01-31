@@ -145,4 +145,4 @@ SQL> update book set title='~~~~~';
 
 # Codes
 
-* [DML Codes](https://github.com/TunaHG/Database/blob/master/SQL/8_DML.sql)
+* [DML Codes](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/08_DML.sql)

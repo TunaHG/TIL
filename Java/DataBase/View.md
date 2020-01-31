@@ -25,4 +25,4 @@ order by deptno;
 
 # Codes
 
-* [View](https://github.com/TunaHG/Database/blob/master/SQL/09_view.sql)
+* [View](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/09_view.sql)

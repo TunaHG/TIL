@@ -182,4 +182,4 @@ where emp.deptno = dept.deptno;
 
 # Codes
 
-* [Join](https://github.com/TunaHG/Database/blob/master/SQL/4_Join.sql)
+* [Join](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/04_Join.sql)

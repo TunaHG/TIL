@@ -40,4 +40,4 @@ select ename, sal from emp order by sal;
 
 # Codes
 
-* [Order By](https://github.com/TunaHG/Database/blob/master/SQL/3_Orderby.sql)
+* [Order By](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/03_Orderby.sql)

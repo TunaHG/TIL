@@ -67,4 +67,4 @@ select deptno, round(avg(sal)) from emp group by deptno;
 
 # Codes
 
-* [Group By](https://github.com/TunaHG/Database/blob/master/SQL/5_Groupby.sql)
+* [Group By](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/05_Groupby.sql)

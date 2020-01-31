@@ -176,4 +176,4 @@ Table truncated.
 
 # Codes
 
-* [DDL Codes](https://github.com/TunaHG/Database/blob/master/SQL/7_DDL.sql)
+* [DDL Codes](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/07_DDL.sql)

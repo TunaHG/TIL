@@ -2,7 +2,7 @@
 
 > Structured Query Language
 
-## 1. DML
+## 1. [DML](./DML.md)
 
 > Data Manipulation Language
 
@@ -11,7 +11,7 @@
 * DELETE
 * MERGE
 
-## 2. DDL
+## 2. [DDL](./DDL.md)
 
 > Data Definition Language
 >
@@ -36,7 +36,7 @@
 
 * [SELECT](./Select.md)
 
-## 5. TCL 
+## 5. TCL
 
 > Transaction Control Language
 

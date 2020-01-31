@@ -202,4 +202,4 @@ select {Column} from {Table} where {Condition}
 
 # Codes
 
-* [Select](https://github.com/TunaHG/Database/blob/master/SQL/2_Select.sql)
+* [Select](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/02_Select.sql)

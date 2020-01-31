@@ -247,4 +247,4 @@ Warning: You are no longer conntected to ORACLE.
 
 # Codes
 
-* [Oracle Account](https://github.com/TunaHG/Database/blob/master/SQL/1_Oracle_Account.sql)
+* [Oracle Account](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/01_Oracle_Account.sql)

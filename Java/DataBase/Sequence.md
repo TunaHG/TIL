@@ -40,4 +40,4 @@ select dept_seq.nextval from dual;
 
 # Codes
 
-* [Sequence](https://github.com/TunaHG/Database/blob/master/SQL/10_Sequence.sql)
+* [Sequence](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/10_Sequence.sql)

@@ -64,4 +64,4 @@ select rownum, ename, job, sal from emp;
 
 # Codes
 
-* [Sub Query](https://github.com/TunaHG/Database/blob/master/SQL/6_SubQuery.sql)
+* [Sub Query](https://github.com/TunaHG/Eclipse_Workspace/blob/master/DB/SQL/06_SubQuery.sql)
