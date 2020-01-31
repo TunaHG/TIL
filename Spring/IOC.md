@@ -2,11 +2,13 @@
 
 > IOC : Inversion of Control
 >
-> 제어의 역전이란, 어떠한 일을  하도록 만들어진 프레임워크에 제어의 권한을 넘김으로써 클라이언트 코드가 신경 써야 할 것을 줄이는 방식이다.
+> 제어의 역전이란, 어떠한 일을  하도록 만들어진 프레임워크에 제어의 권한을 넘김으로써 클라이언트 코드가 신경 써야 할 것을 줄이는 개념
 
 * 소스에서 객체 생성과 의존관계에 대한 코드가 사라져 낮은 결합도의 컴포넌트를 구현할 수 있다.
 
-## New 사용
+## 기존에 사용하던 객체 생성 방법
+
+### New 사용
 
 ```java
 class A{
@@ -14,7 +16,7 @@ class A{
 }
 ```
 
-## 생성자 사용
+### 생성자 사용
 
 ```java
 class A{
@@ -25,7 +27,7 @@ class A{
 }
 ```
 
-## setter 메소드 사용
+### setter 메소드 사용
 
 ```java
 class A{
@@ -36,11 +38,17 @@ class A{
 }
 ```
 
-
-
-# DI
+## DI
 
 > DI : Dependency Injection
+>
+> IOC를 적용하는 프로그래밍 방식
+
+### Contructor
+
+
+
+### Setter
 
 외부(스프링)로부터 만들어진 객체를 전달받자.
 
@@ -55,8 +63,8 @@ IOC, DI >> 스프링 내부 규칙
 3. 스프링 규칙대로 강제적 사용
 4. 객체생성 <bean>, setter 호출 <property>
    1. <property>에서 인자의 값을 받아올 때는 value를 사용, 객체를 받아올 때는 ref를 사용한다.
-
-
+      나중엔 value를 form으로 받을것이기 때문에 property를 사용하지 않는다.
+   2. <property>의 id부분은 setter메소드를 찾아내는 방법임. setProductVO를 가져오려면 productVO가 되어야함.
 
 스프링 설정파일 > XML
 
@@ -67,7 +75,8 @@ IOC, DI >> 스프링 내부 규칙
       Class위에 붙여준다. >> DAO Class에 권장
    2. `@Component` = `@Repository` >> 모든 Class에 권장
    3. `@Autowired` : 변수 선언시 Annotation한다.
-      EmpVO로 생성된 객체를 찾아서 가져온다. 변수위에 붙여준다. 객체를 변수로 가질때만 사용가능한듯
+      EmpVO로 생성된 객체를 찾아서 가져온다. 변수위에 붙여준다. 객체를 변수로 가질때만 사용가능함
+      
    4. EmpVO와 같이 전달받을 값이 있으면 `<bean>`을 사용해야 한다.
 
 

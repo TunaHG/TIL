@@ -1,45 +1,5 @@
 # Spring Start
 
-강사 조성희 : bluejeansh@hanmail.net
-
-## Feature
-
-1. Spring AOP, Spring Web, Spring Web MVC, Spring Context, Spring ORM, Spring DAO, Spring Core로 이루어진 Spring에서 mybatis로 대체된 ORM과 DAO를 제외한 나머지를 학습한다.
-2. 여러가지 모듈단위
-3. Class A extends HTTPServlet
-   Class B : main class 실행 / 서블릿 실행 / 안드로이드 앱 실행 = plain old java object (pojo)
-4. Spring 이전 개발 자바 객체를 그대로 사용 가능
-5. Spring Core - ID
-
-### IOC 기능 지원
-
-> IOC : Inversion of Control
-
-```java
-interface B{}
-class C implements B{}
-class D implements B{}
-
-class A {
-    // B b1 = new B();
-    B b1;
-    A(B b1){
-        this.b1 = b1;
-    }
-    setB(B b1){
-        this.b1 = b1;
-    }
-}
-```
-
-* IOC란, 객체를 생성하는 방법을 의미한다.
-
-#### DI
-
-> DI : Dependency Injection
-
-* IOC중 new를 사용하지 않는 생성자와 setter를 사용하는 방법을 의미한다.
-
 ## Setting
 
 * JDK와 Eclipse가 설치되어 있는 상태에서 진행한다.
@@ -61,3 +21,5 @@ class A {
   * Project에서 우클릭후 Properties - Java Build Path - Libraries의 JRE Library를 더블클릭하여 1.6에서 1.8로 변경한다. (Apply 클릭)
   * Properties - Project Facets에서 Java의 버전을 1.6에서 1.8로 변경
   * Properties - Project Facets에서 우측 Runtimes에서 Tomcat 8.5 체크
+
+* src/main/java에 원하는 Package와 Class파일을 만들며 코딩을 진행한다.
