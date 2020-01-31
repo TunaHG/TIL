@@ -179,4 +179,4 @@ print(b + 123123)
 
 * [Codes](./07_input.py)
 
-## [Example](./Example)
+## [Examples](./Examples)
