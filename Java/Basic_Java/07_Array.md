@@ -113,10 +113,10 @@ System.out.println(Arrays.toString(tmp));
 
 # Codes
 
-* [Array](https://github.com/TunaHG/Java_Programming/blob/master/src/Day04/Test04_array.java)
+* [Array](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day04/Test04_array.java)
 
-* [Arraycopy](https://github.com/TunaHG/Java_Programming/blob/master/src/Day04/Test05_arraycopy.java)
+* [Arraycopy](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day04/Test05_arraycopy.java)
 
-* [Deduplication and Sort](https://github.com/TunaHG/Java_Programming/blob/master/src/Day05/Test01_duplicate.java)
+* [Deduplication and Sort](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day05/Test01_duplicate.java)
 
-* [Two Dimension](https://github.com/TunaHG/Java_Programming/blob/master/src/Day05/Test02_Twodim.java)
+* [Two Dimension](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day05/Test02_Twodim.java)

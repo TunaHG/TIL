@@ -60,7 +60,6 @@ switch(변수명){
 
 # Codes
 
-* [IF](https://github.com/TunaHG/Java_Programming/blob/master/src/Day03/Test04_if.java)
-* [Else IF](https://github.com/TunaHG/Java_Programming/blob/master/src/Day03/Test05_elseif.java)
-* [Switch](https://github.com/TunaHG/Java_Programming/blob/master/src/Day04/Test01_switch.java)
-
+* [IF](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day03/Test04_if.java)
+* [Else IF](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day03/Test05_elseif.java)
+* [Switch](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day04/Test01_switch.java)

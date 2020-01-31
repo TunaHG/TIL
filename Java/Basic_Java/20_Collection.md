@@ -202,3 +202,13 @@ class Employee<T>{
 
 * `put()`을 이용하여 데이터를 삽입한다.
 * `key`들의 집합을 `return`해주는 `keySet()`이라는 메소드가 존재한다. 하지만 이는 `return`타입이 `Set`이다. 그렇기에 `Set`으로 선언해서 데이터를 받고난 후 `Set`을 다시 `Iterator`를 통하여 출력한다.
+
+# Codes
+
+* [Generic](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day10/Test01_generic.java)
+* [Twin Generic](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day10/Test02_twin.java)
+* [Stack](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day10/Test03_stack.java)
+* [List](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day10/Test04_List.java)
+* [Set](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day10/Test05_Set.java)
+* [CRUD](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day10/Test06_CRUD.java)(Create, Read, Update, Delete)
+* [Map](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day10/Test07_Map.java)

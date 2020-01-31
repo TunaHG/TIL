@@ -40,4 +40,4 @@ scan = null;
 
 # Codes
 
-* [Scanner](https://github.com/TunaHG/Java_Programming/blob/master/src/Day03/Test03_Scanner.java)
+* [Scanner](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day03/Test03_Scanner.java)

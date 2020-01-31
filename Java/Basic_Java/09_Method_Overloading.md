@@ -46,6 +46,6 @@
 
 # Codes
 
-* [Calc Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day05/Calc.java)
-* [main method](https://github.com/TunaHG/Java_Programming/blob/master/src/Day05/Test06_static.java)
+* [Calc Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day05/Calc.java)
+* [main method](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day05/Test06_static.java)
 

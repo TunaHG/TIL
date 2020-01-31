@@ -74,12 +74,12 @@ a3.print();
 
 # Codes
 
-* [Account Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/Account.java)
+* [Account Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/Account.java)
 
-* [Account Test2](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/AccountTest2.java)
+* [Account Test2](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/AccountTest2.java)
 
-* [Account Test3](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/AccountTest3.java)
+* [Account Test3](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/AccountTest3.java)
 
-* [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test03_Dog.java)
-  * 필요 Class [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Dog.java) [Animal](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Animal.java)
+* [Dog](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Test03_Dog.java)
+  * 필요 Class [Dog](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Dog.java) [Animal](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Animal.java)
 

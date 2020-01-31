@@ -123,10 +123,10 @@ for(int i = 0; i < 10; i++){
 
 # Codes
 
-* [For Loop](https://github.com/TunaHG/Java_Programming/blob/master/src/Day03/Test06_for.java)
+* [For Loop](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day03/Test06_for.java)
 
-* [While Loop](https://github.com/TunaHG/Java_Programming/blob/master/src/Day04/Test02_while.java)
+* [While Loop](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day04/Test02_while.java)
 
-* [Break](https://github.com/TunaHG/Java_Programming/blob/master/src/Day04/Test03_break.java)
+* [Break](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day04/Test03_break.java)
 
-* [Inhanced For Loop](https://github.com/TunaHG/Java_Programming/blob/master/src/Day05/Test04_Inhacedfor.java)
+* [Inhanced For Loop](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day05/Test04_Inhacedfor.java)

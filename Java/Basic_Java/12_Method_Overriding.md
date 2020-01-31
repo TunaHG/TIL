@@ -7,7 +7,7 @@
 
 ## Example
 
->  [Animal Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Animal.java)와 [Fish Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Fish.java)를 이용하여 설명한다.
+>  [Animal Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Animal.java)와 [Fish Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Fish.java)를 이용하여 설명한다.
 
 * `breath()`메소드가 메소드 오버라이딩된 상태다.
   `Fish`객체에서 사용되는 `breath()`메소드와 `Animal`객체에서 사용되는 `breath()`메소드가 서로 다르게 출력된다.
@@ -40,14 +40,14 @@
 
 # Codes
 
-* [Animal](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Animal.java)
+* [Animal](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Animal.java)
 
-* [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Dog.java)
-* [Fish](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Fish.java)
+* [Dog](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Dog.java)
+* [Fish](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Fish.java)
 
-* [print() Override](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test04_override.java)
-* [Animal Override](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/AnimalTest.java)
+* [print() Override](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Test04_override.java)
+* [Animal Override](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/AnimalTest.java)
 
-* [Object Overriding ](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test04_equals.java)
-* [Object Overriding Automatically](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test05_generate.java)
-* [Polymorpism](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test06_parampoly.java)
+* [Object Overriding ](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Test04_equals.java)
+* [Object Overriding Automatically](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Test05_generate.java)
+* [Polymorpism](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Test06_parampoly.java)

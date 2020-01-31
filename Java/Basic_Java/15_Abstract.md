@@ -27,7 +27,7 @@
 
 # Codes
 
-* [Animal](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Animal.java)
-* [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Dog.java)
-* [Fish](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Fish.java)
-* [Abstract Test](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/AnimalTest.java)
+* [Animal](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Animal.java)
+* [Dog](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Dog.java)
+* [Fish](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Fish.java)
+* [Abstract Test](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/AnimalTest.java)

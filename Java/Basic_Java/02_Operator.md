@@ -102,11 +102,11 @@ System.out.println(3 > 3 || 4 > 3); // true
 
 # Codes
 
-* [Swapping](https://github.com/TunaHG/Java_Programming/blob/master/src/Day02/Test04.java)
+* [Swapping](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day02/Test04.java)
 
-* [Operator](https://github.com/TunaHG/Java_Programming/blob/master/src/Day02/Test06.java)
+* [Operator](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day02/Test06.java)
 
-* [Equals](https://github.com/TunaHG/Java_Programming/blob/master/src/Day03/Test01.java)
+* [Equals](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day03/Test01.java)
 
-* [Bit Operator](https://github.com/TunaHG/Java_Programming/blob/master/src/Day03/Test02.java)
+* [Bit Operator](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/Day03/Test02.java)
 

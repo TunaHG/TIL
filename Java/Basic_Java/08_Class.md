@@ -120,14 +120,14 @@ public class Account {
 
 # Codes
 
-* [Simple Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day05/Test05_class.java)
-* [Static Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day05/Test06_static.java)
+* [Simple Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day05/Test05_class.java)
+* [Static Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day05/Test06_static.java)
 
-* [Account Test](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/AccountTest.java)
-  * 필요 [Account Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/Account.java)
+* [Account Test](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/AccountTest.java)
+  * 필요 [Account Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/Account.java)
 
-* [TV Test](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/TVTest.java)
-* [Time](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/Test02_time.java)
+* [TV Test](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/TVTest.java)
+* [Time](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/Test02_time.java)
 
-* [Calc.add, Sort, max](https://github.com/TunaHG/Java_Programming/blob/master/src/Day06/Test01_util.java)
-  * 필요 [Util](https://github.com/TunaHG/Java_Programming/blob/master/src/Util/myUtil.java)
+* [Calc.add, Sort, max](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day06/Test01_util.java)
+  * 필요 [Util](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Util/myUtil.java)

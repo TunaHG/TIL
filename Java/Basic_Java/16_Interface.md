@@ -113,6 +113,6 @@
 
 # Codes
 
-* [Interface](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test07_Interface.java)
-* [Multi Interface](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test08_Multi_Interface.java)
-* [default](https://github.com/TunaHG/Java_Programming/blob/master/src/Day09/Test01_default.java)
+* [Interface](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Test07_Interface.java)
+* [Multi Interface](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Test08_Multi_Interface.java)
+* [default](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day09/Test01_default.java)

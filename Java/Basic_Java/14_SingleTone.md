@@ -40,4 +40,4 @@
 
 # Codes
 
-* [SingleTone](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test02_SingleTone.java)
+* [SingleTone](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Test02_SingleTone.java)

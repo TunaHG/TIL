@@ -103,6 +103,6 @@
 
 # Codes
 
-* [Inner Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day09/Test02_inner.java)
-* [Anonymous Inner Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day09/Test03_anony.java)
-* [Lambda](https://github.com/TunaHG/Java_Programming/blob/master/src/Day09/Test04_lambda.java)
+* [Inner Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day09/Test02_inner.java)
+* [Anonymous Inner Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day09/Test03_anony.java)
+* [Lambda](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day09/Test04_lambda.java)

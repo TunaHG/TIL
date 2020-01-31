@@ -21,6 +21,6 @@
 
 # Codes
 
-* [StringTokenizer](https://github.com/TunaHG/Java_Programming/blob/master/src/Day09/Test08_StringTokenizer.java)
-  * [bookdata.txt](https://github.com/TunaHG/Java_Programming/blob/master/bookdata.txt)
-  * [Book](https://github.com/TunaHG/Java_Programming/blob/master/src/Prob/Prob05/Book.java)
+* [StringTokenizer](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day09/Test08_StringTokenizer.java)
+  * [bookdata.txt](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/bookdata.txt)
+  * [Book](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Prob/Prob05/Book.java)

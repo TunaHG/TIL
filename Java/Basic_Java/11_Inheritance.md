@@ -18,7 +18,7 @@ public class Dog extends Animal{ }
 
 ## Example
 
-> [Animal Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Animal.java)와 그를 상속하는 [Dog Class](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Dog.java)를 이용한다.
+> [Animal Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Animal.java)와 그를 상속하는 [Dog Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Dog.java)를 이용한다.
 
 * `Animal`의 `kind`와 `Dog`의 `kind` 두 변수의 타입과 이름이 겹친다. 하지만 서로 다른 클래스기 때문에 다르게 동작하는데, 이를 구분해 주기 위하여 `this`와 `super`를 이용한다.
 
@@ -89,8 +89,8 @@ class Circle {
 
 # Codes
 
-* [Animal](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Animal.java)
-* [Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Dog.java)
-* [Inheritance Animal, Dog](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test01_Inheritance.java)
-* [Casting](https://github.com/TunaHG/Java_Programming/blob/master/src/Day07/Test02_Type.java)
-* [HasA](https://github.com/TunaHG/Java_Programming/blob/master/src/Day08/Test03_hasa.java)
+* [Animal](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Animal.java)
+* [Dog](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Dog.java)
+* [Inheritance Animal, Dog](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Test01_Inheritance.java)
+* [Casting](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day07/Test02_Type.java)
+* [HasA](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Day08/Test03_hasa.java)
