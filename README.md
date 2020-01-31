@@ -13,6 +13,7 @@
 
 * [Basic Java](./Java/Basic_Java)
 * [Database](./Java/DataBase)
+* [Memory](./Java/Memory.md)
 
 ## [Python](./Python)
 
