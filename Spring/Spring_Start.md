@@ -1,5 +1,14 @@
 # Spring Start
 
+## Feature
+
+> IoC와 AOP를 지원하는 경량의 컨테이너 프레임워크
+
+* 여러 개의 모듈로 구성되어 있으며 각 모듈은 하나 이상의 JAR파일로 구성되어 있다.
+* POJO(Plain Old Java Object)형태의 객체를 관리한다.
+  * POJO란, 평범한 옛날 자바 객체. 대표적인 Not POJO 클래스가 Servlet 클래스이다. 
+    우리 마음대로 만들 수 없고 반드시 요구하는 규칙에 맞게 만들어야 하는 클래스.
+
 ## Setting
 
 * JDK와 Eclipse가 설치되어 있는 상태에서 진행한다.
