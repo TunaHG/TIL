@@ -1,3 +1,5 @@
+# Annotation
+
 @ annotation 
 
 1. DAO >> `@Repository("dao")` = `<bean id="dao" class="xxx.DAO">`
@@ -9,3 +11,15 @@
    EmpVO로 생성된 객체를 찾아서 가져온다. 변수위에 붙여준다. 객체를 변수로 가질때만 사용가능함
 
 4. EmpVO와 같이 전달받을 값이 있으면 `<bean>`을 사용해야 한다.
+
+@Service("{bean id}") : Class 위
+
+@Repository("") : Class 위
+
+@Component("") : Class 위
+
+@Autowired : 멤버변수, 변수 위
+
+@Resource : 멤버변수, 생성자, Setter 위에 선언
+
+@Qualifier : 멤버변수, 생성자, Setter 위에 선언
