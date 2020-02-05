@@ -30,6 +30,9 @@
 * web.xml에서 url pattern을 `*.mvc`, `/`와 같은 값들로 변경하며 확인
   
   * Url(http://localhost:8080/mvc/)이후가 위와 같은 값들일 경우 웹페이지가 나온다.
+    * HTML TAG에서도 생략할 수 있는데, 이때는 `http://localhost:8080/`만 생략된다.
+      ContextName은 입력해줘야한다.
+    * ContextName을 잘 모르겠다면, `request.getContextPath()`를 사용한다.
   
 * Codes
 
@@ -96,6 +99,7 @@
 ![image-20200204112821586](image/image-20200204112821586.png)
 
 * Spring 프로젝트에서 JSP File 경로는 src > main > webapp > Web-INF > views에 작성
+  * JSP를 직접 실행시킬 수 없다. `WEB-INF`경로는 웹에서 숨겨진 경로기 때문에 불러올 수 없다.
 * MVC Framework에서 사용한 Controller, Mapping, Servlet중 Controller를 제외한 나머지 모두를 삭제한다.
   * Controller에서도 Interface를 삭제한다.
 
@@ -164,7 +168,7 @@
   
   * xml file에서는 주석처리된 부분에 해당되므로 그 부분을 살펴본다.
 
-### Example
+#### Example
 
 > hello로 받았던 요청이 아닌 boardlist로 요청을 받아서 Oracle DB에서 게시글을 살펴본다.
 
@@ -178,6 +182,11 @@
 
   * BoardVO Class : 게시물 1개를 표현하는 자바 객체
   * BoardDAO Class : JDBC 연동 Class, `getList()`메소드를 사용하여 VO객체의 ArrayList를 return
+
+* JDBC의 Driver를 사용하기 위해 Library를 추가하여야 한다.
+
+  * `oralcexe/app/oracle/product/11.2.0/server/jdbc` 경로에 존재하는 `ojdbc6.jar`파일을 복사한다
+  * Spring Project의 `src/main/webapp/WEB-INF`경로에 `lib`폴더를 만든후 해당 폴더에 `ojdbc6.jar`을 붙여넣는다.
 
 * 위의 두 작업을 완료한 후 다음의 과정을 진행한다.
 
@@ -214,13 +223,13 @@
 
      * BoardDAO Class에서 `getList()` Method의 return type을 ArrayList로 설정해서 for문을 사용하여 출력하거나, EL표현식을 사용하여 출력한다.
 
-## Annotation
+### Annotation
 
 > Spring MVC를 진행하며 만든 DAO, VO, HelloController, BoardlistController를 복사한다.
 >
 > Spring Class를 처음 만들때 만든 package인 edu.multi.mvc안에 붙여넣는다.
 
-### servlet-content.xml
+#### servlet-content.xml
 
 ```xml
 <!-- Enables the Spring MVC @Controller programming model -->
@@ -243,13 +252,13 @@
 
     [servlet-content.xml file](https://github.com/TunaHG/Eclipse_Workspace/tree/master/Spring/src/main/webapp/WEB-INF/spring/appServlet)
 
-### DAO
+#### DAO
 
 * DAO Class에 `@Repository`를 선언해준다.
 
   [DAO Annotation Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/mvc/BoardDAO.java)
 
-###  Controller
+####  Controller
 
 * Controller Class에서는 Controller 상속을 제거한 후 Class위에 `@Controller`를 선언한다.
   * 상속이 제거되며 `@Override`에서 Error가 발생한다. 해당 Annotation을 제거한다.
@@ -258,9 +267,50 @@
 * Controller의 Method위에 `@RequestMapping("/hello")`를 선언한다.
   * `/hello`와 Controller를 Mapping하던 xml 설정을 대신한다.
 
-## GET / POST
+##### Method Return Type
 
-### GET
+* ModelAndView
+  * Model, View가 둘다 필요할 때 사용
+  * View는 `setViewName()`을 이용하여 명시하거나, 명시하지 않으면 URL에 의해 자동결정된다.
+* String
+  * Model은 필요없고, View만 필요할 때 사용
+  * return값으로 View를 명시하여 결정
+  * `redirect:/list` : list로 Mapping된 Method를 실행하라는 의미
+* void
+  * Model은 필요없고, View만 필요할 때 사용
+  * String과의 차이점은 URL에 의하여 자동으로 결정된다.
+* Map
+  * Model만 설정하며 View는 URL로 자동설정
+
+* Codes
+
+  [CRUD Controller], [CRUD Folder]
+
+##### Method Parameter Type
+
+* HttpServletRequest 등의 Servlet 관련 API를 사용
+
+* String, int, double, boolean
+
+  * 해당 type이면서 변수의 이름이 요청파라미터의 이름과 동일한 경우 요청파라미터의 값들을 자동으로 저장한다.
+  * 필요에 의해서 @RequestParam("name")을 선언할 수 있다. 그럼 해당 parameter의 변수명이 아닌 선언된 name과 요청파라미터의 이름이 같은 경우 요청파라미터의 값들을 자동으로 저장한다.
+    * @RequestParam의 Argument는 value, required, defaultValue가 있다.
+
+* 요청파라미터의 개수가 많을 경우 VO 객체를 정의하여 사용
+
+  * JSP에서 사용할 model명은 VO 객체명의 맨 앞 알파뱃만 소문자로 변경한 값이다.
+  * @ModelAttribute("name")을 선언하면 model명이 name이 된다.
+  * 요청 파라미터의 이름과 VO 멤버변수명이 동일한 경우 자동으로 저장한다.
+
+* Codes
+
+  [Login Controller](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/mvc/LoginController.java), [Login Form](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/loginform.jsp), [Login Success](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/loginsuccess.jsp), [LoginVO]
+
+### GET / POST
+
+> @RequestMapping에서 GET, POST방식에 따라 처리를 다르게 할 수 있다.
+
+#### GET
 
 > URL뒤에 ?가 붙은 후 parameter를 출력하는 방법
 
@@ -274,7 +324,7 @@
 * HTML의 `<a href="/hello?id=spring">`은 GET방식이다.
 * Internet Browser의 주소표시줄에 직접 입력하는 방식도 GET 방식이다.
 
-### POST
+#### POST
 
 > url 뒤에 형태가 보이지 않는 방법
 
@@ -287,7 +337,7 @@
 * 전달 길이 무제한
 * 파일 업로드, 암호 전송할 때 좋은 방식
 
-### Code
+##### Code
 
 * ```html
   <form action="url" method="get">
@@ -306,3 +356,32 @@
   * 해당 Code의 유의할 점은 다음과 같다.
     * Controller에서 `@RequestMapping`을 진행할 때 name뿐이아닌 method를 설정한다.
     * Spring Annotation MVC에서 Mapping Method의 return type이 String이면 String이 View의 이름이 된다. ==> 이는 Spring의 규칙이다.
+
+### Encoding Setting
+
+* web.xml파일에 다음의 코드를 추가한다
+
+  ```xml
+  <filter>
+  	<filter-name>f</filter-name>
+  	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    	<init-param>
+    		<param-name>encoding</param-name>
+    		<param-value>UTF-8</param-value>
+    	</init-param>
+  </filter>
+  <filter-mapping>
+    	<filter-name>f</filter-name>
+    	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  ```
+
+  * `url-pattern`이 `/*`이므로 어떤 URL로 구성되든 전부 해당 filter를 실행한다.
+  
+* 해당 방법을 사용하지 않으면 Controller의 Method에서 다음의 코드를 진행하면 된다.
+
+  ```java
+  request.setCharacterEncoding("utf-8");
+  ```
+
+  
