@@ -260,6 +260,8 @@
 
 ####  Controller
 
+* 요청을 받고 Model을 만들어 View를 지정해주어 응답을 하는 역할
+
 * Controller Class에서는 Controller 상속을 제거한 후 Class위에 `@Controller`를 선언한다.
   * 상속이 제거되며 `@Override`에서 Error가 발생한다. 해당 Annotation을 제거한다.
   * 오버라이딩이 필요가 없어지며 Method의 return type, parameter등의 선언이 자유로워진다.
@@ -278,10 +280,10 @@
   * `redirect:/list` : list로 Mapping된 Method를 실행하라는 의미
 * void
   * Model은 필요없고, View만 필요할 때 사용
-  * String과의 차이점은 URL에 의하여 자동으로 결정된다.
+  * String과의 차이점은 View가 URL에 의하여 자동으로 결정된다.
 * Map
   
-* Model만 설정하며 View는 URL로 자동설정
+  * Model만 설정하며 View는 URL로 자동설정
   
 * Codes
 
@@ -291,16 +293,18 @@
 
 * HttpServletRequest 등의 Servlet 관련 API를 사용
 
+  * `request.getParameter("id")`
+
 * String, int, double, boolean
 
   * 해당 type이면서 변수의 이름이 요청파라미터의 이름과 동일한 경우 요청파라미터의 값들을 자동으로 저장한다.
-  * 필요에 의해서 @RequestParam("name")을 선언할 수 있다. 그럼 해당 parameter의 변수명이 아닌 선언된 name과 요청파라미터의 이름이 같은 경우 요청파라미터의 값들을 자동으로 저장한다.
-    * @RequestParam의 Argument는 value, required, defaultValue가 있다.
+  * 필요에 의해서 `@RequestParam("name")`을 선언할 수 있다. 그럼 해당 parameter의 변수명이 아닌 선언된 name과 요청파라미터의 이름이 같은 경우 요청파라미터의 값들을 자동으로 저장한다.
+    * `@RequestParam`의 Argument는 value, required, defaultValue가 있다.
 
 * 요청파라미터의 개수가 많을 경우 VO 객체를 정의하여 사용
 
   * JSP에서 사용할 model명은 VO 객체명의 맨 앞 알파뱃만 소문자로 변경한 값이다.
-  * @ModelAttribute("name")을 선언하면 model명이 name이 된다.
+  * `@ModelAttribute("name")`을 선언하면 model명이 name이 된다.
   * 요청 파라미터의 이름과 VO 멤버변수명이 동일한 경우 자동으로 저장한다.
 
 * Codes
