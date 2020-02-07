@@ -174,6 +174,8 @@ try{
 
     * id를 변경해줘야하며, select문을 1개의 record만 결과로 가지도록 변경한다.
     * 이 때 값을 전달할 수 있는데, parameterType을 통하여 전달할 값의 타입을 선언하며 값을 받는 위치에는 `#{name}`이 오게된다. 이 때 name은 어떤값이 오더라도 상관없다.
+    * parameterType에는 하나의 타입만 올 수 있다. `String, String, int`와 같은 형태는 불가능하다.
+      * VO와 같은 객체, 배열 등의 한가지 타입만이 가능하다.
 
   * Main Class에는 다음의 코드를 추가한다.
 
@@ -267,9 +269,11 @@ try{
     }
     ```
 
-## Insert
+## DML
 
 > mapping.xml, EmpDAO, EmpMain Class를 활용하여 Insert작업을 진행한다.
+>
+> update, delete는 mapping.xml의 code가 조금 변경될뿐 큰 틀의 차이는 없다.
 
 * EmpMain에 다음의 Code를 작성한다.
 
@@ -295,7 +299,8 @@ try{
   }
   ```
 
-  * 왜 int값 return을 안하지?
+  * insert작업이 int값을 return하긴 하지만 쓸모가없으니 return type을 void로 처리한다.
+    * DML의 return값은 몇 개의 row가 변경되었는지를 확인하는 것이므로 원한다면 int형 return을 받아오면 된다.
 
 * mapping.xml에 다음의 Code를 작성한다.
 
@@ -334,3 +339,4 @@ try{
       ```
 
       * 해당 매개변수의 default값이 false이므로 true를 입력하지않으면 자동 Commit은 false이다.
+
