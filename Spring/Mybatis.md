@@ -214,3 +214,123 @@ try{
   * EmpVO의 경로를 type으로 정해주며, alias를 emp로 선언함으로써 returnType을 작성할 때 emp로 작성함으로서 EmpVO를 지정해줄 수 있다.
   * typeAlias는 위처럼 여러 개를 선언할 수 있다.
 
+### Using DAO
+
+* Main Class에서 진행한 Code를 이후 Spring MVC로 적용하기 쉽게 하기 위해 DAO Class를 사용하여 변경한다.
+
+  ```java
+  List<EmpVO> list = session.selectList("allemp");
+  for (EmpVO vo : list) {
+  	System.out.println(vo.getEmployee_id() + ":" + vo.getFirst_name());
+  }
+  ```
+
+* 위 Code는 Main Class에서 진행한 Code이다. 이를 DAO Class를 사용하여 변경해본다.
+
+  * DAO Class를 생성한 후, Main에서 진행한 Session을 넘겨줘야한다.
+
+    ```java
+    public class EmpDAO(){
+        SqlSession session;
+        public void setSession(SqlSession session){
+            this.session = session;
+        }
+    }
+    ```
+
+    * Set메소드를 선언하여 session을 받는다.
+
+  * Main Class에서는 이제 DAO객체를 생성하고 session을 넘겨줘야 한다.
+
+    ```java
+    EmpDAO dao = new EmpDAO();
+    dao.setSession(session);
+    ```
+
+* 이제 위의 Code를 변경해본다.
+
+  * 우선 DAO Class에서 해당역할을 수행하는 메소드를 생성한다.
+
+    ```java
+    public List<EmpVO> getAllEmp() {
+    	List<EmpVO> list = session.selectList("allemp");
+    	return list;
+    }
+    ```
+
+  * 이제 Main Class에서 해당 메소드를 호출한다.
+
+    ```java
+    List<EmpVO> list = dao.getAllEmp();
+    for (EmpVO vo : list) {
+    	System.out.println(vo.getEmployee_id() + ":" + vo.getFirst_name());
+    }
+    ```
+
+## Insert
+
+> mapping.xml, EmpDAO, EmpMain Class를 활용하여 Insert작업을 진행한다.
+
+* EmpMain에 다음의 Code를 작성한다.
+
+  ```java
+  EmpVO vo = new EmpVO();
+  vo.setEmployee_id(1000);
+  vo.setFirst_name("길동");
+  vo.setLast_name("홍");
+  vo.setEmail("gil@multi.com");
+  vo.setJob_id("IT_PROG");
+  
+  dao.insertEmp(vo);
+  System.out.println("신규 사원을 등록했습니다.");
+  ```
+
+  * 각 값들을 따로따로 넣어줄 수 있지만 그렇게 되면 parameter가 길어지므로 VO객체를 사용한다.
+
+* EmpDAO Class에 다음의 Code를 작성한다.
+
+  ```java
+  public void insertEmp(EmpVO vo) {
+  	session.insert("newemp", vo);	
+  }
+  ```
+
+  * 왜 int값 return을 안하지?
+
+* mapping.xml에 다음의 Code를 작성한다.
+
+  ```xml
+  <insert id="newemp" parameterType="emp">
+  	insert into employees(employee_id, first_name, last_name, email, job_id, hire_date)
+  	values(#{employee_id}, #{first_name}, #{last_name}, #{email}, #{job_id}, sysdate)
+  </insert>
+  ```
+
+  * return값이 없기 때문에 resultType을 선언하지 않는다.
+  * VO객체를 parameter로 넘겨줄것이기 때문에 parameterType을 선언한다.
+
+* 위 세 Code를 작성한 이후 Main Class를 실행하면 정상적으로 구동되나, DB로 진입하여 확인해보면 값이 추가가 안되어있다.
+
+  * 이는 DML의 특성상 자동반영이 되지 않기 때문이며, commit을 통하여 반영해야한다.
+
+    ```java
+    session.commit();
+    ```
+
+    * 해당 코드가 commit을 진행하는 Code이다.
+
+  * 이외에 자동으로 commit처리를 하기 위해선 다음을 확인한다.
+
+    * 현재 Commit처리가 자동인지 확인해본다.
+
+      ```java
+      System.out.println(session.getConnection().getAutoCommit());
+      ```
+
+    * 자동으로 Commit처리가 되도록 설정해주려면 처음 Session을 만들때 매개변수를 변경한다.
+
+      ```xml
+      SqlSession session = factory.openSession(true);
+      ```
+
+      * 해당 매개변수의 default값이 false이므로 true를 입력하지않으면 자동 Commit은 false이다.
