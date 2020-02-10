@@ -1,6 +1,6 @@
 # Mybatis
 
-> JDBC를 대체하여 Spring과 연결하는 DB
+> JDBC를 대체하여 Spring과 DB를 연결하는 Framework
 
 * Mybatis의 SQL Code는 XML파일에 들어간다.
   * 이제는 JDBC의 Driver, url, Account, password 또한 XML파일에서 설정한다.
@@ -46,6 +46,9 @@ try{
   * mybatis를 진행할 때도 해당 jar파일은 필요하다,
   * OracleDB를 받았다면 해당 파일은 보통 `oraclexe/app/oracle/product/11.2.0/server/jdbc/lib` 내부에 존재한다.
   * Eclipse에서 Project - Properties - Java Build Path - Libraries에서 Add External JARs를 클릭하여 경로를 찾아가서 ojdbc6.jar을 추가한다.
+    * 위 과정은 main에서 JDBC를 사용하기 위한 라이브러리 추가다.
+  * Tomcat의 경로에서 lib폴더 내에 ojdbc6.jar파일을 추가하거나, Eclipse Project에서 src/main/webapp/WEB-INF경로에 lib폴더를 생성하고 해당 폴더에 ojdbc6.jar을 추가한다.
+    * 위 과정은 servlet, jsp등 java web server application에서 JDBC를 사용하기 위한 라이브러리 추가다.
 
 ### DB Connect
 
@@ -340,8 +343,43 @@ try{
 
       * 해당 매개변수의 default값이 false이므로 true를 입력하지않으면 자동 Commit은 false이다.
 
-## Codes
+### Codes
 
 * [Mybatis-config.xml file](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/mybatis-config.xml)
 * [emp-mapping.xml file](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/emp-mapping.xml)
 * [EmpMain](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/EmpMain.java), [EmpDAO](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/EmpDAO.java), [EmpVO](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/EmpVO.java)
+
+## Mybatis Spring
+
+> Spring mvc + Spring ORM(= 다른 DB Framework 연동) + mybatis 연동
+
+### Setting
+
+* spring-jdbc.jar(ORM기능을 가진 라이브러리)와 mybatis-spring.jar(ORM기능을 가진 라이브러리)가 필요
+  * [Maven Repository](https://mvnrepository.com/)에서 두 라이브러리를 `<dependency>`에 추가하여 다운로드 받는다.
+  * spring-jdbc는 우리가 설치한 spring과 같은 버전을 선택하여야 한다. (4.3.18)
+    * spring-tx라는 라이브러리가 필요해서 같이 설치된다.
+* mybatis-config.xml 설정파일을 변경한다.
+  * `<environments>`, `<mappers>`부분을 전부 삭제 또는 주석 처리한다.
+  * `<typeAlias>`의 패키지 경로를 맞게 변경한다.
+* emp-mapping.xml 설정파일은 변경하지 않는다.
+  * 하지만 `<select>`의 resultType과 같은 경우 typeAlias를 사용중인 상태여야한다.
+* Mybatis - Spring 연동 설정파일(Spring bean 설정파일) 생성
+  * src/main/webapp/WEB-INF/spring경로에 *.xml파일 생성(mybatis-spring.xml)
+  * `<bean>`태그, `@Component`등의 기능은 전부 Spring기능이므로 mybatis에선 사용하지 않았다.
+  * xml 파일에 포함되어야 하는 내용
+    * JDBC Driver, Url, Username, Pw - DataSource 생성(Connection Pool)
+      * 4개의 property를 가지는 dataSource bean을 생성한다.
+      * JDBC : ConnectionPool => Spring DataSource
+      * JDBC : Connection => Spring SqlSessionTemplate = mybatis SqlSession
+    * Mapper, mybatis 설정파일 정보
+      * dataSource, mybatis-config.xml, emp-mapping.xml을 연결해준다.
+      * 여러개의 mapping.xml을 연결할 땐 *-mapping.xml과 같이 사용하면 된다.
+    * SqlSessionTemplate (Spring api) 생성
+
+### Mybatis
+
+* 
+* JDBC Driver, Url, Username, Pw - DataSource 생성(Connection Pool)
+  * 
+
