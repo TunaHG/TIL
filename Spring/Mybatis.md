@@ -356,15 +356,22 @@ try{
 ### Setting
 
 * spring-jdbc.jar(ORM기능을 가진 라이브러리)와 mybatis-spring.jar(ORM기능을 가진 라이브러리)가 필요
+
   * [Maven Repository](https://mvnrepository.com/)에서 두 라이브러리를 `<dependency>`에 추가하여 다운로드 받는다.
   * spring-jdbc는 우리가 설치한 spring과 같은 버전을 선택하여야 한다. (4.3.18)
     * spring-tx라는 라이브러리가 필요해서 같이 설치된다.
+
 * mybatis-config.xml 설정파일을 변경한다.
+
   * `<environments>`, `<mappers>`부분을 전부 삭제 또는 주석 처리한다.
   * `<typeAlias>`의 패키지 경로를 맞게 변경한다.
+
 * emp-mapping.xml 설정파일은 변경하지 않는다.
+
   * 하지만 `<select>`의 resultType과 같은 경우 typeAlias를 사용중인 상태여야한다.
+
 * Mybatis - Spring 연동 설정파일(Spring bean 설정파일) 생성
+
   * src/main/webapp/WEB-INF/spring경로에 *.xml파일 생성(mybatis-spring.xml)
   * `<bean>`태그, `@Component`등의 기능은 전부 Spring기능이므로 mybatis에선 사용하지 않았다.
   * xml 파일에 포함되어야 하는 내용
@@ -377,9 +384,38 @@ try{
       * 여러개의 mapping.xml을 연결할 땐 *-mapping.xml과 같이 사용하면 된다.
     * SqlSessionTemplate (Spring api) 생성
 
-### Mybatis
+* web.xml, servlet-context.xml 파일 수정
 
-* 
-* JDBC Driver, Url, Username, Pw - DataSource 생성(Connection Pool)
-  * 
+  * web.xml에서 `<context-param>`의 `<param-value>`에 mybatis-spring.xml 경로 추가
 
+    ```xml
+    <param-value>/WEB-INF/spring/root-context.xml, /WEB-INF/spring/mybatis-spring.xml</param-value>
+    ```
+
+    * 기존에 존재하던 root-context와 구분은 ,로 하거나 엔터로 구분하면 된다.
+
+  * servlet-context.xml에서 mybatis패키지에서 Annotation을 사용하도록 수정
+
+    ```xml
+    <context:component-scan base-package="edu.multi.mybatis" />
+    ```
+
+### Usage
+
+> Main Class를 사용한 mybatis때와 다르게 Spring으로 활용하면 Controller를 사용한다.
+
+* Spring MVC를 공부하며 사용했던 Annotation, Controller Class와 mybatis를 공부하며 사용했던 XML 설정파일 둘 다 이용해서 진행한다.
+
+* Controller를 사용하여 Model과 View를 정해주고 JSP를 활용하여 View를 보여준다.
+
+* mybatis를 공부하며 사용했던 Class중 Main을 제외한 나머지 Class들을 사용한다.
+
+  [EmpDAO](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/EmpDAO.java), [EmpVO](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/EmpVO.java), [emp-mapping.xml file](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/mybatis/emp-mapping.xml)
+
+* Controller는 Spring MVC에서 공부했던 대로 구성한다.
+  * `@RequestMapping`을 사용하여 mapping하고 Controller의 메소드를 생성하여 Model과 View를 지정한다.
+  * mapping된 JSP파일을 생성하여 웹에서 보일 페이지를 만든다.
+
+#### Codes
+
+* [Emp Controller](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/mybatis/EmpController.java), [Emp list JSP file](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/mybatis/emplist.jsp), [Emp detail JSP file](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/mybatis/detailemp.jsp)
