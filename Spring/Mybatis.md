@@ -419,3 +419,98 @@ try{
 #### Codes
 
 * [Emp Controller](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/mybatis/EmpController.java), [Emp list JSP file](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/mybatis/emplist.jsp), [Emp detail JSP file](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/mybatis/detailemp.jsp)
+
+### Join, Login, Logout Example
+
+#### Setting
+
+* Create [SQL Table](./exam.sql)
+
+* Create [VO Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/memberVO.java)
+
+* Modify XML Files
+
+  * [mybatis-spring.xml](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/spring/mybatis-spring.xml) 
+    dataSource의 username, password / sqlSessionFactory의 configLocation, mapperLocations
+
+  * [servlet-context.xml](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml) Annotation기능 추가
+
+    ```xml
+    <context:component-scan base-package="edu.multi.member" />
+    ```
+
+  * [mybatis-config.xml](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/mybatis-config.xml) memberVO를 typeAlias로 추가
+
+#### Join
+
+> 이미 있는 ID면 inserterror페이지로 이동, 없는 ID면 insert sql구문 실행후 로그인화면으로 이동
+
+* ID가 이미 존재하는지를 판별할 checkMember() 생성
+
+  * mapping에는 다음의 SQL문을 실행하도록 설정
+
+    ```sql
+    select count(*) from member where userid = #{userid}
+    ```
+
+    * userid는 기본키로 설정해두었으므로 결과는 0아니면 1이 나온다.
+
+  * returnType을 int로 선언, parameterType은 member객체로 선언하거나 String으로 선언하면 된다.
+
+  * [member-mapping.xml](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/member-mapping.xml)
+
+* checkMember()로 얻은 int값은 0 혹은 1이 올 수 있다.
+
+  * 1이면 이미 있는 ID이므로 inserterror View를 return
+  * 0이면 없는 ID이므로 insert문을 실행시킨 후 login View를 return
+
+* Codes
+
+  * [DAO Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/memberDAO.java)
+  * [Controller](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/memberController.java)
+  * [inserterror.jsp](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/member/inserterror.jsp)
+  * [insertmemberform.jsp](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/member/insertmemberform.jsp)
+  * [login.jsp](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/member/login.jsp)
+
+#### Login
+
+> 로그인한 이후에는 로그인상태 유지
+
+* 여러개 View에서 1번 로그인한 정보를 지속해서 공유
+  (브라우저 종료까지 or 30분동안 아무 작업이 없을때까지)
+
+  * HttpSession 생성
+
+    ```java
+    HttpSession session = request.getSession();
+    ```
+
+  * HttpSession 공유 정보 저장
+
+    ```java
+    session.setAttribute("Session값이름", 객체);
+    ```
+
+  * HttpSession 저장 정보 추출
+
+    ```java
+    ??? = (형변환)session.getAttribute("Session값이름");
+    ```
+
+  * HttpSession 저장 정보 삭제
+
+    ```java
+    session.removeAttribute("Session값이름");
+    ```
+
+    * Session값이름에 해당하는 Session하나만 삭제
+
+  * HttpSession 소멸
+
+    ```java
+    session.invalidate();
+    ```
+
+    * Session자체의 모든 데이터를 사라지게 한다.
+
+#### Logout
