@@ -485,6 +485,8 @@ try{
     HttpSession session = request.getSession();
     ```
 
+    * request는 메소드의 parameter로 HttpServletRequest
+
   * HttpSession 공유 정보 저장
 
     ```java
@@ -496,6 +498,14 @@ try{
     ```java
     ??? = (형변환)session.getAttribute("Session값이름");
     ```
+
+* userid와 password를 입력받아서 MemberVO를 받는다
+
+* 받아온 MemberVO를 HttpSession의 공유정보로 저장하면 로그인 상태가 유지된다.
+
+#### Logout
+
+* Login에서 유지시킨 session의 정보를 삭제하거나 session을 소멸시킨다.
 
   * HttpSession 저장 정보 삭제
 
@@ -513,4 +523,7 @@ try{
 
     * Session자체의 모든 데이터를 사라지게 한다.
 
-#### Logout
+#### Codes
+
+* [Controller](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/memberController.java), [DAO Class](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/memberDAO.java), [Mapping XML](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/java/edu/multi/member/member-mapping.xml)
+* [Login JSP](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/member/login.jsp), [Login Success JSP](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/member/loginprocess.jsp), [Mypage JSP](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/member/mypage.jsp), [Logout JSP](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Spring/src/main/webapp/WEB-INF/views/member/logout.jsp)
