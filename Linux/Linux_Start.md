@@ -82,6 +82,11 @@
 
     * 해상도를 1024 * 768로 변경한 후 적용한다.
 
+  * 설정에서 하드웨어 - 전원으로 진입한다.
+
+    * 절전을 안함으로 변경한다.
+    * 아무 행동도 없을 때 OS가 절전모드로 진입하는 것을 방지한다.
+
   * 프로그램 - 시스템 도구 - 소프트웨어로 진입한다.
 
     * 그래도 계속을 선택하여 소프트웨어로 진입하고 상단바에서 소프트웨어를 클릭하여 최신 패키지만과 전용 패키지만을 끈다.
@@ -98,34 +103,72 @@
 
       ![image-20200218112403787](image/image-20200218112403787.png)
 
-    * YUM 명령을 사용할 때 업데이트된 소프트웨어가 설치되지않고 CentOS 7의 출시시점의 소프트웨어가 설치되도록 한다.
+* YUM 명령을 사용할 때 업데이트된 소프트웨어가 설치되지않고 CentOS 7의 출시시점의 소프트웨어가 설치되도록 한다. 터미널을 오픈한 상태로 진행한다.
 
-      * `cd /etc/yum.repos.d` : cd는 change directory로 해당 폴더로 경로를 이동하는 명령어다.
+  * `cd /etc/yum.repos.d` : cd는 change directory로 해당 폴더로 경로를 이동하는 명령어다.
 
-      * `ls` : ls는 현재 폴더 내의 어떤 파일들이 있는지 보여주는 명령어다.
+  * `ls` : ls는 현재 폴더 내의 어떤 파일들이 있는지 보여주는 명령어다.
 
-      * `gedit Centos-Base.repo`
+  * `gedit Centos-Base.repo`
 
-        ![image-20200218112817436](image/image-20200218112817436.png)
+    ![image-20200218112817436](image/image-20200218112817436.png)
 
-      * 위의 gedit창에서 [updates]를 찾아서 전부 주석처리한 후 창을 닫는다.
+  * 위의 gedit창에서 [updates]를 찾아서 전부 주석처리한 후 창을 닫는다.
 
-        ![image-20200218113030242](image/image-20200218113030242.png)
+    ![image-20200218113030242](image/image-20200218113030242.png)
 
-        * gedit창을 닫지않으면 터미널을 사용할 수 없다.
+    * gedit창을 닫지않으면 터미널을 사용할 수 없다.
 
-      * 위/아래 화살표를 사용하면 이전에 사용한 명령어를 불러올 수 있다. (DOS키라고 부른다.)
+  * 위/아래 화살표를 사용하면 이전에 사용한 명령어를 불러올 수 있다. (DOS키라고 부른다.)
 
-      * `gedit Centos-Sources.repo`로 진입하여 [updates-source]부분을 전부 주석처리한다.
-      * 이후 다음의 명령어를 순서대로 입력한다.
-        * `su -` : root계정으로 진입하는 명령어, 비밀번호를 물어보면 password를 입력한다.
-        * `cd /etc/yum.repos.d` : 해당 폴더로 이동하는 명령어
-        * `mv CentOS-Base.repo CentOS-Base.repo.bak` : 기존 Base.repo파일을 백업하는 명령어
-        * `wget http://download.hanbit.co.kr/centos/7/CentOS-Base.repo` : 새 Base.repo를 다운로드 하는 명령어
-        * `chmod 644 * ` : 권한을 변경하는 명령어, 다음에 자세히 배운다.
-        * `rm -f *.repo~` : 조건에 맞는 파일을 삭제하는 명령어, 필요없는 파일을 삭제한다.
-        * `ls` : 현재 폴더 내의 파일들을 보여주는 명령어, 5개 파일이 보이면 된다.
-        * `yum clean all` : 저장소를 초기화하는 명령어
-          * `yum clean all`에서 Existing lock ~~과 같은 Error가 발생하며 진행이 안된다면 다음 웹사이트를 참고하여 문제를 해결한다.
-          * [Existing lock Error Solve](https://dang-dang12.tistory.com/22)
+  * `gedit Centos-Sources.repo`로 진입하여 [updates-source]부분을 전부 주석처리한다.
+  
+  * 이후 다음의 명령어를 순서대로 입력한다.
+    * `su -` : root계정으로 진입하는 명령어, 비밀번호를 물어보면 password를 입력한다.
+    * `cd /etc/yum.repos.d` : 해당 폴더로 이동하는 명령어
+    * `mv CentOS-Base.repo CentOS-Base.repo.bak` : 기존 Base.repo파일을 백업하는 명령어
+    * `wget http://download.hanbit.co.kr/centos/7/CentOS-Base.repo` : 새 Base.repo를 다운로드 하는 명령어
+    * `chmod 644 * ` : 권한을 변경하는 명령어, 다음에 자세히 배운다.
+    * `rm -f *.repo~` : 조건에 맞는 파일을 삭제하는 명령어, 필요없는 파일을 삭제한다.
+    * `ls` : 현재 폴더 내의 파일들을 보여주는 명령어, 5개 파일이 보이면 된다.
+    * `yum clean all` : 저장소를 초기화하는 명령어
+      * `yum clean all`에서 Existing lock ~~과 같은 Error가 발생하며 진행이 안된다면 다음 웹사이트를 참고하여 문제를 해결한다.
+      * [Existing lock Error Solve](https://dang-dang12.tistory.com/22)
+  
+* ifconfig에서 나오는 ip주소를 살펴본다.
 
+  ![image-20200218132235280](image/image-20200218132235280.png)
+
+  * 해당 ip주소는 가상 컴퓨터를 껐다킬때마다 맨뒤의 128의 값이 변경된다.
+
+  * 이를 고정시키기 위해서 다음과 같은 방법을 사용한다.
+
+    * `cd /etc/sysconfig/network-scripts`
+
+      * sysconfig와 같은 경우 sysco까지만 작성하고 Tab을 누르면 자동완성된다.
+      * `pwd`를 입력하면 현재 디렉토리 경로를 보여준다.
+
+    * `gedit ifcfg-eno16777736`
+
+      ![image-20200218132922151](image/image-20200218132922151.png)
+
+      * `BOOTPROTO`의 값을 `dhcp`에서 `none`으로 변경한다.
+      * 다음의 4줄을 추가한다.
+        * `IPADDR=192.168.111.100
+          NETMASK=255.255.255.0
+          GATEWAY=192.168.111.2
+          DNS1=192.168.111.2`
+
+    * `systemctl restart network` : 네트워크 재시작
+
+    * 이후 `ifconfig`를 다시 입력해보면 ip주소가 변경된 것을 확인할 수 있다.
+
+* 보안에 관련된 SELinux 기능을 끈다.
+
+  * SELinux설정 파일을 편집한다.
+
+    `gedit /etc/sysconfig/selinux`
+
+  * SELINUX를 disabled로 변경한다.
+
+    ![image-20200218134013344](image/image-20200218134013344.png)
