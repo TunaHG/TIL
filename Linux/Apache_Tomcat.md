@@ -54,3 +54,6 @@
   * Tomcat started라는 문구가 나타나있다면 실행이 완료된 것이다.
   * Firefox에서 `localhost:8080`을 주소로 진입했을 때 Tomcat 고양이 창이 뜬다면 정상 실행된 것이다.
 
+* 정상 실행된 것을 확인했다면 종료해본다.
+  * `/usr/local/tomcat9/bin/shutdown.sh`
+  * 다시 Firefox에서 `localhost:8080`으로 진입해보면 Tomcat창이 안뜨는 것을 볼 수 있다.
