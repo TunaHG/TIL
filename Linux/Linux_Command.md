@@ -381,6 +381,44 @@
 
 * `nmtui`를 통해 진입할 수 있다.
 
+##### 네트워크 통신
+
+> a(프로토콜) - b(프로토콜)
+>
+> web : http 프로토콜(고급수준)
+>
+> TCP/IP(저급수준) - IP중심으로 네트워크 연결
+
+* http 프로토콜
+  * Windows / Linux 이미 설치되어 있음
+* Telnet
+  * 원격으로 다른 컴퓨터에 접속할 수 있는 프로토콜
+* SSH
+  * Telnet보다 보안이 강화된 프로토콜
+  * Hadoop에 대해 공부할 때 더 알아볼 예정
+* `ping`
+  * ping을 보내서 돌아오면 해당 IP와 정상적으로 통신이 된다는 의미로 사용하는 명령어
+* `nslookup`
+  * 접속하는 경로상에 모든 네트워크 주소를 보여주는 명령어
+  * DNS(Domain Name Server)로 사용 가능함.
+
+##### 명령어
+
+* `ifconfig` : 네트워크 종류, IP등의 정보를 확인할 수 있는 명령어
+* `nmtui` : GUI형태의 네트워크 설정 제공해주는 명령어
+* `ifup/ifdown` : 해당 네트워크를 가동하거나 정지하는 명령어
+* `systemctel start/stop/restart/status network` : 네트워크 설정을 변경한 후 시스템에 적용시키는 명령
+
+##### 설정파일
+
+* `/etc/sysconfig/network-scripts/ifcfg-enoxxxx`
+  * 네트워크, 맥어드레스, IP, Gateway, DNS 저장 파일
+* `/etc/resolv.conf`
+  * DNS만 존재
+  * DNS를 수정하거나 추가할 때 사용
+* `/etc/hostname`
+  * 도메인 수정
+
 #### 방화벽 설정
 
 * `firewall-config` 명령어를 통해 진입한다.
@@ -396,8 +434,12 @@
   * **분 시 일 월 요일 사용자 실행명령**으로 구성되어있다.
     * ex) `00 05 1 * * root cp -r /home /backup`
       매월 1일 (요일 상관x) 새벽 5시 00분에 root권한으로 /home 디렉토리를 통째로 /backup디렉토리에 복사한다.
-  * 
 
 #### AT
 
-> 
+> 특정 작업을 1회만 자동 수행
+
+* `at now + 2minutes`
+  * `at>`로 변경되며 이제 2분후 실행할 명령어를 입력하면 된다.
+  * `at> tar cfJv /backup/at.tar.xz /home`를 입력한다.
+  * `at>`에서 벗어나고싶다면 Ctrl + D를 눌러 벗어나면된다.
