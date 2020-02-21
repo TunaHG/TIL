@@ -1,5 +1,7 @@
 # Oracle Database
 
+## Download
+
 * [Download Site](https://www.oracle.com/database/technologies/xe-prior-releases.html)에서 Linux x64용을 다운로드받는다.
 
   ![image-20200221130854440](image/image-20200221130854440.png)
@@ -102,6 +104,8 @@
 
     * 정상적으로 설치되어있다.
 
+## Setting
+
 * 설치가 완료되었으니 환경설정을 진행한다.
 
   * `service oracle-xe configure` 명령어로 시작한다.
@@ -191,3 +195,28 @@
     ![image-20200221135553755](image/image-20200221135553755.png)
 
     * 다음의 창이 뜨면 성공적으로 해제되었다.
+
+* Linux에서 Windows의 Oracle DB로 접속해본다.
+
+  * `gedit /u01/app/oracle/product/11.2.0/xe/network/admin`
+
+    ![image-20200221145628839](image/image-20200221145628839.png)
+
+    * win으로 시작되는 Line 23 ~ 30을 추가한다.
+    * 이 때 win부분이 이름이 되므로 이것을 변경한 것이다.
+    * 또한 HOST부분을 Host OS인 Windows의 IP주소로 변경한다.
+      * 여기서 실습했을 때, 192.168.111.1로 다들 변경했다. (이더넷 VMnet8의 IP주소)
+      * 노트북으로 진행했을 땐 위의 IP주소로하면 Error가 발생했고, 노트북 자체의 무선 LAN 어댑터 IP주소로 진행하니 정상적으로 연결되었다.
+
+  * 이후 Oracle-xe를 껐다가 다시 켜야한다.
+
+    * `/etc/init.d/oracle-xe stop`
+    * `/etc/init.d/oracle-xe start`
+
+  * sqlplus로 OracleDB로 진입한다.
+
+    * 첫 진입시 user-name과 password는 system계정이나 hr계정으로 진입한다.
+
+    * 이후 conn을 활용하여 scott/TIGER계정으로 진입하는데, 뒤에 @win을 붙여준다
+
+      `conn scott/TIGER@win`
