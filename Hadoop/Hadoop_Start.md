@@ -414,9 +414,12 @@
 
     ```
     export HADOOP_HOME=/home/hadoop/hadoop-1.2.1
-    export HADOOP_HOME_WARN_SURPRESS="TRUE"
+    export HADOOP_HOME_WARN_SUPPRESS="TRUE"
     PATH=$HADOOP_HOME/bin:$PATH
     ```
+
+    * HADOOP_HOME_WARN_SUPPRESS="TRUE"는 `Warning: $HADOOP_HOME is deprecated.`가 보이지 않도록 한다.
+      * 이 Warning은 하둡 자체를 실행하는데 필요없는 HADOOP_HOME을 선언하면서 중복된다며 발생하는 에러이다. 하둡을 실행하는데에는 필요없지만 Hive, Pig등을 사용할 때는 Hadoop의 설치경로를 찾아줄 필요가 있으므로 선언해둔 것이다.
 
   * `source`명령어를 사용하여 변경된 profile파일을 적용한다.
 
@@ -434,8 +437,6 @@
 
   ```
   [hadoop@master conf]$ hadoop namenode -format
-  Warning: $HADOOP_HOME is deprecated.
-  
   20/02/24 15:36:15 INFO namenode.NameNode: STARTUP_MSG: 
   /************************************************************
   STARTUP_MSG: Starting NameNode
@@ -472,12 +473,11 @@
 
 * `start-all.sh`
 
+  * hadoop을 시작하는 명령어다.
   * hadoop 폴더아래의 bin폴더에 존재하는 파일이다. PATH를 설정했으니 그냥 입력한다.
 
   ```
   [hadoop@master conf]$ start-all.sh
-  Warning: $HADOOP_HOME is deprecated.
-  
   starting namenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-namenode-master.out
   slave2: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave2.out
   slave1: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave1.out
@@ -514,6 +514,8 @@
     10621 Jps
     ```
 
+    * 보조네임노드로 설정해두었기 때문에 SecondaryNameNode가 생성된다.
+
   * 이 명령어를 slave2, slave3에서 사용해본다.
 
     ```
@@ -523,4 +525,28 @@
     9807 Jps
     ```
 
-    
+    ```
+    [hadoop@slave3 ~]$ jps
+    9473 DataNode
+    9602 TaskTracker
+    11033 Jps
+    ```
+
+* `stop-all.sh`
+
+  * hadoop을 종료하는 명령어다.
+
+  ```
+  [hadoop@master conf]$ stop-all.sh
+  stopping jobtracker
+  slave1: stopping tasktracker
+  slave3: stopping tasktracker
+  slave2: stopping tasktracker
+  stopping namenode
+  slave1: stopping datanode
+  slave2: stopping datanode
+  slave3: stopping datanode
+  slave1: stopping secondarynamenode
+  ```
+
+  
