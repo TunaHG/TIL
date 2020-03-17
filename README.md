@@ -11,11 +11,23 @@
 
 ## [JAVA](./Java)
 
+> MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+
 * [Basic Java](./Java/Basic_Java)
 * [Database](./Java/DataBase)
 * [Memory](./Java/Memory.md)
 
+## [Android](Android)
+
+> MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+>
+> 2020/03/17 ~
+
 ## [Python](./Python)
+
+> MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+>
+> HappyHacking 특강
 
 * [Basic Python](./Python/Python_Chatbot/Basic)
 * [Crawling](./Python/Python_Chatbot/Crawling)
@@ -23,6 +35,10 @@
 * [Telegram](./Python/Python_Chatbot/Telegram)
 
 ## [Git](./Git)
+
+> MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+>
+> HappyHacking 특강
 
 * [Basic Git Usage](./Git/Git.md)
 * [Commit Tip](./Git/Commit_Tip.md)
@@ -39,9 +55,15 @@
 
 ## [Web](./Web)
 
+> MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+
 ## [Spring](./Spring)
 
+> MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+
 ## [R](R)
+
+> MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
 
 ## 기타
 
