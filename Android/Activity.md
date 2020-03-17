@@ -105,3 +105,98 @@
   * 유지보수가 더욱 용이해진다.
 * Color.xml에 다음의 코드하나를 `<resources>`내부에 추가한다.
   * `<color name="colorRed">#ff0000</color>`
+
+## Life Cycle
+
+> Activity는 사용자에 의해서 Event가 발생되면 상태가 변한다.
+>
+> 그에 따라 Callback Method가 호출되는데 그 Callback에 대해서 알아둬야 한다.
+
+1. Activity는 Class상태로 존재
+
+2. Activity가 화면에 나타나려면 객체화가 되어야 한다. (instance화)
+
+   * Android System에 의해서 자동적으로 객체화된다.
+
+3. onCreate() 메소드가 Callback된다.
+
+   * 화면구성을 주로 한다.
+
+4. onStart() 메소드가 Callback된다.
+
+   * Activity의 초기화 작업들을 진행한다.
+   * onCreate()와 onStart()는 상위 Class인 AppCompatActivity에서 상속받는 Method이다.
+     * Alt + Insert에서 나오는 Override를 선택하여 onStart()를 자동생성할 수 있다.
+     * 혹은 onstart를 입력하면 자동생성으로 표시되는 상속 Method를 선택한다.
+
+   ```java
+   @Override
+   protected void onStart() {
+       super.onStart();
+       Log.i("MYTEST", "onStart() 호출");
+   }
+   ```
+
+5. Activity가 foreground로 나타나면서 사용자와 interaction이 가능
+
+6. onResume() 메소드가 Callback된다.
+
+   ```java
+   @Override
+   protected void onResume() {
+       super.onResume();
+       Log.i("MYTEST", "onResum() 호출");
+   }
+   ```
+
+7. Activity의 상태가 Running 상태가 된다.
+
+8. Activity의 일부분이 보이지 않는 상태가 될 수 있다. (Pause 상태)
+
+   * 예를 들어, 여러 앱을 살펴보는 기능을 사용한 경우
+
+9. Pause 상태가 되면 onPause() 메소드가 Callback 된다.
+
+   ```java
+   @Override
+   protected void onPause() {
+       super.onPause();
+       Log.i("MYTEST", "onPause() 호출");
+   }
+   ```
+
+10. Activity의 전체가 완전히 가려져서 보이지 않는 상태가 될 수 있다. (Stop 상태)
+
+11. Stop 상태가 되면 onStop() 메소드가 Callback 된다.
+
+    ```java
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("MYTEST", "onStop() 호출");
+    }
+    ```
+
+12. Stop상태에서 다시 Running 상태가 될 수 있다.
+
+13. onReStart() -> onStart() -> onResume() 순서로 다시 Callback 된다.
+
+    ```java
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i("MYTEST", "onRestart() 호출");
+    }
+    ```
+
+14. 사용하고 있는 Activity를 종료하게 되면 Killed 상태가 된다.
+
+15. 진입하기 전에 onDestroy() 메소드가 Callback 된다.
+
+    ```java
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("MYTEST", "onDestroy() 호출");
+    }
+    ```
