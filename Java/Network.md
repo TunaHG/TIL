@@ -162,12 +162,165 @@
 * 신뢰성 없는 프로토콜
 * 전송한 데이터가 잘 전달되었는지 확인하지 않고 데이터를 보내는 것만으로 자신의 임무를 다한 것으로 여김
 * 흔히 UDP를 우편배달에 비유함
+  * 우편을 보내면 그 우편이 수취인에게 반드시 도착한다고 보장할 수 없음
+  * 우편을 보낸 사람 입장에서 우편물이 잘 도착했는지 확인할 방법도 없음
+  * UDP는 비연결지향 프로토콜로서, 상대방에게 우편을 보낸다고 알리지 않아도 상대방이 어디에 있는지를 가정하고 보냄
+* 음악이나 동영상의 **스트리밍 서비스**같은 것에 적당한 프로토콜
+
+#### HTTP
+
+* 인터넷에서 하이퍼 텍스트 문서(텍스트, 그래픽, 사운드, 비디오, 기타 멀티미디어 파일 포함)를 교환하기 위해서 사용하는 통신규약들의 집합
+* 상태를 유지하지 않는 (Stateless) 특징
+  * 클라이언트에서 서버로 접속해서 요청을 하면 서버에서는 클라이언트가 요청한 정보에 대해서 적절한 응답을 하고 접속을 끊어버림
+* HTTP 문서는 요청에 관한 여러 정보를 담고 있는 헤더와 데이터를 담고 있는 바디로 구성
+* HTTP 프로토콜은 TCP 포트 80번을 사용
 
 ### 네트워크 프로그래밍 기초
+
+#### 소켓
+
+> 사용자에게 네트워크에 접근할 수 있는 인터페이스를 제공
+
+* 소켓의 과정
+  1. 소켓 생성
+  2. 소켓을 통한 송수신
+  3. 소켓 소멸
+* 소켓의 방법
+  * TCP와 UDP를 이용한 두 가지 방법이 있음
+* 소켓의 형식
+  * SOCK_STREAM
+    * 바이트를 주고 받을 수 있는 Stream 통신을 구현할 수 있게 해주는 소켓
+    * 양방향 통신이 가능
+    * 해당 소켓을 이용하는 방식을 TCP라고 함
+  * SOCK_DGRAM
+    * 데이터그램 통신용 소켓
+    * 양방향 통신이 가능
+    * 해당 소켓을 이용하는 방식을 UDP라고 함
+  * SOCK_RAW
+    * Java에서 지원하지 않음
+
+#### 인터넷 주소와 포트
+
+* 소켓을 사용하려면 인터넷 주소와 포트에 대해 알고 있어야 함
+* 인터넷 주소(IP)
+  * 원하는 컴퓨터를 찾을 수 있음
+  * 컴퓨터를 찾았다고 해서 올바른 통신을 할 수 있는 것은 아님
+    * 컴퓨터 안에는 프로세스 여러 개가 각자의 포트를 가지고 접속을 기다리고 있거나 이미 통신을 하고 있기 때문
+* 포트
+  * 하나의 컴퓨터에는 프로세스 여러 개가 소켓으로 통신하는데, 이 때 각각의 소켓을 구분하기 위해 사용
+  * 정수값으로 되어있음
+    * 0부터 1023까지의 숫자는 유명 프로그램(FTP, WWW)등이 사용하도록 이미 정해진 포트
+    * 일반 사용자는 1023 이후의 포트를 이용
+* InetAddress Class (도메인과 IP 변환)
+  * Java.net 패키지에 존재
+  * 도메인 주소를 IP 주소로 변환하거나 반대로 변경하는 것이 가능
+  * 문자열이나 바이트 배열 형태로 IP 주소에 대한 정보를 얻을 수 있음
+    * `getLocalHost()`, `getByName()`, `getAllByname()`
+    * 해당 메소드는 UnknownHostException 예외처리를 진행해야 함
+  * 현재 컴퓨터의 이름을 구할 수 있음
+  * 메소드
+    * `Static InetAddress getLocalHost()` : 로컬호스트의 IP주소 정보를 InetAddress객체 형태로 반환
+    * `Byte[] getAddress()` : IP주소를 바이트 형태로 반환
+    * `String getHostAddress()` : 호스트의 IP주소를 점으로 구분되는 10진수 형태로 반환
+    * `String getHostName()` : 호스트의 도메인명을 문자열로 반환
+  * [예제1](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/InetAddressTest.java), [예제2](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/IPAddressLocalTest.java)
 
 ## Network Programming
 
 ### TCP 프로그래밍
 
+> 미리 정해지지 않은 길이의 데이터를 신뢰성 있게 송수신하기 위한 네트워크 프로그래밍에 적합
+
+* 스트림 통신 프로토콜
+* 연결지향 프로토콜 : 양쪽의 소켓이 연결된 상태여야 가능함
+* 신뢰성 있는 데이터 전송
+  * 송신한 쪽의 데이터가 수신 측에 차례대로, 중간에 유실되는 일 없이 도착하는 것을 의미
+  * 수신 측과 송신 측이 미리 연결을 맺고 연결된 순서대로 데이터를 교환해야 함
+  * TCP는 연결지향 방식
+    * 연결이 끊어질 때까지는 송신한 데이터가 차례대로 목적지의 소켓에 전달되는 신뢰성이 있는 통신이 가능
+    * 한번 연결을 맺게 되면, **안정적으로 통신**할 수 있음
+* 연결에 시간이 필요함
+* TCP 프로그램에서 사용하는 라이브러리의 사용방법과 동작 순서를 이해하고 있어야 함
+  * Java는 java.net 패키지에 관련 클래스들을 미리 준비해둠
+    * ServerSocket : 서버 쪽에서 클라이언트의 접속을 대기하기 위해서 반드시 필요한 클래스
+      * `Socket accept()` : 접속요청을 받아 새로운 Socket 객체를 반환
+      * `void close()` : 서버소켓을 닫음
+      * `InetAddress getInetAddress()` : 서버 자신의 인터넷 주소를 반환
+    * Socket : 서버와 클라이언트가 서버와 통신하기 위해서 반드시 필요한 클래스
+      * `void close()` : 소켓을 닫음
+      * `InetAddress getInetAddress()` :상대방의 InetAddress를 반환
+      * `InputStream getInputStream()` : 이 소켓과 연결된 InputStream을 얻음
+      * `OutputStream getOutputStream()` : 이 소켓과 연결된 OutputStream을 얻음
+* TCP 에코서버
+  * 클라이언트가 보낸 데이터를 서버 쪽에서 받아들여, 클라이언트에게 그대로 다시 보내주는 것
+  * 구현 순서
+    1. ServerSocket(포트 번호)을 생성하여 특정 포트에서 클라이언트의 접속을 대기함
+    2. ServerSocket의 accept() 메소드를 이용하여 클라이언트의 접속을 기다림
+    3. 클라이언트의 접속 요청이 들어오면 accept() 메소드가 실행되어 클라이언트와의 통신을 위한 Socket 객체를 생성함
+    4. 생성된 Socket 객체로부터 통신을 위한 InputStream, OutputStream을 얻음
+    5. InputStream, OutputStream을 이용하여 클라이언트와 통신함
+    6. 통신에 사용된 IO 스트림과 Socket 객체를 close()함
+  * [TCPEchoServer Code](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/TCPEchoServer.java)
+* TCP 에코 클라이언트
+  * 구현순서
+    1. 서버와 통신을 위한 Socket 객체를 생성함
+       이 때 접속요청할 서버의 IP주소와 Port번호를 매개변수로 지정함
+    2. Socket 객체로부터 서버와의 통신을 위한 InputStream, OutputStream을 얻음
+    3. 생성된 Stream을 이용하여 서버와 통신함
+    4. 통신이 완료되면 통신에 사용된 IO 스트림과 Socket 객체를 close()함
+  * [TCPEchoClient Code](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/TCPEchoClient.java)
+* 에코 서버와 클라이언트의 문제점
+  * 서버가 단 하나의 클라이언트 접속만을 처리할 수 있다는 점에서 문제가 발생
+  * accept() 로 대기하고 접속 요청을 받은 후 클라이언트와 통신할 수 있는 소켓을 리턴한 이후에는 accept()를 다시 하지 않음
+  * **멀티 Thread를 이용**하여 여러 클라이언트의 접속을 지원해야함.
+    * 각각의 소켓은 각각 별개로 동작해야 함
+    * 클라이언트와 1:1로 통신하는 Thread 객체는 통신을 위한 Socket을 가진 Thread 객체로 작성해야 함
+* TCP 기반 멀티 Thread
+  * 구현 순서 (1~4는 서버, 5~7은 생성된 Thread 객체에서 담당)
+    1. ServerSocket(50000)을 생성하여 특정 포트에서 클라이언트의 접속을 대기
+    2. ServerSocket의 accept() 메소드를 이용하여 클라이언트의 접속을 기다림
+    3. 클라이언트의 접속 요청이 들어오면 accept() 메소드가 실행되어 클라이언트와의 통신을 위한 Socket 객체를 생성함
+    4. 생성된 Socket 객체를 매개변수로 하여 Thread클래스의 객체를 생성함
+    5. Thread는 생성자 메소드에 의해서 전달된 Socket으로부터 통신에 필요한 InputStream, OutputStream을 얻음
+    6. InputStream, OutputStream을 이용하여 클라이언트와 통신함
+    7. 통신에 사용된 IO 스트림과 Socket 객체를 close()함
+  * [MultiThreadEchoServer Code](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/MultiThreadEchoServer.java), [EchoThread Code](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/EchoThread.java)
+
 ### UDP 프로그래밍
 
+> 복잡하지 않고, 부하가 많이 발생하지 않는 곳에 적합
+
+* 데이터그램 통신 프로토콜
+* 비연결성(Connectionless) 프로토콜
+* 패킷을 보낼 때마다 수신 측의 주소와 로컬 파일 설명자를 함께 전송해야 함
+* 데이터의 크기가 64KB로 제한되어 있음
+* 연결되지 않은 상태로 전송되기 때문에 좀 더 빠르게 데이터를 주고 받을수 있음
+* 클라이언트와 서버 모두 java.net 패키지 안에 있는 DatagramSocket 객체를 생성함
+  * DatagramSocket은 DatagramPacket을 보내거나 받을 때 모두 필요함
+* 클라이언트와 서버는 데이터를 주고받기 위해 DatagramPacket을 이용해야 함
+  * DatagramPacket은 서버의 IP포트와 포트값을 통해 서버에 전달됨
+  * 서버는 클라이언트로부터 전달된 패킷을 receive()를 통해 전송한 클라이언트의 IP, 동작 포트, 데이터, 데이터의 길이를 읽어들임
+  * 이후 새로운 패킷을 생성하여 send()를 통해 클라이언트로 전송함
+* UDP 에코 서버
+  * 구현 순서
+    1. 특정 포트에서 동작하는 DatagramSocket 객체를 생성함
+    2. 클라이언트가 전송한 DatagramPacket을 받기 위해 내용이 비어있는 DatagramPacket 객체를 생성함
+    3. 생성한 DatagramPacket을 매개변수로 DatagramSocket이 제공하는 receive() 메소드를 호출함
+    4. 클라이언트가 전송한 데이터를 서버 콘솔에 출력함
+    5. 클라이언트가 전송한 데이터를 이용하여 새로운 DatagramPacket을 생성함
+    6. 생성한 DatagramPacket을 매개변수로 DatagramSocket이 제공하는 send() 메소드를 호출하여 클라이언트로 전송함
+    7. DatagramSocket의 close()를 호출하여 연결을 해제함
+  * [UDPEchoServer Code](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/UDPEchoServer.java)
+* UDP 에코 클라이언트
+  * 클라이언트는 데이터를 전송하기 위해 DatagramSocket을 생성함
+  * 서버와 다르게 동작하는 포트는 지정하지 않음
+    * 클라이언트는 전송할 DatagramPacket에 서버의 DatagramSocket의 동작포트, 서버의 IP, 전송할 데이터, 전송할 데이터의 길이 등을 지정한 후, send() 메소드를 이용해서 전송하기 때문
+  * 구현 순서
+    1. DatagramSocket 객체를 생성함
+    2. 전송할 데이터, 데이터의 길이, 서버 IP, 서버 포트번호를 매개변수로 하여 DatagramPacket 객체를 생성함
+    3. 생성한 DatagramPacket을 매개변수로 하여 DatagramSocket이 제공하는 send() 메소드를 호출하여 서버 쪽에 DatagramPacket을 전송함
+    4. 서버에서 전송하는 메시지를 받기 위해 내용이 비어있는 수신용 DatagramPacket 객체를 생성함
+    5. 생성한 DatagramPacket을 매개변수로 하여 DatagramSocket이 제공하는 receive() 메소드를 호출함
+    6. 서버에서 수신한 메시지를 콘솔에 출력함
+    7. DatagramSocket의 close()를 호출하여 연결을 해제함
+  * [UDPEchoClient Code](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/UDPEchoClient.java)
