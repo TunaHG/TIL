@@ -7,6 +7,7 @@
 * 새로운 Activity를 만들고 싶다면 New - Activity - Empty Activity를 선택한다.
 
   * Generate Layout File을 통해 layout파일을 자동으로 생성한다.
+  * Launcher Activity를 체크하면 해당 Activity가 앱을 시작 Activity가 된다.
 
 * 새로운 Activity에서 생성된 layout과 연결이 되지 않고 에러가 발생되어 있을 수 있다.
 
@@ -135,6 +136,68 @@
   * `android:layout_width="match_parent"`
     * parent는 Activity를 의미한다.
     * 이는 Activity의 가로길이만큼 Layout의 가로길이를 지정한다는 것이다.
+
+#### Event
+
+> 사용자 혹은 시스템에 의해서 발생되는 모든 것
+
+* Event Handling
+
+  * Event Delegation Model을 이용하여 Event를 처리
+
+* Event 처리 객체
+
+  * Event Source : Event가 발생한 객체
+    * Button을 클릭하면 Button 자체를 의미함.
+  * Event Handler(Listener) : Event를 처리하는 객체
+  * Event : 발생된 Event에 대한 세부정보를 가지고 있는 객체
+    * 현재 클릭된 Button의 X, Y좌표 / RMB or LMB or Shift + MB인지 등의 세부정보
+    * 자동적으로 생성되며, 자동으로 Handler에게 주어짐
+  * Event Source에 Event Handler를 부착시키고 Event가 발생하면 부착된 Handler를 통하여 Event를 처리한다.
+
+* Event Source 객체 가져오기
+
+  * Button에 ID를 부여한다.
+    * 값을 `@id`로 주면 id라는 것을 찾으라는 의미이다.
+    * 값을 `@+id/{id}`를 사용하여 `{id}`를 id에 추가한다는 의미이다.
+  * java파일에서 ID를 부여한 Button 객체를 가져와야 한다.
+    * android.widget.Button 객체를 사용한다.
+    * `findViewById()`를 사용하여 ID를 이용한 View를 찾는다.
+      * 매개변수로는 R.id.{id}를 입력한다.
+      * `findViewById()`의 return값은 Object객체이지만 Android Studio에서 자동으로 Casting한다.
+
+* Event Handler 외부 Class 만들기
+
+  * 일반 Class 객체가 아닌 Event를 처리할 수 있는 interface를 상속한 Listener 객체가 필요
+    * `View.onClickListener` Interface를 상속받는다.
+  * 상속받은 Interface의 추상메소드 onClick을 Overriding한다.
+  * Class를 만들었으면 해당 객체를 생성한다.
+
+* Event Source에 Handler 부착하기
+
+  * `setOnClickListener(handlet)`
+
+* TextView의 내용을 변경할 예정이기 때문에 TextView 또한 ID를 생성하고 객체를 생성한다.
+
+  * 생성자를 이용해서 Event Handler에 TextView 객체를 넣어준다.
+
+* `onClick()` 메소드의 내용에서 TextView의 내용을 바꾸는 `setText()`를 사용한다.
+
+* 실제 구현에서는 Handler로 외부 Class를 사용하지 않고 Anonymous Inner Class로 사용한다.
+
+  * Event Handler 객체를 생성하며 Source에 부착하는 과정을 한번에 진행한다.
+
+    ```java
+    myBtn.setOnClickListener(new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            // myTV가 Member Variable이기 때문에 Error
+            myTV.setText("버튼이 클릭됐다!!!");
+        }
+    });
+    ```
+
+    * myTV에서 Error가 발생할 수 있는데 이는 해당 변수가 onCreate() 등의 특정 메소드 안에서 정의 되었기 때문이다. 이를 전역변수(Class내부, Method외부) 혹은 상수(final 선언)로 변경하면 된다.
 
 ### Mipmap
 
