@@ -1,10 +1,29 @@
 # Activity
 
+> App을 구성하고 있는 화면을 지칭
+
+## New Activity
+
+* 새로운 Activity를 만들고 싶다면 New - Activity - Empty Activity를 선택한다.
+
+  * Generate Layout File을 통해 layout파일을 자동으로 생성한다.
+
+* 새로운 Activity에서 생성된 layout과 연결이 되지 않고 에러가 발생되어 있을 수 있다.
+
+  * File - Invalidate Caches / Restart를 진행하여 다시 Build하면 연결이 되어있는 상태로 된다.
+
+* 새로운 Activity를 생성 후 Manifest 파일을 살펴보면 다음의 코드가 추가되어 있다.
+
+  ```xml
+  <activity android:name=".WidgetActivity"></activity>
+  ```
+
 ## Manifest
 
 * manifests 폴더에 AndroidManifest.xml을 살펴보면 activity가 하나있다.
   * name을 살펴보면 MainActivity라 나와있다.
   * 이는 MainActivitiy Class를 의미한다.
+  * 내부의 태그들은 앱이 시작될 때 먼저 실행되는 Activity라는 것을 의미한다.
 * manifest.xml는 앱의 전체 설정을 잡는 파일이다.
 
 ## Class
@@ -57,7 +76,13 @@
 
 > Activity에서 사용할 화면구성을 위한 XML파일을 저장하는 위치
 
-* activity_main.xml을 살펴본다.
+* XML에 여러 가지 Widget을 넣어서 사용자 Component를 표현한다.
+* LayoutManager
+  * Widget을 내가 원하는 크기로 원하는 위치에 표현하기 위해서 Widget을 관리하는 Component
+  * LinearLayout, GridLayout, ...
+
+#### activity_main.xml
+
 * 좌측의 Button 등을 드래그하여 우측의 화면 내에 넣으면 인자를 추가할 수 있다.
 * 하지만 익숙해진 이후에 드래그하여 사용하고, 현재는 xml파일을 이용하여 구성한다.
   * 디자인 Tab에서 Xml탭으로 넘어가는 버튼은 IDE 우측상단에서 조금 아래를 보면 버튼 세개가 존재한다.
@@ -72,6 +97,20 @@
     * `android:background="@color/colorRed"`
     * AVD에서 앱을 다시 실행시켜보면 Hello World!로 출력되는 Text가 변경된 것을 확인할 수 있다.
 
+#### LinearLayout
+
+* LinearLayout은 왼쪽에서 오른쪽, 위에서 아래로 Layout을 붙여나가는 방식 (Waterfall)
+
+* activity_main.xml에서 `<?xml version` 라인을 제외한 나머지를 전부 삭제 후 직접 구성해본다.
+* LinearLayout 태그를 생성하면 layout_height, layout_width가 필요하다는 경고표시가 나온다.
+* layout_height를 생성하면 `xmlns:android=`와 같은 Attribute가 추가된다.
+  * layout_height 앞의 android:를 사용할 수 있게 해주는 태그이며 자동생성되므로 신경쓰지 않아도 된다.
+* orientation은 default값이 horizontal이다.
+  * Widget의 위치를 지정하지 않으면 왼쪽에서 오른쪽으로 계속 붙는다.
+  * 위에서 아래로 붙이고 싶다면 vertical으로 변경한다.
+* layout_weight를 지정하여 크기를 변경할 수 있다.
+  * orientation이 vertical이므로 위 아래를 의미하는 layout_height가 무시되고 weight가 지정된 것만큼 크기가 변경된다.
+
 #### View & ViewGroup
 
 ##### View
@@ -81,6 +120,12 @@
 * TextView
   * `android:layout_width="wrap_parent"`
     * wrap_parent는 Content영역에 해당하는 부분을 의미한다.
+    * 숫자가 올 수 있지만 기기에 따라 해상도가 다르기 때문에 상대적 크기로 지정해주는 것이 좋다.
+  * `android:text` : 해당 TextView가 출력할 text를 의미한다.
+  * `android:textAlignment` : Layout내에서 정렬을 진행한다.
+    * 경고가 표시되며 `android:gravity`를 추가해야 정상작동한다고 나온다.
+    * `android:gravity`가 `center_horizontal`로 자동생성할 수 있다.
+      * 이를 `center_vertical`로 수정하면 RtlCompat가 필요하다고 나오니 자동생성한다.
 
 ##### ViewGroup
 
