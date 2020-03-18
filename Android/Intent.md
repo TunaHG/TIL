@@ -8,7 +8,7 @@
 
 > 명시적 방식
 
-### 기본 Activity 구성
+### Main Activity 구성
 
 > activity_main.xml
 
