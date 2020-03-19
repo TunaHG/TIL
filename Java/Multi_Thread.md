@@ -4,6 +4,28 @@
 >
 > Java Programming 초급(3) 자바 API활용의 5차시 멀티 Thread 프로그래밍
 
+## Concept
+
+### Multi Processing
+
+> Task를 실행하는 Core(Processer)가 2개 이상인 경우에만 의미가 있음
+>
+> 같은 시간에 여러 개의 코어가 일을 동시에 처리하는 것
+
+* 1개의 코어는 인터넷, 1개의 코어는 동영상 등 다른 업무를 여러 개의 코어가 동시에 처리하는 것
+
+### Multi Tasking
+
+> Core가 몇 개 있는지는 중요하지 않음. Core가 상관없는 기법
+>
+> 하나의 Core가 Time Slicing(시분할) 기법을 이용해서 여러 개의 Task를 마치 동시에 수행되는 것처럼 보이게 하는 기법
+
+### Multi Threading
+
+> 하나의 Task를 여러 개의 Sub Task로 분할해서 동시간대에, 혹은 마치 동시간에 실행되는 것처럼 만드는 기법
+>
+> Thread는 독립적인 실행 흐름
+
 ## Multi Thread
 
 ### Thread 구성요소
