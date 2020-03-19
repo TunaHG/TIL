@@ -319,3 +319,29 @@
         ```
 
         * `onItemSelected` 메소드에서 position은 Spinner에서 선택한 Item이 몇 번째 Item인지 의미한다.
+
+  * Button Click Event 처리
+
+    * Intent, putExtra를 활용하여 데이터를 전송한다.
+
+    * MainActivity에서 결과값을 인식할 수 있는 코드인 resultCode를 입력한다.
+
+      * requestCode와 마찬가지인 역할을 수행하며 역시 Unique한 값이어야한다.
+
+    * 이후 현재 Activity를 종료한다.
+
+      ```java
+      Button sendBtn = findViewById(R.id.sendDataBtn);
+      sendBtn.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              Intent returnIntent = new Intent();
+              returnIntent.putExtra("resultValue", result);
+              setResult(7000, returnIntent);
+      
+              Example07_DataFromActivity.this.finish();
+          }
+      });
+      ```
+
+* [Example07 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example07_data_from.xml), [Example07 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example07_DataFromActivity.java)
