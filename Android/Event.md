@@ -1,3 +1,5 @@
+
+
 # Event
 
 > 기본적인 Event의 내용은 [Activity](Activity.md)에서 설명하였다.
@@ -50,11 +52,19 @@
 * 내부에 Toast 객체의 makeText() 메소드를 사용한다.
 
   * 해당 메소드는 Alert과 같이 알림이 표시되도록 하는 메소드이다.
-  * 첫 번째 인자는 Context 객체인데, this Activity가 Context객체를 상속하고 있기 때문에 this Activity를 넣어준다.
+
+  * 첫 번째 인자는 Context 객체이다
+
+    * Context는 Interface를 의미하는데, 해당 Interface를 Activity가 구현하고 있기 때문에 is a관계에 의해서 Activity가 곧 Context가 된다.
+
     * `this`를 사용한다.
+
   * 두 번째 인자는 문자열을 입력한다.
+
     * `"소리없는 아우성"`이라는 아무 문자열을 입력했다.
+
   * 세 번째 인자는 Toast 메시지가 얼마나 오래 보여질 지를 선언한다.
+
     * `Toast.LENGTH_SHORT`라는 잠깐 떠있다 사라진다는 표현을 사용했다.
 
 * 이후 makeText()메소드의 뒤에 show()메소드를 사용하여 이를 화면에 표시한다.
@@ -132,7 +142,7 @@
 
 ## Message to Activity
 
-* Main Activity에서 onClick() 메소드를 다른 Event들과 조금 다르게 설정한다.
+* Main Activity에서 onClick() 메소드를 다른 Event들과 조금 다르게 설정한다		.
 
   * 사용자가 문자열을 입력할 Widget으로 EditText 객체를 먼저 생성해야 한다.
 
@@ -236,3 +246,76 @@
       ```
 
 * [Example06 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example06_send_message.xml), [Example06 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example06_SendMessageActivity.java)
+
+## get Data From Activity
+
+* Main Activity에서 Intent를 사용하는 것은 같다.
+
+  * 하지만 `startActivity`가 아닌 `startActivityForResult()`를 사용한다.
+    * 새로 생성되는 Activity로부터 데이터를 받아오기 위한 용도이다.
+  * 이는 requestCode가 필요한데 requestCode는 어떤 Activity로부터 데이터를 받는지 알기위해 필요하다.
+    * int형으로 어떤값이 들어가든 상관없지만 다른 requestCode와 겹치지 않는 Unique한 값이어야 한다.
+
+* 새로 생성한 Activity의 Layout
+
+  * LinearLayout으로 구성하며 Spinner와 Button을 구성한다.
+
+* Activity Java
+
+  * Spinner 안에 표현될 데이터를 생성하는데 여기서는 문자열이라고 가정한다.
+
+    ```java
+    final ArrayList<String> list = new ArrayList<String>();
+    list.add("포도");
+    list.add("딸기");
+    list.add("바나나");
+    list.add("사과");
+    ```
+
+  * Spinner의 ID를 이용하여 객체를 생성
+
+    ```java
+    Spinner spinner = findViewById(R.id.mySpinner);
+    ```
+
+  * Data를 Spinner에서 어떻게 보여줄지를 설정할 Adapter 설정
+
+    ```java
+    ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(),
+            android.R.layout.simple_spinner_dropdown_item, list);
+    ```
+
+  * Adapter를 Spinner에 부착
+
+    ```java
+    spinner.setAdapter(adapter);
+    ```
+
+  * Spinner에서 선택된 Item 데이터를 가져오기 위한 Event를 처리한다.
+
+    * `setOnItemSelectedListener()`를 사용한다.
+
+      * `setOnItemClick`은 누르는 순간을 의미
+
+      * `setOnItemLongClick`은 길게 누르는 순간을 의미
+
+      * `setOnItemSelected`는 떼는 순간을 의미
+
+      * Overriding 해야하는 Method가 두 개가 출력된다.
+
+        ```java
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                result = list.get(position);
+                Log.i("SELECTED", result + " Selected");
+            }
+        
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+        
+            }
+        });
+        ```
+
+        * `onItemSelected` 메소드에서 position은 Spinner에서 선택한 Item이 몇 번째 Item인지 의미한다.
