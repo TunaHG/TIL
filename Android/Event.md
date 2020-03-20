@@ -363,15 +363,14 @@
 > ANR 문제를 경험해보는 예제
 
 * Layout XML은 LinearLayout으로 구성하며 TextView와 Button 두 개를 구현한다.
-* Java 파일
-  * TextView에 대한 Reference를 획득
-  * 첫 번째 Button에 대한 Reference를 획득하고 Event를 처리한다.
-    * 100억번 연산을 수행하는 for문을 진행하는 Event (상당히 오랜시간동안 수행되는 연산)
-  * 두 번째 Button에 대한 Reference를 획득하고 Event를 처리한다.
-    * Toast Message를 출력하는 Event
-  * 앱을 실행시켜보면 첫 번째 Button을 눌렀을 때 두 번째 버튼은 눌리지 않는다.
-    * 첫 번째 Button의 Event 연산을 처리중이라 작동하지 않는것
-    * 잠시 기다리면 ANR 경고창이 뜨며 대기하거나 앱을 종료하거나 할 수 있다.
+* TextView에 대한 Reference를 획득
+* 첫 번째 Button에 대한 Reference를 획득하고 Event를 처리한다.
+  * 100억번 연산을 수행하는 for문을 진행하는 Event (상당히 오랜시간동안 수행되는 연산)
+* 두 번째 Button에 대한 Reference를 획득하고 Event를 처리한다.
+  * Toast Message를 출력하는 Event
+* 앱을 실행시켜보면 첫 번째 Button을 눌렀을 때 두 번째 버튼은 눌리지 않는다.
+  * 첫 번째 Button의 Event 연산을 처리중이라 작동하지 않는것
+  * 잠시 기다리면 ANR 경고창이 뜨며 대기하거나 앱을 종료하거나 할 수 있다.
 * ANR 현상을 방지하기 위하여 Thread를 사용한다.
   * Activity는 Thread로 동작한다. (UI Thread)
   * 로직 처리는 Background Thread를 이용해서 처리해야 한다.
@@ -398,3 +397,51 @@
   * 연산 시작버튼을 누르면 다른 Thread가 for문을 돌린다.
   * 다른 Thread가 for문을 돌리고 있기 때문에 두 번째 Button이 눌리고 알림창이 뜬다.
 * [Example09 XML], [Example09 Java]
+
+## Progress Bar
+
+> Counter Log Example에서 진행도 상황을 파악할 수 있는 Progress Bar가 추가된 예제
+
+* Layout XML파일은 Counter Log Example파일을 가져온 후 ID를 변경하고 ProgressBar Widget을 추가한다.
+* ProgressBar의 처리는 Thread처리를 진행할 Inner Class에서 진행한다.
+  * Runnable Interface를 상속하는 Inner Class를 선언한다 
+  * run()메소드를 Overriding하며 내부에 Event처리를 진행한다
+  * Counter Log Example에서 진행했듯 0부터 100억까지의 덧셈을 진행한다
+  * for문의 index를 1억으로 나눴을 때 0으로 나누어 떨어지면 ProgressBar의 수치를 1 증가시킨다.
+  * ProgressBar의 수치를 변경하는 것은 `setProgress()`를 사용하며 매개변수로는 int값을 줘야한다.
+* 첫 번째 Button의 Event처리는 Counter Log에서처럼 동일하게 진행한다.
+* 구현은 가능하나 올바른 방법은 아니다.
+  * Android UI Component(Widget)는 Thread Safe하지 않는다.
+    * 하나의 Widget에 대하여 여러 개의 Thread가 동시에 접근하는 것을 허락하지 않는다는 뜻이다.
+    * 여러 개의 Thread가 동시에 접근하면 원하는 방식으로 진행되지 않을 수 있다.
+  * 그러므로 UI Component는 오직 UI Thread(Activity)에 의해서만 제어되어야 한다.
+* [Example10 XML], [Example10 Java]
+
+## Handler
+
+> Progress Bar Example에서 Thread문제를 Handler를 활용하여 해결하는 예제
+
+* Layout XML은 Progress Bar Example 파일을 가져온 후 ID만 변경한다.
+* TextView, ProgressBar에 대한 Reference를 가져오고 final처리를 진행한다.
+* 데이터를 주고받는 역할을 수행하는 Handler 객체 생성
+  * `android.os.Handler`를 import한 후 생성한다.
+* Thread를 생성하고 실행하는 Event를 처리할 Button Event 처리 구현
+  * 이 때 Thread는 이전 Example처럼 Inner Class로 만들지 않고 외부 Class로 구현한다.
+    * Activity Class에 Field도 존재하지않으니 Inner Class로 만들 이유가 없다.
+  * Thread Class는 다음과 같이 구현한다.
+    * Runnable Interface를 상속받는 외부 Class를 구현 후 run() Method Overriding
+    * run() Method의 구현부는 Example 10과 동일하게 구현하나, 
+      pb.setProgress()와 tv.setText()는 제거한다.
+    * Bundle 객체를 생성하고 putString()을 이용하여 key-value값으로 이루어진 데이터를 Bundle객체에 저장한다.
+    * Bundle은 데이터를 묶는 역할을 진행하고 Message를 보내는 역할은 Message 객체이다.
+    * Message 객체의 setData()를 이용해서 bundle을 추가한다.
+    * handler의 sendMessage()를 이용해서 Message를 보낸다.
+  * Button의 Event 처리
+    * 외부 Class로 구현한 Thread Class 객체를 생성
+    * Thread객체 생성, 매개변수로 외부 Class 객체 지정
+    * start()
+* 다시 Handler 객체로 돌아와서 메시지 받아서 화면처리 구현
+  * 받아오는 Message가 Bundle객체로 받아오므로 Bundle 구현
+  * `getString(key)`를 사용해서 Bundle에 넣어줬던 String 획득
+  * ProgressBar 객체의 `setProgress()`를 사용하여 진행도 수정
+    * String으로 받아왔기 때문에 `Integer.parseInt()`를 사용하여 int값으로 Casting
