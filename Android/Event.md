@@ -10,6 +10,8 @@
 
 ## Image Change
 
+> Button을 클릭하면 Image가 변경되는 예제
+
 * Layout의 xml에서 ImageView와 Button의 ID를 부여해둔 상태여야 한다.
 
 * Button에 부여한 ID를 이용하여 Button 객체를 생성한다.
@@ -45,6 +47,8 @@
 
 ## Touch Event
 
+> 화면을 터치했을 때 Alert창이 출력되는 예제
+>
 > Android에서 Touch는 눌렀을 때, 뗐을 때를 모두 의미한다.
 
 * Java파일에서 onTouchEvent()메소드를 Overriding한다.
@@ -76,6 +80,8 @@
 * [Example04 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example04_touch_event.xml), [Example04 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example04_TouchEventActivity.java)
 
 ## Swipe Event
+
+> 화면을 Swipe했을 때 Alert로 문자열이 출력되는 예제
 
 * Swipe는 눌렀을 때와 뗐을 때의 X좌표 혹은 Y좌표 값이 다를경우로 인식한다.
 
@@ -141,6 +147,8 @@
 * [Example05 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example05_swipe_event.xml), [Example05 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example05_SwipeEventActivity.java)
 
 ## Message to Activity
+
+> Dialog, EditText를 이용하여 다음 Activity로 Message를 전달하는 예제
 
 * Main Activity에서 onClick() 메소드를 다른 Event들과 조금 다르게 설정한다		.
 
@@ -249,6 +257,8 @@
 
 ## get Data From Activity
 
+> Activity에서 데이터를 전달받아 출력하는 예제
+
 * Main Activity에서 Intent를 사용하는 것은 같다.
 
   * 하지만 `startActivity`가 아닌 `startActivityForResult()`를 사용한다.
@@ -345,3 +355,46 @@
       ```
 
 * [Example07 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example07_data_from.xml), [Example07 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example07_DataFromActivity.java)
+
+## ANR
+
+> Application Not Responding - 오랜시간 연산이 수행되면 사용자와 Interaction이 중지되서 발생하는 문제
+>
+> ANR 문제를 경험해보는 예제
+
+* Layout XML은 LinearLayout으로 구성하며 TextView와 Button 두 개를 구현한다.
+* Java 파일
+  * TextView에 대한 Reference를 획득
+  * 첫 번째 Button에 대한 Reference를 획득하고 Event를 처리한다.
+    * 100억번 연산을 수행하는 for문을 진행하는 Event (상당히 오랜시간동안 수행되는 연산)
+  * 두 번째 Button에 대한 Reference를 획득하고 Event를 처리한다.
+    * Toast Message를 출력하는 Event
+  * 앱을 실행시켜보면 첫 번째 Button을 눌렀을 때 두 번째 버튼은 눌리지 않는다.
+    * 첫 번째 Button의 Event 연산을 처리중이라 작동하지 않는것
+    * 잠시 기다리면 ANR 경고창이 뜨며 대기하거나 앱을 종료하거나 할 수 있다.
+* ANR 현상을 방지하기 위하여 Thread를 사용한다.
+  * Activity는 Thread로 동작한다. (UI Thread)
+  * 로직 처리는 Background Thread를 이용해서 처리해야 한다.
+* [Example08 XML], [Example08 Java]
+
+## Counter Log
+
+> ANR Example에서 발생했던 문제를 Thread를 이용하여 해결하는 예제
+
+* Layout XML파일은 ANR Example의 파일을 그대로 가져와서 ID만 변경한다.
+* 두 번째 Button에 대한 Reference와 Event처리는 ANR Example과 동일하게 진행한다.
+* Thread를 사용하기 위한 두가지 방법이 있다.
+  1. 새로운 Class를 생성하여 Runnable interface를 상속받는 방법
+  2. Activity안에 Inner Class를 사용하는 방법.
+* Inner Class를 사용한다.
+  * Overriding한 onCreate() 메소드 외부, Activity Class 내부에 Inner Class를 선언한다.
+  * Runnable interface를 상속받는다.
+  * 추상 메소드인 run()을 Overriding한 후 ANR에서 실패했던 for문을 넣어준다.
+* 첫 번째 Button에 대한 Reference를 획득하고 Event를 처리한다.
+  * Thread를 사용하여 처리한다.
+  * 선언한 Inner Class로 객체를 생성하고 Thread를 생성한다.
+  * start() 메소드를 사용하여 Thread를 시작한다.
+* 구현 후 앱을 실행시켜본다.
+  * 연산 시작버튼을 누르면 다른 Thread가 for문을 돌린다.
+  * 다른 Thread가 for문을 돌리고 있기 때문에 두 번째 Button이 눌리고 알림창이 뜬다.
+* [Example09 XML], [Example09 Java]
