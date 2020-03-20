@@ -26,7 +26,13 @@
 >
 > Thread는 독립적인 실행 흐름
 
-## Multi Thread
+## Thread
+
+* main() 메소드만 존재하는 Java Program에서는 하나의 실행흐름만 존재하기 때문에 단일 Thread 프로그램을 하고 있던 것
+* main() Thread에서 별도의 실행흐름(Thread)를 파생할 수 있음
+* Thread는 어떤 경우에 사용되는가?
+  1. 대용량의 데이터를 분산해서 처리해야 하는 경우
+  2. 다수의 클라이언트를 처리하는 서버프로그램
 
 ### Thread 구성요소
 
