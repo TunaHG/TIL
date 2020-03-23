@@ -374,7 +374,7 @@
 * ANR 현상을 방지하기 위하여 Thread를 사용한다.
   * Activity는 Thread로 동작한다. (UI Thread)
   * 로직 처리는 Background Thread를 이용해서 처리해야 한다.
-* [Example08 XML], [Example08 Java]
+* [Example08 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example08_anr.xml), [Example08 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example08_ANRActivity.java)
 
 ## Counter Log
 
@@ -396,7 +396,7 @@
 * 구현 후 앱을 실행시켜본다.
   * 연산 시작버튼을 누르면 다른 Thread가 for문을 돌린다.
   * 다른 Thread가 for문을 돌리고 있기 때문에 두 번째 Button이 눌리고 알림창이 뜬다.
-* [Example09 XML], [Example09 Java]
+* [Example09 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example09_counter_log.xml), [Example09 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example09_CounterLogActivity.java)
 
 ## Progress Bar
 
@@ -415,7 +415,7 @@
     * 하나의 Widget에 대하여 여러 개의 Thread가 동시에 접근하는 것을 허락하지 않는다는 뜻이다.
     * 여러 개의 Thread가 동시에 접근하면 원하는 방식으로 진행되지 않을 수 있다.
   * 그러므로 UI Component는 오직 UI Thread(Activity)에 의해서만 제어되어야 한다.
-* [Example10 XML], [Example10 Java]
+* [Example10 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example10_counter_log_progress.xml), [Example10 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example10_CounterLogProgressActivity.java)
 
 ## Handler
 
@@ -445,3 +445,129 @@
   * `getString(key)`를 사용해서 Bundle에 넣어줬던 String 획득
   * ProgressBar 객체의 `setProgress()`를 사용하여 진행도 수정
     * String으로 받아왔기 때문에 `Integer.parseInt()`를 사용하여 int값으로 Casting
+* [Example11 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example11_counter_log_handler.xml), [Example11 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example11_CounterLogHandlerActivity.java)
+
+## Book Search
+
+> 단어가 포함된 책의 이름을 찾는 간단한 프로그램
+
+* 단어를 입력할 EditText와 검색을 시작할 Search버튼, 책의 List를 출력할 ListView를 만든다.
+
+* 검색버튼에 대한 Referene를 획득한다.
+
+  ```java
+  Button serachBtn = findViewById(R.id.searchBtn);
+  ```
+
+* 검색 입력창에 대한 Reference를 획득한다.
+
+  ```java
+  final EditText searchTitle = findViewById(R.id.searchTitle);
+  ```
+
+* 결과 ListView에 대한 Reference를 획득한다.
+
+  ```java
+  final ListView searchList = findViewById(R.id.searchList);
+  ```
+
+* Network연결을 해야하는데 이는 UI Thread(Activity)에서 작업하면 안된다.
+
+  * Thread로 해결한다.
+  * Thread와 데이터를 주고받기 위해서 Handler를 이용
+
+* Handler 객체 생성
+
+  ```java
+  @SuppressLint("HandlerLeak")
+  final Handler handler = new Handler(){
+      @Override
+      public void handleMessage(@NonNull Message msg) {
+          super.handleMessage(msg);
+      }
+  };
+  ```
+
+  * Annotation은 Memory Leak를 방지하기위해 붙이는 것이다.
+    * 안붙여도 주황색 경고표시만 나타나있으며 앱을 구동될 것이다.
+  * Thread에 의해서 sendMessage가 호출될 예정인데, sendMessage에 의해서 전달될 데이터를 처리하기 위해서 handleMessage를 Overriding하면서 instance를 생성
+
+* Button에 대한 Event처리
+
+  * Thread 생성하여 실행
+
+  ```java
+  searchBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          BookSearchRunnable runnable = new BookSearchRunnable(handler, searchTitle.getText().toString());
+          Thread t = new Thread(runnable);
+          t.start();
+      }
+  });
+  ```
+
+  * runnable 객체에 handler와 keyword를 넣어준다.
+    * 이 때 keyword는 searchTitle의 getText()를 이용해 가져오는데, 이는 Editable이므로 toString()을 통해 String형태로 만들어준다.
+
+* Thread를 생성하기 위한 Runnable Interface를 상속받는 Class 구현
+
+  * Handler를 사용하여 데이터를 주고받을 것이기 때문에 Activity Class 외부에 구현
+
+  * handler와 검색할 단어를 의미하는 keyword를 변수로 가진다.
+
+    * 해당 변수들을 생성자로 받아오도록 만든다.
+
+    ```java
+    BookSearchRunnable(Handler handler, String keyword) {
+        this.handler = handler;
+        this.keyword = keyword;
+    }
+    ```
+
+  * Web Application을 호출, 결과를 받아와서 Handler를 통하여 Activity에게 전달한다.
+
+    1. 접속할 URL을 준비한다.
+
+       * 해당 URL은 [BookSearch](../R/MySQL.md)에서 진행했던 URL이다.
+
+       ```java
+       String url = "http://localhost:8080/bookSearch/searchTitle?keyword=" + keyword;
+       ```
+
+    2. Java Network 기능은 Exception 처리를 해야한다. (try-catch)
+
+    3. URL 객체를 생성
+
+       ```java
+       URL obj = new URL(url);
+       ```
+
+       * URL 객체가 가진 Method를 사용하여 접속하기 위해 URL 객체로 생성한다.
+
+    4. URL 객체를 이용해서 접속을 시도
+
+       ```java
+       HttpURLConnection con = (HttpURLConnection)obj.openConnection();
+       ```
+
+       * con값이 null이면 접속이 안됬다는 의미
+
+    5. Web Application의 호출방식을 설정
+
+       ```java
+       con.setRequestMethod("GET");
+       ```
+
+    6. 정상적으로 접속이 되었는지 확인
+
+       ```java
+       int responseCode = con.getResponseCode();
+       Log.i("BookSearch", "서버로부터 전달된 Code: " + responseCode);
+       ```
+
+    7. 보안을 설정
+
+       * Android App은 특정 기능을 사용하기 위해 보안을 설정해야 한다.
+       * AndroidManifest.xml에 다음의 Code를 추가한다.
+
