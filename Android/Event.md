@@ -569,5 +569,112 @@
     7. 보안을 설정
 
        * Android App은 특정 기능을 사용하기 위해 보안을 설정해야 한다.
+
+         * Android 9(Pie) 버전부터는 보안이 강화되어 Web Protocol에 대한 기본 프로토콜이 HTTP에서 HTTPS로 변경되었다.
+         * HTTP Protocol을 사용하는 경우 다음과 같은 설정을 해야한다.
+
        * AndroidManifest.xml에 다음의 Code를 추가한다.
 
+         ```xml
+         <uses-permission android:name="android.permission.INTERNET"/>
+         ```
+
+       * 또한 application 태그 내부에 다음을 추가한다.
+
+         ```xml
+         android:usesCleartextTraffic="true"
+         ```
+
+    8. 서버에서 받아온 데이터를 읽어와야 한다.
+
+       ```java
+       BufferedReader br = new BufferedReader(
+           new InputStreamReader(con.getInputStream()));
+       String readLine = "";
+       StringBuffer responseTxt = new StringBuffer();
+       while((readLine = br.readLine()) != null){
+       	responseTxt.append(readLine);
+       }
+       br.close();
+       ```
+
+       * 기본적인 연결통로 (InputStreamReader)를 이용해서 조금 더 효율적인 연결통로(BufferedReader)로 다시 만들어서 사용한다.
+
+    9. 받아온 JSON형식의 데이터를 Java의 자료구조로 변경하기 위해 JACKSON Library를 이용
+
+       * JSON Library Download
+
+         * Gradle Script - build.gradle(Module: app) - dependencies에 다음의 코드 추가
+
+           ```
+           implementation 'com.fasterxml.jackson.core:jackson-core:2.9.7'
+           implementation 'com.fasterxml.jackson.core:jackson-annotation:2.9.7'
+           implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+           ```
+
+         * 추가한 이후, 상단의 Sync Now를 클릭하거나 File - Sync Project with gradle files를 클릭하여 적용한다.
+
+       * JACKSON library를 사용
+
+         ```java
+         ObjectMapper mapper = new ObjectMapper();
+         String[] resultArr = mapper.readValue(responseTxt.toString(), String[].class);
+         ```
+
+         * JSON문자열을 String 배열로 변환
+
+    10. 최종 결과를 Activity에게 전달
+
+        1. Bundle에 전달할 데이터 부착
+
+           ```java
+           Bundle bundle = new Bundle();
+           bundle.putStringArray("BOOKLIST", resultArr);
+           ```
+
+        2. Message를 만들어서 Bundle을 Message에 부착
+
+           ```java
+           Message msg = new Message();
+           msg.setData(bundle);
+           ```
+
+        3. Handler를 이용해서 Message를 Activity에 전달
+
+           ```java
+           handler.sendMessage(msg);
+           ```
+
+* Activity에서 생성한 Handler 객체로 돌아와 Message를 받는다.
+
+  * Message에 포함된 Bundle 추출
+
+    ```java
+    Bundle bundle = msg.getData();
+    ```
+
+  * Bundle의 Key값을 활용하여 데이터 추출
+
+    ```java
+    String[] booklist = (String[])bundle.get("BOOKLIST");
+    ```
+
+* 전달 받은 데이터를 Adapter를 활용하여 ListView에 전달해야한다.
+
+  * ListView의 사용은 Spinner와 비슷하다.
+
+  * Adapter를 생성하여 데이터를 설정
+
+    ```java
+    ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(),
+            android.R.layout.simple_list_item_1,
+            booklist);
+    ```
+
+  * ListView에 Adapter를 부착
+
+    ```java
+    searchList.setAdapter(adapter);
+    ```
+
+    
