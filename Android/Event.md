@@ -447,7 +447,7 @@
     * String으로 받아왔기 때문에 `Integer.parseInt()`를 사용하여 int값으로 Casting
 * [Example11 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example11_counter_log_handler.xml), [Example11 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example11_CounterLogHandlerActivity.java)
 
-## Book Search
+## Book Search(Simple)
 
 > 단어가 포함된 책의 이름을 찾는 간단한 프로그램
 
@@ -677,4 +677,126 @@
     searchList.setAdapter(adapter);
     ```
 
-    
+
+## Book Search(Expand)
+
+> Simple을 책 제목을 ListView에 띄우는 것 까지 였다면, Expand에서는 ListView의 항목을 클릭했을 때 해당 책의 정보를 볼 수 있는 Activity를 만드는 것까지 진행한다.
+
+* Activity를 설정하기에 앞서, 데이터를 가져오는 Web Application에 대한 변경이 필요하다.
+
+### Web Application
+
+> Eclipse에서 MySQL의 데이터를 가져오는 Project를 만든다.
+
+* Dynamic Web Project를 생성하고 MVC Pattern을 이용한다.
+
+  * Project를 생성할 때 ContextRoot를 `bookSearch`로 설정한다.
+
+* Controller 패키지를 생성하고 Servlet파일을 생성한다.
+
+  * GET방식을 사용할 예정이므로 doGet메소드의 내용을 작성한다.
+
+  * 클라이언트가 보내는 입력을 받는다.
+
+    ```java
+    String keyword = request.getParameter("keyword");
+    ```
+
+  * 로직처리를 진행할 Service 객체를 생성한다.
+
+    ```java
+    BookService service = new BookService();
+    ```
+
+  * Service 객체에서 로직 처리를 진행할 메소드를 호출한다.
+
+    ```java
+    ArrayList<BookVO> result = service.getBookInfo(keyword);
+    ```
+
+  * 가져온 결과 데이터를 Android App에게 Stream으로 출력하기 위해 JSON으로 만들어야한다.
+
+    * Jackson Library를 이용하여 변환
+
+    ```java
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonData = mapper.writeValueAsString(result);
+    		
+    response.setContentType("text/plain; charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jsonData);
+    out.flush();
+    out.close();
+    ```
+
+    * jackson과 관련된 core.jar, annotations.jar, databind.jar 세개의 파일이 존재해야 한다.
+
+* VO 패키지를 생성하고 BookVO Class를 생성한다.
+
+  * 데이터 전달객체(DTO, VO)가 존재해야 데이터 전달이 쉽다.
+  * 책 1권에 대한 데이터를 담는 객체를 생성한다.
+  * MySQL의 DB Table을 확인한 후 해당 Table에 존재하는 모든 Column을 변수로 추가한다.
+  * 기본생성자를 만들고 Getter/Setter를 모든 변수에 대해 생성한다.
+
+* 로직 처리를 진행할 Service Class와 Service Class에 포함된 Method가 필요하다.
+
+  * Service 패키지를 생성하고 Class파일을 생성한다.
+
+  * 크게 다른 로직 처리없이 DB처리만을 진행한다.
+
+    * 하지만 DB처리조차 DAO에서 진행하기 때문에 DAO 객체를 생성하여 DB처리 Method를 실행
+
+    ```java
+    public ArrayList<BookVO> getBookInfo(String keyword) {
+    	BookDAO dao = new BookDAO();
+    	ArrayList<BookVO> result = dao.selectInfo(keyword);
+    	
+    	return result;
+    }
+    ```
+
+* DAO 패키지를 생성하고 BookDAO Class를 생성한다.
+
+  * DB처리 Code를 작성한다.
+
+  * 다음의 코드를 작성한다
+
+    ```java
+    public ArrayList<BookVO> selectInfo(String keyword) {
+    	Connection con = null;
+    	ArrayList<BookVO> list = new ArrayList<>();
+    		
+    	try {
+    		Context initContext = new InitialContext();
+    		DataSource ds = 
+                (DataSource)initContext.lookup("java:comp/env/jdbc/mySQLDB");
+    		con = ds.getConnection();
+    			
+    		String sql = "select btitle, bisbn from book where btitle like ?";
+    		PreparedStatement pstmt = con.prepareStatement(sql);
+    		pstmt.setString(1, "%" + keyword + "%");
+    		ResultSet rs = pstmt.executeQuery();
+    		while(rs.next()) {
+    			BookVO vo = new BookVO();
+    			vo.setBtitle(rs.getString("btitle"));
+    			vo.setBisbn(rs.getString("bisbn"));
+    			list.add(vo);
+    		}
+    		rs.close();
+    		pstmt.close();
+    		con.close();
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	return list;
+    }
+    ```
+
+    * Context와 InitialContext, DataSource는 MySQL과 연동하기 위한 Code이다.
+    * 이후의 Code는 전형적인 DB 처리 Code이다.
+
+* 이제 ListView의 항목 하나마다 새로운 기능을 구현할 때 다시 Web을 찾아오고 App부분을 먼저 살펴본다
+
+### Android App
+
+* 화면 구성은 Simple Example과 동일하게 사용한다.
