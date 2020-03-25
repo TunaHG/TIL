@@ -680,7 +680,7 @@
 
 ## Book Search(Expand)
 
-> Simple을 책 제목을 ListView에 띄우는 것 까지 였다면, Expand에서는 ListView의 항목을 클릭했을 때 해당 책의 정보를 볼 수 있는 Activity를 만드는 것까지 진행한다.
+> Simple을 책 제목을 ListView에 띄우는 것 까지 였다면, Expand에서는 Web에서 책 제목뿐만 아니라 ISBN까지 가져온 후 책 제목만 출력하고 ISBN을 다음 Example에서 쓸수 있도록 준비하는 Example이다.
 
 * Activity를 설정하기에 앞서, 데이터를 가져오는 Web Application에 대한 변경이 필요하다.
 
@@ -800,3 +800,262 @@
 ### Android App
 
 * 화면 구성은 Simple Example과 동일하게 사용한다.
+
+* 기본 코드 구성 또한 Simple Example과 동일하게 작성한다
+
+* Thread에서 동작하는 Web과의 Network작업을 일부 변경한다
+
+  * URL을 새로만든 Eclipse 프로젝트에 맞도록 변경한다.
+  * Jackson Library를 사용하여 JSON데이터를 가져올 때, String[]을 BookVO[] Class로 변경한다.
+    * 또한 여기에 BookVO가 필요하므로 Eclipse에서 작성한 BookVO Class를 그대로 아래에 붙여넣는다.
+      * package와 class의 public을 삭제한다.
+  * String[]이 아닌 BookVO를 사용하므로 bundle에서 putStringArray대신 putSerializable을 사용한다.
+
+* Activity에서 Handler의 동작을 변경한다.
+
+  * BookVO[]로 받아오므로 여기서 받는 데이터 타입도 BookVO[]로 받는다.
+
+    * getSerializable을 사용한다.
+
+      ```java
+      BookVO[] booklist = (BookVO[])bundle.getSerializable("BOOKLIST");
+      ```
+
+  * ListView에는 책 제목만 출력할 예정이므로 BookVO[]에서 String[]을 추출해야한다.
+
+    * String[] 변수를 생성한 후 BookVO에서 btitle을 추출한다.
+
+      ```java
+      String[] titles = new String[booklist.length];
+      int i = 0;
+      for(BookVO vo : booklist){
+          titles[i++] = vo.getBtitle();
+      }
+      ```
+
+  * Simple Example에서 진행한 것처럼 ArrayAdapter를 생성하여 ListView에 부착한다.
+
+    ```java
+    ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(),
+            android.R.layout.simple_list_item_1, titles);
+    
+    expandSearchList.setAdapter(adapter);
+    ```
+
+## Book Search(Detail)
+
+> Expand Example에서 진행한 ListView를 클릭하면 ISBN값을 넘겨받아서 ISBN으로 Web에서 책 정보를 가져오고 책 정보를 새로운 Activity에 출력하는 Example
+
+### Example 13 (Expand Activity)
+
+* Expand Example의 Activity에 ListView의 항목 클릭에 대한 Event를 처리한다.
+
+  * ListView에 Adapter를 부착해놨으니 OnItemClickListener를 사용한다.
+
+  * 이 때 선언한 booklist는 지역변수로 handleMessage() 안에 포함되어 있는데, 이를 사용하기 위해 전역변수로 선언해줘야한다.
+
+    * Activity Class에서 전역변수로 선언한다. onCreate() 밖에서 선언해주면된다.
+
+  * Intent를 사용하여 Example 14 Detail Example을 호출한다.
+
+    * putExtra를 사용하여 isbn값을 넘겨줘야한다.
+
+      ```java
+      i.putExtra("BookISBN", booklist[position].getBisbn());
+      ```
+
+* Example 14 Detail Activity를 생성한다.
+
+* Detail Activity에서 작동할 DB연결부분 처리를 Eclipse에서 새로운 Servlet을 생성하여야 한다.
+
+### Web Application
+
+* 새로운 Servlet을 생성한다.
+
+  * Servlet의 구성은 Expand Example에서 진행했던 Servlet과 큰 차이가없다.
+
+  * 호출하는 URL구성은 `/bookDetail`로 지정하였다.
+
+  * Keyword로 주었던 Parameter를 bisbn으로 변경했다.
+
+  * doGet() Method는 다음과 같이 구성되어 있다.
+
+    ```java
+    String bisbn = request.getParameter("bisbn");
+    BookService service = new BookService();
+    BookVO result = service.getBookDetail(bisbn);
+    		
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonData = mapper.writeValueAsString(result);
+    			
+    response.setContentType("text/plain; charset=utf-8");
+    PrintWriter out = response.getWriter();
+    out.print(jsonData);
+    out.flush();
+    out.close();
+    ```
+
+* 새로이 생성해야하는 Service의 getBookDetail() Method를 생성한다.
+
+  * 역시 Expand Example과의 차이가 없다.
+
+    ```java
+    public BookVO getBookDetail(String bisbn) {
+    	BookVO result = dao.selectDetail(bisbn);
+    		
+    	return result;
+    }
+    ```
+
+* 또 새로이 생성해야 하는 DAO의 selectDetail() Method를 생성한다.
+
+  ```java
+  public BookVO selectDetail(String bisbn) {
+  	// 전형적인 DB처리 Code 작성
+  	Connection con = null;
+  	BookVO vo = new BookVO();
+  			
+  	try {
+  		Context initContext = new InitialContext();
+  		DataSource ds = (DataSource)initContext.lookup("java:comp/env/jdbc/mySQLDB");
+  		con = ds.getConnection();
+  		String sql = "select bisbn, btitle, bauthor, bprice, bimgurl from book where bisbn = ?";
+  		PreparedStatement pstmt = con.prepareStatement(sql);
+  		pstmt.setString(1, bisbn);
+  		ResultSet rs = pstmt.executeQuery();
+  		rs.next();
+  		vo.setBisbn(rs.getString("bisbn"));
+  		vo.setBtitle(rs.getString("btitle"));
+  		vo.setBauthor(rs.getString("bauthor"));
+  		vo.setBprice(rs.getInt("bprice"));
+  		vo.setBimgurl(rs.getString("bimgurl"));
+  		
+  		rs.close();
+  		pstmt.close();
+  		con.close();
+  	} catch(Exception e) {
+  		e.printStackTrace();
+  	}
+  	return vo;
+  }
+  ```
+
+  * Expand Example과의 차이는 SQL쿼리문과 주어지는 인자가 bisbn이라는 것
+  * 받아오는 방식이 BookVO[]에서 BookVO로 변경되었다.
+    * rs.next()는 입력해줘야 첫번째 rs로 진입한다.
+
+* 이렇게 3가지 작업을 진행하면 Web Application의 작업은 끝났다.
+
+### Detail Activity
+
+* Layout에서는 보여주고 싶은 ImageView 1개와 TextView가 2개씩 포함될 LinearLayout 4개로 구성했다.
+
+  * TextView에서는 하나는 `ISBN, 제목, 저자, 가격`이라는 항목 명을 다른 하나는 해당 값을 넣을 수 있게 구성했다.
+
+* Activity에서 Thread를 이용해서 MySQL과의 연결과 URL을 통한 Img불러오기 작업을 진행하고  Handler를 통하여 Activity로 전달하여 값을 부여한다.
+
+* Thread의 기본구성은 Expand Example에서 진행했던 구성과 흡사하다.
+
+  * 하지만 값을 받아올 때, BookVO[]로 진행했던 것을 하나만 받아오기 때문에 BookVO로 변경하였다.
+
+    ```java
+    BookVO result = mapper.readValue(responseTxt.toString(), BookVO.class);
+    ```
+
+    * 이에 putSerializable에서 에러가 발생하는데, 이를 방지하기 위해 Expand Example에서 생성한 BookVO Class에 Serializable Interface를 상속하였다.
+
+      ```java
+      @SuppressWarnings("serial")
+      class BookVO implements Serializable {
+          ...
+      }
+      ```
+
+  * BookVO로 값을 받아오면 URL을 통한 Img처리 또한 Thread에서 진행해야 한다.
+
+    * 우선 해당 ImgURL을 통해서 Web과 연결하고 InputStream을 통해 값을 가져온다.
+
+      ```java
+      String bimgurl = result.getBimgurl();
+      
+      URL imgurl = new URL(bimgurl);
+      HttpURLConnection conn = (HttpURLConnection)imgurl.openConnection();
+      conn.setDoInput(true);
+      conn.connect();
+      
+      InputStream is = conn.getInputStream();
+      ```
+
+    * 가져온 값을 BitmapFactory의 decodeStream을 통해 Bitmap으로 변경한다.
+
+      ```java
+      Bitmap bitmap = BitmapFactory.decodeStream(is);
+      ```
+
+    * Bitmap은 Bundle로 넘길수 없기에 ByteArray로 변경후에 넘겨야 한다.
+
+      ```java
+      ByteArrayOutputStream bs = new ByteArrayOutputStream();
+      bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+      ```
+
+    * 이제 BookVO값과 ByteArray 두개를 Bundle과 Message를 사용하여 Activity로 넘겨준다.
+
+      ```java
+      Bundle bundle = new Bundle();
+      bundle.putSerializable("BookDetail", result);
+      bundle.putByteArray("Bitmap", bs.toByteArray());
+      
+      Message msg = new Message();
+      msg.setData(bundle);
+      
+      handler.sendMessage(msg);
+      ```
+
+* 이제 Activity에서 handleMessage를 통해 Message를 받아오고 Bundle의 값을 이용해 UI들의 값을 변경한다.
+
+  * 받아온 Message에서 Bundle을 가져오고 Bundle에 포함된 값들을 가져온다.
+
+    ```java
+    Bundle bundle = msg.getData();
+    
+    BookVO vo = (BookVO)bundle.getSerializable("BookDetail");
+    byte[] img = bundle.getByteArray("Bitmap");
+    ```
+
+  * ByteArray로 가져온 Img는 다시 Bitmap형식으로 변경해야한다.
+
+    ```java
+    Bitmap b = BitmapFactory.decodeByteArray(img, 0, img.length);
+    ```
+
+  * 이제 UI들을 선언하고 해당 UI들의 값을 변경한다.
+
+    ```java
+    ImageView iv = findViewById(R.id.detailBookIV);
+    
+    iv.setImageBitmap(b);
+    
+    TextView isbnTV = findViewById(R.id.detailBookISBN);
+    TextView titleTV = findViewById(R.id.detailBookTitle);
+    TextView authorTV = findViewById(R.id.detailBookAuthor);
+    TextView priceTV = findViewById(R.id.detailBookPrice);
+    
+    isbnTV.setText(vo.getBisbn());
+    titleTV.setText(vo.getBtitle());
+    authorTV.setText(vo.getBauthor());
+    priceTV.setText(String.valueOf(vo.getBprice()));
+    ```
+
+    * Bitmap이미지이기 때문에 ImageView에서 `setImageBitmap()`을 사용했다.
+    * price가 int값이기 때문에 `String.valueOf()`를 사용하여 String으로 변경해줘야 한다.
+
+* Handler도 선언이 끝났으니 이제 외부 Thread를 구동하면 된다.
+
+  * onCreate() Method내에서 Thread를 생성하고 시작한다
+
+    ```java
+    MyBookDetailRunnable runnable = new MyBookDetailRunnable(handler, bisbn);
+    Thread t = new Thread(runnable);
+    t.start();
+    ```
