@@ -90,3 +90,65 @@
 
 ## Implicit 방식
 
+> 묵시적 방식
+
+### Event 처리
+
+* Activity Java파일에서 다른 Activity를 찾기 위한 Intent 객체 생성
+
+  ```java
+  Intent i = new Intent();
+  ```
+
+* Android Manifest 파일을 수정한다.
+
+  * 새로 만들어진 Example15Sub의 Activity 태그안에 `<intent-filter>`를 추가한다.
+  * `<intent-filter>`태그 안에 `<action>`을 지정한다.
+    * action에는 User가 임의적으로 정한 name을 지정해줘야한다
+    * action은 하나만 나올 수 있다.
+  * `<intent-filter>`태그 안에 `<category>`를 지정한다.
+    * action과 마찬가지로 name을 지정한다.
+      * default라고 입력하면 자동완성으로 android.intent.category.DEFAULT가 생성된다
+    * action과 달리 여러 개가 나올 수 있다.
+      * 여러 개가 들어오더라도 default는 무조건 있어야한다.
+
+  ```xml
+  <activity android:name=".Example15Sub_ImplicitIntentActivity">
+      <intent-filter>
+          <action android:name="MY_ACTION"/>
+          <category android:name="android.intent.category.DEFAULT"/>
+          <category android:name="INTENT_TEST"/>
+      </intent-filter>
+  </activity>
+  ```
+
+* Activity Java파일로 돌아온다
+
+  * intent 객체에서 Action을 지정한다.
+
+    ```java
+    i.setAction("MY_ACTION");
+    ```
+
+  * Intent객체에서 Category를 지정한다.
+
+    ```java
+    i.addCategory("INTENT_TEST");
+    ```
+
+  * 제대로 전달되는지 확인하기 위해 데이터도 하나 날려준다.
+
+    ```java
+    i.putExtra("Send Data", "Hello!");
+    ```
+
+  * Intent를 이용하여 Activity를 시작한다
+
+    ```java
+    startActivity(i);
+    ```
+
+* Example15 Sub의 Activity Java파일에서 Intent 처리를 한다.
+
+  * `getIntent()`를 통해 Intent 객체를 받아온다.
+  * 데이터를 가져왔는지 확인하기 위해 `Toast.makeText()를 사용해본다.`

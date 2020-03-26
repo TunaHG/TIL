@@ -845,6 +845,8 @@
 ## Book Search(Detail)
 
 > Expand Example에서 진행한 ListView를 클릭하면 ISBN값을 넘겨받아서 ISBN으로 Web에서 책 정보를 가져오고 책 정보를 새로운 Activity에 출력하는 Example
+>
+> 수행평가로 제출하는 내용이다.
 
 ### Example 13 (Expand Activity)
 
