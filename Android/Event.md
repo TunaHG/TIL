@@ -676,6 +676,8 @@
     ```java
     searchList.setAdapter(adapter);
     ```
+  
+* [Example 12 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example12_simple_book_search.xml), [Example 12 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example12_SimpleBookSearchActivity.java)
 
 
 ## Book Search(Expand)
@@ -796,6 +798,8 @@
     * 이후의 Code는 전형적인 DB 처리 Code이다.
 
 * 이제 ListView의 항목 하나마다 새로운 기능을 구현할 때 다시 Web을 찾아오고 App부분을 먼저 살펴본다
+
+* [Example 13 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example13_expand_book_search.xml), [Example 13 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example13_ExpandBookSearchActivity.java)
 
 ### Android App
 
@@ -1061,3 +1065,5 @@
     Thread t = new Thread(runnable);
     t.start();
     ```
+
+* [Example 14 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example14_detail_book_search.xml), [Example 14 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example14_DetailBookSearchActivity.java)

@@ -136,6 +136,8 @@
     i.addCategory("INTENT_TEST");
     ```
 
+  * Action과 Category가 둘다 맞게 해당되는 Activity가 존재해야 한다.
+
   * 제대로 전달되는지 확인하기 위해 데이터도 하나 날려준다.
 
     ```java
@@ -151,4 +153,57 @@
 * Example15 Sub의 Activity Java파일에서 Intent 처리를 한다.
 
   * `getIntent()`를 통해 Intent 객체를 받아온다.
-  * 데이터를 가져왔는지 확인하기 위해 `Toast.makeText()를 사용해본다.`
+
+    ```java
+    Intent i = getIntent();
+    ```
+
+  * 데이터를 가져왔는지 확인하기 위해 `Toast.makeText()`를 사용해본다.
+
+    ```java
+    Toast.makeText(getApplicationContext(),
+            i.getExtras().getString("Send Data"), Toast.LENGTH_SHORT).show();
+    ```
+
+* 이미 만들어져있는 Action을 사용하는 방법 또한 존재한다
+
+  * 전화걸기 Activity를 호출해본다.
+
+  * 이미 만들어진 Action을 지정한다
+
+    ```java
+    i.setAction(Intent.ACTION_DIAL);
+    ```
+
+  * 전화를 걸 번호를 Data로 넘겨준다.
+
+    * 이 때, ACTION_DIAL이 받는 양식대로 Data를 넘겨야한다.
+
+      ```java
+      i.setData(Uri.parse("tel:01096117555"));
+      ```
+
+      * Uri형식으로 받아야하며, String에서도 전화번호를 의미하는 `tel:`이 추가되어 있어야 한다.
+
+  * Activity를 시작해본다.
+
+  * Browser 호출해본다.
+
+  * 역시 이미 만들어진 Action을 지정한다
+
+    ```java
+    i.setAction(Intent.ACTION_VIEW);
+    ```
+
+    * ACTION_VIEW에서 주의할 점은 Browser가 겹친다는 점이다.
+    * 실행시키면 어떤 Browser로 실행시킬지 물어볼수도 있다.
+
+  * Browser에서 띄울 URL을 Data로 넘겨준다.
+
+    ```java
+    i.setData(Uri.parse("http://www.naver.com"));
+    ```
+
+  * Activity를 시작해본다.
+  
+* [Example 15 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example15_implicit_intent.xml), [Example 15 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example15_ImplicitIntentActivity.java), [Example 15 Sub Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example15Sub_ImplicitIntentActivity.java)
