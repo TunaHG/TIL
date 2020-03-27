@@ -147,5 +147,70 @@
 
            * 이 때 app_key는 KAKAO API에서 앱을 생성할 때 복사해두었던 REST API를 입력한다.
 
-      4. 
+      4. JSON으로 보내주는 데이터를 Stream을 통해 읽어온다.
+
+         * 기본적인 Stream(InputStreamReader)를 먼저 열고, 이를 더 편한 방법(BufferedReader)으로 변경해서 사용한다
+
+           ```java
+           BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+           ```
+
+         * 결과데이터를 저장할 StringBuffer()객체를 생성한다.
+
+           ```java
+           StringBuffer sb = new StringBuffer();
+           ```
+
+         * 한줄씩 반복적으로 서버가 보내준 데이터를 읽어온다.
+
+           ```java
+           String line;
+           while( (line = br.readLine()) != null ) {
+               sb.append(line);
+           }
+           ```
+
+      5. 제대로 들어오는지, 어떻게 들어오는지 확인한다.
+
+         ```java
+         Log.i("KAKAO", sb.toString());
+         ```
+
+         * `documents : [ {책 1권}, {책 1권}, ... ]` 형태로 구성되어있는것 확인한다.
+
+      6. Jackson Library를 활용하여 원하는 값만을 가져와본다.
+
+         * ObjectMapper를 사용하기 위해 객체를 생성한다.
+
+           ```java
+           ObjectMapper mapper = new ObjectMapper();
+           ```
+
+         * Map<String, Object>형태로 가져오기 위해 다음의 코드를 실행한다.
+
+           ```java
+           Map<String, Object> map = mapper.readValue(sb.toString(),
+                   new TypeReference<Map<String, Object>>() {});
+           ```
+
+           * JSON 문자열을 Map<String, Object>로 읽어오기 위하여 TypeReference를 사용한다.
+           * TypeReference<>에서 Generic부분에 원하는 Map<String, Object>를 넣는다.
+           * 원래 TypeReference에는 Overriding하는 Method가 존재하나, Generic을 선언해주면서 필요가 없어졌으므로 뒤의 구현부는 { }로 마무리한다.
+           * 이는 Jackson Library에서 지원하는 기능이다.
+
+         * map에서 Object만 가져온다.
+
+           ```java
+           Object jsonObject = map.get("documents");
+           ```
+
+           * jsonObject는 `[ {책 1권}, {책 1권}, ... ]`가 된다.
+
+         * jsonObject의 값을 이제 String으로 변환한다.
+
+           ```java
+           String jsonString = mapper.writeValueAsString(jsonObject);
+           ```
+
+           
 
