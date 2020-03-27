@@ -92,6 +92,8 @@
 
 * Service에서 Network통신을 담당할 Thread Class를 작성한다.
 
+  * 이후에 Context를 사용해야 하므로 Activity Class내의 `onDestroy()` 아래에 Inner Class로 생성한다.
+
   * keyword가 필요하므로, 전역변수로 선언한다.
 
   * 생성자로 keyword를 받아와야 하므로 해당 생성자를 만들어준다.
@@ -212,5 +214,41 @@
            String jsonString = mapper.writeValueAsString(jsonObject);
            ```
 
-           
+         * ArrayList의 원소가 책 객체인 형태로 변경
+
+           * 책 객체가 필요
+
+             * KAKAO API의 개발가이드에 명시된 document의 항목들을 살펴보며 생성
+
+           * 위에서 Map<String, Object>를 진행했을때와 동일하게 진행
+
+             ```java
+             ArrayList<KAKAOBookVO> searchBooks = mapper.readValue(jsonString,
+                     new TypeReference<ArrayList<KAKAOBookVO>>() { });
+             ```
+
+         * 책 제목만 들어있는 ArrayList를 생성하여 Activity에게 전달한다.
+
+           ```java
+           ArrayList<String> resultData = new ArrayList<>();
+           for(KAKAOBookVO vo : searchBooks){
+               resultData.add(vo.getTitle());
+           }
+           ```
+
+      7. Intent를 사용하여 Activty로 보내준다.
+
+         ```java
+         Intent resultIntent = new Intent(getApplicationContext(),
+                 Example18_KakaoBookSearchActivity.class);
+         resultIntent.putExtra("BOOKRESULT", resultData);
+         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+         resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+         startActivity(resultIntent);
+         ```
+
+         * Flag를 추가해야한다.
+
+* [Example 18 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example18_kakao_book_search.xml), [Example 18 Activity](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example18_KakaoBookSearchActivity.java), [Example 18 Sub Service](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example18Sub_KakaoBookSearchService.java)
 
