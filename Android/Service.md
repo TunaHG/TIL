@@ -272,4 +272,4 @@
     dataFromServiceTV.setText(result);
     ```
 
-* [Example 17 XML], [Example 17 Java], [Example 17 Sub Service]
+* [Example 17 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example17_service_data_transfer.xml), [Example 17 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example17_ServiceDataTransferActivity.java), [Example 17 Sub Service](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example17Sub_DataTransferService.java)
