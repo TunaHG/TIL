@@ -172,3 +172,104 @@
 
 * [Example 16 XML](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example16_service_lifecycle.xml), [Example 16 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example16_ServiceLifecycleActivity.java)
 * [Example 16 Sub Service](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example16Sub_LifecycleService.java)
+
+## Data Transfer
+
+* 새로운 Activity를 생성하여 해당 Activity에서 Service로 데이터를 전달한다.
+
+  * LinearLayout으로 구성하며 TextView, EditText, Button으로 구성한다.
+
+    * 받아온 데이터를 출력할 TextView
+    * 데이터를 전달할 EditText
+    * Service를 시작할 Button
+
+    ```java
+    TextView dataFromServiceTV = findViewById(R.id.dataFromServiceTV);
+    final EditText datatToServiceET = findViewById(R.id.dataToServiceET);
+    Button dataToServiceBtn = findViewById(R.id.dataToServiceBtn);
+    ```
+
+  * 각 Component에 대한 Reference를 획득한다.
+
+  * Button에 대한 Event 처리를 진행한다.
+
+    * Intent를 이용해서 Service를 호출한다.
+
+    ```java
+    dataToServiceBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getApplicationContext(),
+                    Example17Sub_DataTransferService.class);
+            intent.putExtra("DATA", datatToServiceET.getText().toString());
+            startService(intent);
+        }
+    });
+    ```
+
+* Service를 생성한다.
+
+  * `onCreate()`, `onStartCommand()`, `onDestroy()`를 Overriding한다.
+
+  * 진행할 로직이 길지 않으므로 Thread를 이용하지않고 `onStartCommand()`내에 로직처리를 진행한다.
+
+  * 받아온 데이터를 변환하여 결과데이터로 생성
+
+    ```java
+    String data = intent.getExtras().getString("DATA");
+    String resultData = data + " 를 받음";
+    ```
+
+    * Activity로부터 전달된 intent가 `onStartCommand()`의 인자로 주어진다.
+
+  * Intent를 이용하여 이전 Activity를 호출
+
+    ```java
+    Intent resultIntent = new Intent(getApplicationContext(),
+            Example17_ServiceDataTransferActivity.class);
+    ```
+
+    * 결과데이터를 Intent에 부착
+
+      ```java
+      resultIntent.putExtra("RESULT", resultData);
+      ```
+
+    * 화면이 없는 Service가 화면이 있는 Activity를 호출하기 위해 TASK가 필요
+
+      ```java
+      resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      ```
+
+    * 메모리에 존재하는 이전 Activity를 찾아서 실행
+
+      ```java
+      resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+      ```
+
+    * Activity 실행
+
+      ```java
+      startActivity(resultIntent);
+      ```
+
+* 다시 Activity로 돌아와서 데이터를 받는다.
+
+  * Service로부터 Intent를 받기위해 `onNewIntent()`를 Overriding한다.
+
+    ```java
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
+    ```
+
+  * `onNewIntent()`안에서 Service에서 보낸 결과데이터를 받아서 TextView에 세팅
+
+    ```java
+    String result = intent.getExtras().getString("RESULT");
+    dataFromServiceTV.setText(result);
+    ```
+
+* [Example 17 XML], [Example 17 Java], [Example 17 Sub Service]
