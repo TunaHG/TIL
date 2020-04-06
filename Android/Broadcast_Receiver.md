@@ -553,4 +553,76 @@
          int requestID = (int)System.currentTimeMillis();
          ```
 
-       * 
+       * 생성한 Intent를 이용한 PendingIntent 생성
+
+         ```java
+         PendingIntent pIntent =
+                 PendingIntent.getActivity(getApplicationContext(),
+                         requestID, nIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+         ```
+
+       * builder를 이용해서 최종적으로 Notification 생성
+
+         ```java
+         builder.setContentTitle("Noti Title");
+         builder.setContentText("Noti Text");
+         ```
+
+         * 알림의 기본사운드, 기본진동 설정
+
+           ```java
+           builder.setDefaults(Notification.DEFAULT_ALL);
+           ```
+
+         * 알림 터치시 반응 후 삭제
+
+           ```java
+           builder.setAutoCancel(true);
+           ```
+
+         * 알림의 사운드 설정
+
+           * 기본사운드로 설정했으나 다른 사운드로 변경하고자 할때 사용
+
+           ```java
+           builder.setSound(RingtoneManager.getDefaultUri(
+                   RingtoneManager.TYPE_NOTIFICATION
+           ));
+           ```
+
+           * RingtoneManager를 활용하여 알림의 기본음으로 설정
+           * TYPE_NOTIFICATION을 변경하면 사운드 변경
+
+         * 작은아이콘으로 변경
+
+           ```java
+           builder.setSmallIcon(android.R.drawable.btn_star);
+           ```
+
+         * builder에 PendingIntent를 부착
+
+           ```java
+           builder.setContentIntent(pIntent);
+           ```
+
+       * 최종적으로 Notification을 띄운다.
+
+         ```java
+         nManager.notify(0, builder.build());
+         ```
+
+  * Broadcast를 발생시키는 Button의 Click Event처리
+
+    * Action을 지정한 Intent를 생성
+
+      ```java
+      Intent i = new Intent("MY_NOTI_SIGNAL");
+      ```
+
+    * Broadcast 발생
+
+      ```java
+      sendBroadcast(i);
+      ```
+
+      
