@@ -21,7 +21,7 @@
     * 해당 Button은 Broadcast Receiver의 등록을 해제하는 Unregister Button이다.
   * Horizontal 외부에, Vertical내부에 Button을 하나 생성한다.
     * 해당 Button은 Broadcast를 발생시키는 Button이다.
-  * [Example 19 XML]
+  * [Example 19 Layout](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example19_broadcast_receiver.xml)
 
 * Android에서는 Broadcast라는 Signal이 존재한다.
 
@@ -125,7 +125,7 @@
       * `"MY_BROADCAST_SIGNAL"`이라는 Action을 가진 Intent를 생성
       * Intent를 활용하여 Broadcast를 발생
 
-  * [Example 19 Java]
+  * [Example 19 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example19_BroadcastReceiverActivity.java)
 
 ## SMS Example
 
@@ -138,7 +138,7 @@
     * 송신자를 표시할 TextView
     * 메시지 내용을 표시할 TextView
     * 일자를 표시할 TextView
-  * [Example 20 Layout]
+  * [Example 20 Layout](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example20_br_sms.xml)
 
 * 문자메시지 처리는 상당히 개인적인 정보이므로 보안처리가 필요하다.
 
@@ -366,6 +366,8 @@
       * Activity로 전달해야 하기 때문에 context를 사용한다.
       * 이는 `onReceive()`에서 주어지는 인자다.
 
+  * [Example 20 Sub Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example20Sub_SMSBroadcastReceiver.java)
+
 * Broadcast Receiver에서 전달한 데이터를 Activity에서 화면에 출력한다.
 
   * TextView객체를 선언한다.
@@ -397,6 +399,8 @@
     }
     ```
 
+* [Example 20 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example20_BRSMSActivity.java)
+
 ## Notification Example
 
 > 알림메시지로 출력하는 Example
@@ -408,6 +412,7 @@
     * Broadcast Receiver를 등록하는 Button
     * Broadcast Receiver 등록을 해제하는 Button
     * Broadcast를 발생시키는 Button
+  * [Example 21 Layout](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example21_br_noti.xml)
 
 * Broadcast Receiver를 등록하는 Button의 Click Event처리
 
@@ -625,4 +630,4 @@
       sendBroadcast(i);
       ```
 
-      
+  * [Example 21 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example21_BRNotiActivity.java)
