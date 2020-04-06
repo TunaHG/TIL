@@ -278,4 +278,121 @@
 
   * 이제 이 Broadcast Receiver가 SMS문자가 오면 이를 수신한다.
 
-* 
+* Broadcast Receiver에서 Activity로 데이터를 전달하는 기능을 구성한다.
+
+  * 전달받은 Intent안에 포함되어 있는 정보를 Bundle로 추출
+
+    ```java
+    Bundle bundle = intent.getExtras();
+    ```
+
+  * Object배열로 Bundle에서 값을 가져옴
+
+    ```java
+    Object[] obj = (Object[])bundle.get("pdus");
+    ```
+
+    * Bundle안에 SMS의 정보는 `"pdus"`라는 키값으로 저장되어 있음
+    * 시간당 동시에 여러 개의 SMS가 도착할 수 있으므로 배열로 처리
+
+  * SMS 정보를 제대로 사용하기 위해 SmsMessage객체로 변경
+
+    ```java
+    SmsMessage[] message = new SmsMessage[obj.length];
+    ```
+
+  * 마쉬멜로우 버전 이상이면,
+
+    ```java
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        String format = bundle.getString("format");
+        message[0] = SmsMessage.createFromPdu((byte[])obj[0], format);
+    }
+    ```
+
+    * bundle에서 `"format"`이라는 키값을 가진 String을 추출
+    * Object 객체로 가져온 SMS 정보를 `SmsMessage.createFromPdu()`를 사용하여 변환
+
+  * 마쉬멜로우 버전 미만이라면,
+
+    ```java
+    else {
+        message[0] = SmsMessage.createFromPdu((byte[])obj[0]);
+    }
+    ```
+
+    * format을 사용할 필요없이 바로 변환
+
+  * SmsMessage객체에서 원하는 정보를 추출
+
+    ```java
+    // 보낸사람 전화번호를 SmsMessage객체에서 추출
+    String sender = message[0].getOriginatingAddress();
+    // SMS 문자내용 추출
+    String msg = message[0].getMessageBody();
+    // SMS 받은 시간 추출
+    String reDate = new Date(message[0].getTimestampMillis()).toString();
+    ```
+
+  * Intent를 활용하여 Activity에 데이터 전달
+
+    ```java
+    Intent i = new Intent(context,
+            Example20_BRSMSActivity.class);
+    ```
+
+    * 기존에 이미 생성되어 있는 Activity에 전달해야 하므로 Flag 설정
+
+      ```java
+      i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+      i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      ```
+
+    * intent에 데이터를 저장해서 전달
+
+      ```java
+      i.putExtra("sender", sender);
+      i.putExtra("msg", msg);
+      i.putExtra("reDate", reDate);
+      ```
+
+    * startActivity
+
+      ```java
+      context.startActivity(i);
+      ```
+
+      * Activity로 전달해야 하기 때문에 context를 사용한다.
+      * 이는 `onReceive()`에서 주어지는 인자다.
+
+* Broadcast Receiver에서 전달한 데이터를 Activity에서 화면에 출력한다.
+
+  * TextView객체를 선언한다.
+
+    ```java
+    private TextView smsSenderTV;
+    private TextView smsMessageTV;
+    private TextView smsDateTV;
+    
+        
+    smsSenderTV = findViewById(R.id.smsSenderTV);
+    smsMessageTV = findViewById(R.id.smsMessageTV);
+    smsDateTV = findViewById(R.id.smsDateTV);
+    ```
+
+  * 새로운 intent를 받아오는 `onNewIntent()`를 사용
+
+    ```java
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Broadcast Receiver가 전달한 Intent를 받음
+        // Intent안에 들어있는 정보를 화면에 출력
+        Bundle bundle = intent.getExtras();
+    
+        smsSenderTV.setText(bundle.getString("sender"));
+        smsMessageTV.setText(bundle.getString("msg"));
+        smsDateTV.setText(bundle.getString("reDate"));
+    }
+    ```
