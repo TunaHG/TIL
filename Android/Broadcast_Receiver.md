@@ -396,3 +396,161 @@
         smsDateTV.setText(bundle.getString("reDate"));
     }
     ```
+
+## Notification Example
+
+> 알림메시지로 출력하는 Example
+
+* 새로운 Layout의 구성은 다음과 같다
+
+  * Vertical LinearLayout으로 구성
+  * Button 세 개로 구성
+    * Broadcast Receiver를 등록하는 Button
+    * Broadcast Receiver 등록을 해제하는 Button
+    * Broadcast를 발생시키는 Button
+
+* Broadcast Receiver를 등록하는 Button의 Click Event처리
+
+  * Broadcast Receiver를 생성하는 작업은 Incode작업으로 진행한다.
+
+  ```java
+  Button registerNotiBtn = findViewById(R.id.registerNotiBtn);
+  
+  registerNotiBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+          
+      }
+  });
+  ```
+
+  * IntentFilter를 먼저 생성한다.
+
+    ```java
+    IntentFilter filter = new IntentFilter();
+    ```
+
+    * Action을 설정한다.
+
+      ```java
+      filter.addAction("MY_NOTI_SIGNAL");
+      ```
+
+  * Broadcast를 받는 Receiver를 생성한다.
+
+    * 해당 객체를 전역변수로 먼저 선언한다.
+
+      ```java
+      private BroadcastReceiver br;
+      ```
+
+    ```java
+    br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+    
+        }
+    };
+    ```
+
+  * Receiver에 Notification을 띄우는 작업을 진행한다.
+
+    1. Notification을 띄우려면  Notification Manager가 필요하다.
+
+       * Android System에서 이미 가지고 있는 Manager를 가져온다.
+
+       ```java
+       NotificationManager nManager = (NotificationManager)context.getSystemService(context.NOTIFICATION_SERVICE);
+       ```
+
+    2. Android Version Oreo(8)를 기준으로 코드의 차이가 발생
+
+       * Oreo 이후에는 Channel을 사용한다.
+
+       * Channel을 사용할 때 필요한 ID, Name, Importance 세개를 먼저 생성한다.
+
+         ```java
+         String channelID = "MY_CHANNEL";
+         String channelName = "MY_CHANNEL_NAME";
+         int importance = NotificationManager.IMPORTANCE_HIGH;
+         ```
+
+       * 사용하는 버전이 Oreo이후의 버전이라면,
+
+         ```java
+         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+         
+         }
+         ```
+
+         * Channel을 생성한다.
+
+           ```java
+           NotificationChannel nChannel =
+                   new NotificationChannel(channelID, channelName, importance);
+           ```
+
+         * Channel을 생성한 후 설정을 추가한다.
+
+           ```java
+           nChannel.enableVibration(true);
+           ```
+
+           * 진동기능을 추가
+
+           ```java
+           nChannel.setVibrationPattern(new long[]{100, 200, 100, 200});
+           ```
+
+           * 진동이 어떻게 울리는지 패턴을 설정
+
+           ```java
+           nChannel.enableLights(true);
+           ```
+
+           * 불빛을 표시하는 기능을 추가
+
+           ```java
+           nChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+           ```
+
+           * 잠금화면일 때 표시하는 기능 추가
+
+         * Manager에 Channel을 부착한다.
+
+           ```java
+           nManager.createNotificationChannel(nChannel);
+           ```
+
+    3. Builder를 이용해서 Notification 생성
+
+       ```java
+       NotificationCompat.Builder builder =
+               new NotificationCompat.Builder(
+                       context.getApplicationContext(), channelID
+               );
+       ```
+
+    4. Intent를 사용하여 Notification 전달
+
+       * Intent 객체를 생성할 때 어떤 Activity에 Notification이 표시될 것인지 명시해야함
+
+         ```java
+         Intent nIntent = new Intent(getApplicationContext(),
+                 Example21_BRNotiActivity.class);
+         ```
+
+       * Notification이 Activity위에 표시되야 하기 때문에 설정 추가
+
+         ```java
+         nIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+         nIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+         ```
+
+       * 중복되지 않는 상수값 추출 (requestID가 중복되지 않아야 한다.)
+
+         ```java
+         int requestID = (int)System.currentTimeMillis();
+         ```
+
+       * 
