@@ -16,6 +16,7 @@
   * Vertical LinearLayout을 기본으로 구성
   * Horizontal LinearLayout을 Vertical 내부에 추가
   * EditText, Button을 Horizontal 내부에 추가
+  * [Example 22 Layout](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example22_sqlite_basic.xml)
 
 ### Database 생성
 
@@ -283,6 +284,8 @@
     }
     ```
 
+  * [Example 22 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example22_SQLiteBasicActivity.java)
+
 ## Helper Example
 
 > SQLite를 사용할 때는 Helper를 사용하면 편리하다.
@@ -292,6 +295,7 @@
 * Layout은 Basic Example과 동일하다.
 
   * 각 Widget의 ID값은 변경해줘야한다.
+  * [Example 23 Layout](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example23_sqlite_helper.xml)
 
 * DataBase Open Helper를 사용하기위해 외부 Class를 정의한다.
 
@@ -369,6 +373,8 @@
     database = helper.getWritableDatabase();
     ```
 
+* [Example 23 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example23_SQLiteHelperActivity.java)
+
 ## Content Provider Example
 
 > Content Provider를 사용하여 DB작업을 진행한다.
@@ -390,6 +396,7 @@
 
   * DB와 Table을 생성하는 LinearLayout은 삭제한다.
   * 나머지는 각 ID를 변경한다.
+  * [Example 24 Layout](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/res/layout/activity_example24_content_provider.xml)
 
 * Database를 이용하기 때문에 SQLiteOpenHelper Class를 만들어야한다.
 
@@ -418,5 +425,103 @@
 * Content Provider를 생성한다.
 
   * New > Other > Content Provider를 생성한다.
-    * Uri 
 
+    * Uri Authorities를 다음과 같이 설정한다.
+    * `com.exam.person.provider` => 특정 Class에 부착된 Provider임을 의미
+
+  * 생성해보면 CRUD에 대한 기본메소드가 자동으로 Overriding되서 생성된다.
+
+  * Provider를 사용할 때는 URI형식을 사용한다.
+
+    * `content://Authority/BASE_PATH(테이블이름)/숫자(Record번호)`의 양식으로 사용한다.
+    * 예시 : `content://com.exam.person.provider/person/1`
+
+  * `onCreate()` 메소드를 수정한다.
+
+    ```java
+    @Override
+    public boolean onCreate() {
+        Log.i("DBTest", "CP onCreate() Callback");
+        return true;
+    }
+    ```
+
+    * Log를 찍어서 확인해보기 위함이다.
+
+    * 앱을 실행시켜보면, 앱이 실행되자마자 해당 Log가 출력된다.
+
+      * 앱에 CP가 있는것을 확인하고 Android System에 의해서 자동적으로 만들어진다.
+
+    * Log를 찍어서 확인해봤으니 Helper를 이용하여 DB, Table 생성에 대한 코드를 작성한다.
+
+      ```java
+      PersonDBHelper helper = new PersonDBHelper(getContext());
+      database = helper.getWritableDatabase();
+      ```
+
+  * DB가 생성되는 것을 확인했으니 `insert()` 를 수정한다.
+
+    ```java
+    database.insert("person", null, values);
+    ```
+
+  * [Example 24 Sub Content Provider](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example24Sub_PersonContentProvider.java)
+
+* AndroidManifest.xml파일을 확인해본다
+
+  * `<provider>`태그가 생긴것을 확인한다.
+
+  * 해당 태그에 몇가지 인자를 추가한다.
+
+    ```java
+    android:readPermission="com.exam.person.provider.READ_DATABASE"
+    android:writePermission="com.exam.person.provider.WRITE_DATABASE"
+    ```
+
+  * 태그 내부가 아닌 외부에 permission을 허용해야 한다.
+
+    ```java
+    <permission android:name="com.exam.person.provider.READ_DATABASE"
+        android:protectionLevel="normal"/>
+    <permission android:name="com.exam.person.provider.WRITE_DATABASE"
+        android:protectionLevel="normal"/>
+    ```
+
+    * `<application>`태그 외부에 작성한다.
+
+* Example24 Activity로 돌아와서 Button의 Event처리를 진행한다.
+
+  * 같은 앱이므로 CP를 이용할 필요는 없지만, 실습을 위해 CP를 이용해 insert처리를 진행한다.
+
+  * CP의 URI를 가져온다.
+
+    ```java
+    String uriString = "content://com.exam.person.provider/person";
+    ```
+
+  * CP의 URI를 URI객체로 변경한다.
+
+    ```java
+    Uri uri = new Uri.Builder().build().parse(uriString);
+    ```
+
+  * Insert에 사용할 ContentValues객체를 생성한다.
+
+    ```java
+    ContentValues values = new ContentValues();
+    values.put("name", "홍길동");
+    values.put("age", 20);
+    values.put("mobile", "010-1111-5555");
+    ```
+
+    * SQL문을 사용하지 않기위해 사용하는 것이다.
+
+  * CP를 찾아서 insert를 진행한다.
+
+    ```java
+    getContentResolver().insert(uri, values);
+    ```
+
+    * ContentResolver를 사용하여 CP를 탐색한다.
+
+  * [Example 24 Java](https://github.com/TunaHG/Android_Workspace/blob/master/AndroidLectureExample/app/src/main/java/com/example/androidlectureexample/Example24_ContentProviderActivity.java)
