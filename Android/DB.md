@@ -282,3 +282,89 @@
         resultTV.append(result + "\n");
     }
     ```
+
+## Helper Example
+
+> SQLite를 사용할 때는 Helper를 사용하면 편리하다.
+
+* 새로운 Activity에서 진행한다.
+
+* Layout은 Basic Example과 동일하다.
+
+  * 각 Widget의 ID값은 변경해줘야한다.
+
+* DataBase Open Helper를 사용하기위해 외부 Class를 정의한다.
+
+  * SQLiteOpenHelper를 상속받는다
+
+  * 생성자를 만들어줘야한다.
+
+    * SQLiteOpenHelper에는 기본생성자가 존재하지않는다.
+
+    * 인자 4개를 받는 생성자를 만들어줘야 한다.
+
+      ```java
+      MyDBHelper(Context context, String dbName, int version) {
+          super(context, dbName, null, version);
+      }
+      ```
+
+  * 객체를 생성하여 생성자가 사용될 때 여러가지 방식으로 동작한다
+
+    * dbName이라는 데이터베이스가 없으면 
+      * `onCreate()`를 호출하며 인자로 받은 Version값을 같이 명시하여 데이터베이스를 생성한다.
+      * 이후 `onOpen()`을 호출한다.
+    * dbName이라는 데이터베이스가 있으면
+      * `onOpen()`을 호출한다.
+      * 인자로 받은 Version값과 생성되있는 데이터베이스의 Version값이 다르면 `onUpgrade()`를 호출한다.
+
+  * 3개의 Method를 Overriding한다.
+
+    * `onOpen()`, `onCreate()`, `onUpgrade()`
+
+  * `onOpen()`
+
+    * 데이터베이스가 Open될 때 자동으로 호출된다.
+
+  * `onCreate()`
+
+    * 데이터베이스가 존재하지 않아서 생성할 때 호출된다.
+
+    * 데이터 베이스를 생성하는 코드를 포함한다.
+
+      ```java
+      String sql = "CREATE TABLE IF NOT EXISTS " +
+              "person( _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+              "name TEXT, age INTEGER, mobile TEXT)";
+      
+      db.execSQL(sql);
+      ```
+
+      * `db`는 `onCreate()`에서 인자로 받는 SQLiteDatabase객체이다.
+
+  * `onUpgrdae()`
+
+    * 데이터베이스 버전이 바뀌어서 데이터베이스를 수정할 때 호출된다.
+    * 초창기에 앱을 만들어서 배포할 때 DB 스키마를 생성하는데, 이후에 앱을 업그레이드해서 다시 배포할 때 DB스키마를 다시 생성하기 위해 사용된다.
+    * 이전 DB를 Drop시키고 새로운 DB를 만드는과정을 진행한다.
+
+* Database를 생성하는 Button의 Click Event를 처리한다.
+
+  * EditText에 입력된 값을 String으로 가져온다.
+
+    ```java
+    String dbName = helperDBNameET.getText().toString();
+    ```
+
+  * Helper Class를 이용하여 DB를 생성한다.
+
+    ```java
+    MyDBHelper helper = new MyDBHelper(Example23_SQLiteHelperActivity.this,
+            dbName, 1);
+    ```
+
+  * Helper를 통해서 DB Reference를 획득한다.
+
+    ```java
+    database = helper.getWritableDatabase();
+    ```
