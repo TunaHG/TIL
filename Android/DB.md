@@ -10,6 +10,8 @@
 
 ## Basic Example
 
+> Android에서 DB를 사용하는 방법에 대해 알아본다.
+
 * 새로운 Activity의 Layout은 다음과 같이 구성
   * Vertical LinearLayout을 기본으로 구성
   * Horizontal LinearLayout을 Vertical 내부에 추가
@@ -163,7 +165,8 @@
 
 * Layout에 Widget을 추가한다.
 
-  * Horizontal Linear 외부, Vertical Linear 내부에 4개의 Widget을 추가한다.
+  * Horizontal Linear를 Vertical Linear 내부에 새로 생성한다
+  * Horizontal Linear에 4개의 Widget을 추가한다.
   * EditText 3개, Button 1개를 추가한다.
 
 * 3개의 EditText Reference를 가져온다.
@@ -216,5 +219,66 @@
     sqLiteDatabase.execSQL(sql);
     ```
 
-    
+  * Button을 눌렀을 때 EditText 3개에 입력한 값을 없애고 초기화한다.
+    ```java
+    empNameET.setText("");
+    empAgeET.setText("");
+    empMobileET.setText("");
+    ```
 
+### Record 출력
+
+* Layout을 추가한다.
+
+  * Vertical Linear에 Button을 하나 생성한다.
+    * Record를 출력하기위한 Button
+  * ScrollView를 만들고 내부에 TextView를 생성한다.
+    * Record를 출력할 TextView
+
+* Button에 대한 Click Event를 처리한다.
+
+  * Select SQL문을 작성한다.
+
+    ```java
+    String sql = "SELECT _id, name, age, mobile FROM emp";
+    ```
+
+  * Database가 열려있는지 확인한다.
+
+    ```java
+    if(sqLiteDatabase == null) {
+        Log.i("DBTest", "Database부터 생성해야함");
+        return;
+    }
+    ```
+
+  * Select문을 실행한다.
+
+    ```java
+    Cursor cursor = sqLiteDatabase.rawQuery(sql, null);
+    ```
+
+    * Select문은 execSQL이 아닌 rawQuery를 사용한다.
+    * 결과값은 Cursor객체로 받아온다.
+
+  * Cursor에서 데이터를 읽어와서 TextView에 전달한다
+
+    ```java
+    private TextView resultTV;
+    ```
+
+    ```java
+    resultTV = findViewById(R.id.resultTV);
+    ```
+
+    ```java
+    while(cursor.moveToNext()){
+        int id = cursor.getInt(0);
+        String name = cursor.getString(1);
+        int age = cursor.getInt(2);
+        String mobile = cursor.getString(3);
+    
+        String result = "Record : " + id + ", " + name + ", " + age + ", " + mobile;
+        resultTV.append(result + "\n");
+    }
+    ```
