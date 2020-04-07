@@ -368,3 +368,55 @@
     ```java
     database = helper.getWritableDatabase();
     ```
+
+## Content Provider Example
+
+> Content Provider를 사용하여 DB작업을 진행한다.
+
+### Content Provider
+
+* 하나의 App에서 관리하는 Data를 다른 App에서 접근할 수 있게 해주는 기능
+* Android App에서는 자신의 App에서 생성된 Data만 사용할 수 있다.
+  * 다른 App에서 생성된 Data에는 접근권한이 없다.
+  * 하지만 CP를 사용하면 일반적으로 Database에 접근하는 방식을 이용하여 다른 App의 Data에 접근할 수 있다.
+    * CP가 CRUD를 기반으로 하고 있기 때문에
+* AndroidManifest.xml 파일에 등록해서 사용한다.
+
+### Example
+
+* 새로운 Activity를 생성하여 진행한다.
+
+* Layout은 Helper Example 또는 Basic Example의 Layout을 복사해서 붙여넣고 구성을 시작한다.
+
+  * DB와 Table을 생성하는 LinearLayout은 삭제한다.
+  * 나머지는 각 ID를 변경한다.
+
+* Database를 이용하기 때문에 SQLiteOpenHelper Class를 만들어야한다.
+
+  ```java
+  class PersonDBHelper extends SQLiteOpenHelper {
+      PersonDBHelper(Context context) {
+          super(context, "person.db", null, 1);
+      }
+  
+      @Override
+      public void onCreate(SQLiteDatabase db) {
+          // 초기에 데이터베이스가 생성되는 시점에 Table도 같이 생성
+          String sql = "CREATE TABLE IF NOT EXISTS " +
+                  "person( _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                  "name TEXT, age INTEGER, mobile TEXT)";
+          db.execSQL(sql);
+      }
+  
+      @Override
+      public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+  
+      }
+  }
+  ```
+
+* Content Provider를 생성한다.
+
+  * New > Other > Content Provider를 생성한다.
+    * Uri 
+
