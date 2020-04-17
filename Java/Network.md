@@ -622,3 +622,136 @@
   * Textfield의 Action Event는 Enter를 쳤을때 발생한다.
   * [MultiEchoClient Code]
 
+### Chatting Programming
+
+> 하나의 Client가 Message를 보내면 모든 Client에게 Message를 전송하는 Program
+
+* 기본 골격은 위의 MultiEcho Code와 동일하므로 그대로 복사해서 사용한다.
+
+  * 단, Thread Class인 EchoRunnable의 이름을 ChatRunnable로 변경한다.
+
+* Server Code
+
+  * Thread에 의해서 공유되는 공용객체를 만들기 위한 Class를 정의한다.
+
+    ```java
+    class ChatSharedObject {
+    	// Thread에 의해서 공유되어야 하는 Data
+    	// 모든 Client에 대한 Thread를 만들기 위해 필요한 Runnable객체를 저장
+    	List<ChatRunnable> clients = new ArrayList<ChatRunnable>();
+    	
+    	// Data를 제어하기 위해 필요한 Method
+    	// 새로운 사용자가 접속했을 때 clients안에 새로운 사용자에 대한 Runnable 객체를 저장
+    	public void add(ChatRunnable r) {
+    		clients.add(r);
+    	}
+    	
+    	// 사용자가 접속을 종료했을 때 clients안에 있는 사용자를 삭제
+    	public void remove(ChatRunnable r) {
+    		clients.remove(r);
+    	}
+    	
+    	// Client가 Data를 보내줬을 때 Chat Message를 Broadcast하는 method
+    	public void broadcast(String msg) {
+    		for(ChatRunnable client : clients) {
+    			client.getPw().println(msg);
+    			client.getPw().flush();
+    		}
+    	}
+    }
+    ```
+
+  * `broadcast()`에서 사용되는 `getPw()`를 ChatRunnable에 생성한다
+
+  * 다시 main Class로 돌아와서 공용객체를 선언한다.
+
+    ```java
+    private ChatSharedObject shared = new ChatSharedObject();
+    ```
+
+  * 이제 Start Button의 Action Event처리를 수정한다.
+
+    * Runnable객체를 수정하면 된다.
+
+    * EchoRunnable을 사용하던 부분을 ChatRunnable로 변경한다.
+
+      * 이 때, ChatRunnable에서 공용객체를 가져야하므로 인자로 추가한다.
+
+        ```java
+        ChatRunnable chat = new ChatRunnable(socket, shared);
+        ```
+
+      * 마찬가지로 ChatRunnable Class에서도 ChatSharedObject 객체를 가지도록 변경한다.
+
+        ```java
+        private ChatSharedObject shared;
+        
+        ChatRunnable(Socket socket, ChatSharedObject shared){
+        		this.socket = socket;
+        		this.shared = shared;
+        ```
+
+    * 이제 공용객체의 `add()`를 이용하여 새로운 Client를 추가한다.
+
+    * 또한 `execute()`를 이용하여 Thread를 실행한다.
+
+  * ChatRunnable의 `run()`을 조금 수정한다.
+
+    * 문자열을 전달하는 PrintWriter를 사용하지않는다.
+    * 모든 Client에게 문자열을 전달하기위해 공용객체의 `broadcast()`를 사용한다.
+
+* Client Code
+
+  * 문자열을 받는 부분을 Thread로 변경해야한다.
+
+    * inner Class로 생성한다
+
+      ```java
+      class ReceiveRunnable implements Runnable {
+      	private BufferedReader br;
+      		
+      	ReceiveRunnable(BufferedReader br) {
+      		this.br = br;
+      	}
+      	
+      	@Override
+      	public void run() {
+      		String msg = "";
+      		try {
+      			while(true) {
+      				msg = br.readLine();
+      				if(msg == null)
+      					break;
+      				printMSG(msg);
+      			}
+      			
+      		} catch (IOException e) {
+      			e.printStackTrace();
+      		}
+      	}
+      }
+      ```
+
+      * `printMSG()`를 사용하기 위해서 inner Class로 생성했다.
+
+  * TextField에서 진행되는 Action Event를 수정한다.
+
+    * String을 가져와서 Socket으로 전송하는 부분만을 진행한다.
+
+      ```java
+      String msg = tf.getText();
+      pr.println(msg);
+      pr.flush();
+      tf.clear();
+      ```
+
+  * Button의 Action Event를 수정한다.
+
+    * 위에서 inner Class로 생성한 Receive Thread 객체를 생성하고 실행한다.
+
+      ```java
+      ReceiveRunnable r = new ReceiveRunnable(br);
+      es.execute(r);
+      ```
+
+      
