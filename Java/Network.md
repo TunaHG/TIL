@@ -345,3 +345,280 @@
     6. 서버에서 수신한 메시지를 콘솔에 출력함
     7. DatagramSocket의 close()를 호출하여 연결을 해제함
   * [UDPEchoClient Code](https://github.com/TunaHG/Eclipse_Workspace/blob/master/Java_Multicampus/src/Network/UDPEchoClient.java)
+
+### Multi Echo Programming
+
+> 위에서 잠깐 진행한 TCP기반 Multi Thread Programming을 Javafx를 이용한 UI와 같이 진행한다.
+
+* [Javafx Package](https://github.com/TunaHG/Eclipse_Workspace/tree/master/Java_Multicampus/lib)에서 `.7z` 파일을 다운로드 받아서 Eclipse의 Project에 Library로 등록한다.
+
+* Server Class를 먼저 생성한다.
+
+  * Javafx의 하위 클래스인 Application을 상속받는다.
+
+  * 필요한 Field를 선언한다.
+
+    ```java
+    private TextArea ta;
+    private Button startBtn, stopBtn;
+    ```
+
+    * 물론 TextArea와 Button은 Javafx의 하위 클래스를 import 해야한다.
+
+  * 해당 Server가 여러 개의 Client의 접속을 받을 것이므로 Thread를 이용한다.
+
+    * 필요한 개수만큼 Thread를 가지고 있는 Thread Pool을 생성한다.
+
+      ```java
+      private ExecutorService es = Executors.newCachedThreadPool();
+      ```
+
+  * Server Program이며 TCP로 진행할 것이므로 ServerSocket을 선언한다.
+
+    ```java
+    private ServerSocket server;
+    ```
+
+  * TextArea에 appendText()를 사용하여 text를 추가하는데, 이 때 Thread를 사용한다.
+
+    ```java
+    private void printMSG(String msg){
+        // Thread를 사용한 Text추가 Code
+    }
+    ```
+
+    * Platform.runLater()을 사용한다. 이는 Thread를 사용하는 방식이므로 Runnable 객체가 필요하다
+
+    * 일반적인 형태는 다음과 같다.
+
+      ```java
+      Platform.runLater(new Runnable() {
+      	@Override
+      	public void run() {
+      		ta.appendText(msg + "\n");
+      	}
+      });
+      ```
+
+      * 하지만 요즘 Java에서는 위와같은 형태는 지양한다.
+
+    * Lambda식을 사용하여 간단하게 표현한다.
+
+      ```java
+      Platform.runLater(() -> {
+      	ta.appendText(msg + "\n");
+      });
+      ```
+
+  * main method에서는 간단하게 javafx 프로그램을 실행시킨다.
+
+    ```java
+    public static void main(String[] args) {
+    	launch();
+    }
+    ```
+
+  * Application을 상속받으며 `start()`를 Overriding해야한다.
+
+    * `start()`에서는 UI를 구성하고, 각 UI의 Event를 처리한다.
+
+    * UI는 Layout을 담당하는 Pane을 활용한다.
+
+    * 화면을 동,서,남,북,중앙으로 구성하는 BorderPane을 먼저 이용한다.
+
+      ```java
+      BorderPane root = new BorderPane();
+      root.setPrefSize(700, 500);
+      ```
+
+    * TextArea를 생성하여 BorderPane의 중앙에 부착한다.
+
+      ```java
+      ta = new TextArea();
+      root.setCenter(ta);
+      ```
+
+    * 두 개의 버튼을 각각 생성한다.
+
+      ```java
+      startBtn = new Button("Echo Server Start");
+      startBtn.setPrefSize(150, 40);
+      startBtn.setOnAction(e -> {
+      	// Event 처리 코드
+      			
+      });
+      		
+      stopBtn = new Button("Echo Server Stop");
+      stopBtn.setPrefSize(150, 40);
+      stopBtn.setOnAction(e -> {
+      	// Event 처리 코드
+      });
+      ```
+
+      * Event 처리 코드는 이후에 추가한다.
+
+    * 두 버튼을 가로로 붙여놓기 위해서 FlowPane을 이용한다.
+
+      * BorderPane은 동, 서, 남, 북, 중앙으로 구분되기 때문에 하단 부분에 두 개의 버튼을 같이 붙여놓기 위해서 이용한다.
+
+      * FlowPane을 생성하고 크기를 설정한다.
+
+        ```java
+        FlowPane flowpane = new FlowPane();
+        flowpane.setPrefSize(700, 40);
+        ```
+
+      * 상하좌우 여백을 설정한다.
+
+        ```java
+        flowpane.setPadding(new Insets(10, 10, 10, 10));
+        ```
+
+      * 이대로 화면을 구성하면 두 버튼이 붙어있게 되므로 Component 사이의 공간을 설정한다.
+
+        ```java
+        flowpane.setHgap(10);
+        ```
+
+      * FlowPane이 구성됬으니 두 버튼을 FlowPane에 부착한다.
+
+        ```java
+        flowpane.getChildren().add(startBtn);
+        flowpane.getChildren().add(stopBtn);
+        ```
+
+      * FlowPane이 완성됬으니 BorderPane의 아래 부분에 FlowPane을 부착한다.
+
+        ```java
+        root.setBottom(flowpane);
+        ```
+
+    * 화면의 구성이 완료됬으니 창을 설정한다.
+
+      * 화면을 의미하는 Scene을 생성한다.
+
+        ```java
+        Scene scene = new Scene(root);
+        ```
+
+        * Layout인 BorderPane을 이용한다.
+
+      * `start()`에서 인자로가지는 Stage객체의 변수명을 arg0에서 primaryStage로 변경한다.
+
+      * 해당 Stage를 이용하여 창을 설정하고 보여준다.
+
+        ```java
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Multi Echo Server");
+        primaryStage.setOnCloseRequest(e -> {
+        	// x버튼을 눌러 종료시 발생하는 Event
+        });
+        primaryStage.show();
+        ```
+
+  * Start Button의 Event 처리 Code를 작성한다.
+
+    * Client의 요청이 올 때마다 요청을 받을 것이므로 무한 Loop를 돌려야한다.
+
+      ```java
+      try {
+      	server = new ServerSocket(50000);
+      	while(true) {
+      		server.accept();
+      		printMSG("[New Client Connect]");
+      	}
+      } catch (IOException e1) {
+      	e1.printStackTrace();
+      }
+      ```
+
+      * 이렇게 구성하면 무한 Loop에 진입한 후 UI가 마비된다.
+      * UI가 마비되어 문제가 발생하는 것을 방지하기 위해 Thread를 사용한다.
+
+    * Runnable Interface를 구현한 객체를 생성한다.
+
+      ```java
+      Runnable runnable = () -> {
+      	try {
+      		server = new ServerSocket(9999);
+      		while(true) {
+      			Socket socket = server.accept();
+      			printMSG("[New Client Connect]");
+      		}
+      	} catch (IOException e1) {
+      		e1.printStackTrace();
+      	}				
+      };
+      ```
+
+    * Client와 연결된 Sockect을 가지고 별도의 Thread가 실행되어야 한다.
+
+      * 해당 Thread에서 Echo의 동작을 진행한다.
+
+      * 별도의 Thread를 외부 Class로 생성한다.
+
+        ```java
+        class EchoRunnable implements Runnable {
+        	private Socket socket;
+        	private BufferedReader br;
+        	private PrintWriter pw;
+        	
+        	EchoRunnable(Socket socket){
+        		this.socket = socket;
+        		try {
+        			this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        			this.pw = new PrintWriter(socket.getOutputStream());
+        		} catch (IOException e) {
+        			e.printStackTrace();
+        		}
+        	}
+        	
+        	@Override
+        	public void run() {
+        		// Thread가 Client와 어떻게 동작하는지를 여기에 명시
+        		String line = "";
+        		try {
+        			while((line = br.readLine()) != null) {
+        				if(line.equals("@EXIT"))
+        					break;
+        				pw.println(line);
+        				pw.flush();
+        			}
+        		} catch (Exception e) {
+        			// TODO: handle exception
+        		}
+        	}
+        }
+        ```
+
+      * Thread객체를 생성한다.
+
+        ```java
+        EchoRunnable r = new EchoRunnable(socket);
+        ```
+
+      * Thread를 실행할 때는 Thread Pool인 ExecutorService객체로 실행한다.
+
+        ```java
+        es.execute(r);
+        ```
+
+    * Runnable 객체의 내부구현이 끝났으니 Runnable 객체 또한 실행시킨다.
+
+      ```java
+      es.execute(runnable);
+      ```
+
+  * [MultiEchoServer Code]
+
+* Client Class의 기본은 Server와 동일하다.
+
+  * Client는 기본 코드와 크게 다르지않고 주의할 점 몇개만 보면된다.
+  * UI는 TextArea와 Button, 텍스트를 입력할 TextField로 구성된다.
+  * 주의할점은 Textfield를 활성화시키고 비활성화시키는 점이다.
+  * Button의 Click Event는 Socket을 활성화한다.
+    * Input과 Output도 생성한다.
+    * Textfield를 활성화한다.
+  * Textfield의 Action Event는 Enter를 쳤을때 발생한다.
+  * [MultiEchoClient Code]
+
