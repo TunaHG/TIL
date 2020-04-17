@@ -12,6 +12,8 @@
 ## [JAVA](./Java)
 
 > MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+>
+> Java의 기본내용에 대한 학습
 
 * [Basic Java](./Java/Basic_Java)
 * [Database](./Java/DataBase)
@@ -21,13 +23,17 @@
 
 > MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
 >
-> 2020/03/17 ~
+> 2020/03/17 ~ 2020/04/10
+>
+> Android Studio를 활용한 Android 개발에 대한 학습
 
 ## [Python](./Python)
 
 > MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
 >
 > HappyHacking 특강
+>
+> 간단한 Python과 Flask를 활용한 Web, Telegram을 사용한 챗봇 학습
 
 * [Basic Python](./Python/Python_Chatbot/Basic)
 * [Crawling](./Python/Python_Chatbot/Crawling)
@@ -39,6 +45,8 @@
 > MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
 >
 > HappyHacking 특강
+>
+> Git을 이용하는 방법에 대한 학습
 
 * [Basic Git Usage](./Git/Git.md)
 * [Commit Tip](./Git/Commit_Tip.md)
@@ -56,14 +64,24 @@
 ## [Web](./Web)
 
 > MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+>
+> HTML, CSS, Javascript 등의 Web관련 기술 학습
 
 ## [Spring](./Spring)
 
 > MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+>
+> Spring MVC, Mybatis 등 Web 기술 학습
 
 ## [R](R)
 
 > MultiCampus 국비지원교육 빅데이터를 활용한 IoT 시스템 개발(Feat. 스마트시티 프로젝트)
+>
+> R을 활용한 EDA 학습
+
+## [Interview](Interview)
+
+> 개발자 기술면접에서 나올 수 있는 질문과 그에 대한 내용을 정리
 
 ## 기타
 
