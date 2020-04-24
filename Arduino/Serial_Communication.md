@@ -13,7 +13,9 @@
   * RXTXcomm.jar파일을 붙여넣는다.
   * 해당 Project의 Java Build Path로 진입하여 Add Jar를 통해 해당 jar파일을 Library로 등록한다.
 
-## Eclipse
+## Using Thread
+
+### Eclipse
 
 > Eclipse부터 작업을 진행한다.
 
@@ -99,3 +101,174 @@
 
     * 첫 번째 인자는 Arduino의 보드레이트이다.
     * 2, 3, 4번째 인자는 전송비트, 중단비트, 패리티를 의미하는데 보통 위의 코드를 사용한다.
+
+* 데이터 통신을 위해 Stream을 생성한다.
+
+  * Serial 통신에서는 Byte방식으로 통신하기 때문에 기본 Stream을 사용한다.
+
+  ```java
+  InputStream in = serialPort.getInputStream();
+  OutputStream out = serialPort.getOutputStream();
+  ```
+
+* Thread를 이용해서 Arduino로부터 들어오는 데이터를 반복적으로 받는다.
+
+  * Anonymous Inner Class를 사용한다.
+
+  ```java
+  Thread t = new Thread(new Runnable() {
+  	@Override
+  	public void run() {
+  		
+  	}
+  });
+  t.start();
+  ```
+
+  * Byte방식으로 들어오므로 Byte배열을 생성한다.
+
+    ```java
+    byte[] buffer = new byte[1024];
+    ```
+
+    * 데이터가 얼마나 들어오는지 모르기때문에 적당히 큰값을 잡는다.
+
+  * InputStream으로 들어온 Byte를 읽어서 Byte배열에 넣는 과정을 반복한다.
+  
+    ```java
+    int len = -1;
+    try {
+    	while((len = in.read(buffer)) != -1) {
+    		System.out.print("Data: " + new String(buffer, 0, len));
+    	}
+    } catch (Exception e) {
+    	e.printStackTrace();
+  }
+    ```
+  
+    * len은 Data의 Size를 의미한다. -1은 데이터가 존재하지 않는다는 의미다.
+    * `new String()`은 buffer배열중 0번째부터 len번째까지 출력한다는 의미다.
+  
+* [Code]
+
+### Arduino
+
+* `setup()`을 다음과 같이 구성한다.
+
+  ```c
+  void setup() {
+    Serial.begin(9600);
+  }
+  ```
+
+  * 9600 보드레이트를 지정한다.
+
+* `loop()`를 다음과 같이 구성한다.
+
+  ```c
+  void loop() {
+    Serial.println("Hello World");
+    delay(1000);
+  }
+  ```
+
+  * 1초마다 Serial 통신으로 Hello World를 전송하도록 설정한다.
+
+* 업로드하여 확인한다.
+
+  * Arduino보드에서 TX라고 쓰여있는 부분이 1초마다 깜박인다.
+  * TX가 데이터를 전송을 의미한다.
+  * RX는 데이터 수신을 의미한다.
+
+## Using Event
+
+### Eclipse
+
+* [Using Thread](#Using Thread)의 코드에서 Thread부분만 제거하고 나머지는 동일하게 구성한다.
+
+  * Thread가 들어있던 부분에 Event를 이용한 처리를 넣을 예정이다.
+
+* 이벤트를 처리하는 Listener객체를 만들기 위한 Class를 정의해야 한다.
+
+  * `SerialPortEventListener`라는 인터페이스를 상속받는다.
+
+    ```java
+    class SerialListener implements SerialPortEventListener {}
+    ```
+
+  * 추상메소드인 `serialEvent()`를 Overriding한다.
+
+    * 이벤트가 발생하면 호출되는 method이다.
+
+    ```java
+    @Override
+    public void serialEvent(SerialPortEvent arg0) {
+    
+    }
+    ```
+
+* 이벤트 처리를 `serialPort`에 추가한다.
+
+  ```java
+  serialPort.addEventListener(new SerialListener(in));
+  ```
+
+  * Event처리 객체가 Arduino로부터 들어오는 Data를 받아서 처리를 진행해야 한다.
+
+    * 인자로 InputStream을 가진다.
+
+  * 해당 Class에도 전역변수 선언과 생성자 선언을 진행한다.
+
+    ```java
+    private InputStream in;
+    	
+    SerialListener(InputStream in){
+    	this.in = in;
+    }
+    ```
+
+  * Data가 들어왔을 때, Event 처리가 진행되도록 신호를 주는 method를 설정한다.
+
+    ```java
+    serialPort.notifyOnDataAvailable(true);
+    ```
+
+    * 해당 코드는 `addEventListener()`아래에 작성한다.
+
+* Overriding했던 Event처리 method를 구성한다.
+
+  * EventType을 체크한다.
+
+    ```java
+    if(arg0.getEventType() == SerialPortEvent.DATA_AVAILABLE)
+    ```
+
+  * InputStream에 데이터가 존재하는지 확인한다.
+
+    ```java
+    int k = in.available();
+    ```
+
+    * `available()`의 return값은 Data의 Size를 의미하므로 k는 Data의 크기를 의미한다.
+
+  * Data의 size를 알기 때문에 size만큼의 byte[]를 선언한다.
+
+    ```java
+    byte[] data = new byte[k];
+    ```
+
+  * InputStream의 데이터를 읽어와서 byte[]에 저장한다.
+
+    ```java
+    in.read(data, 0, k);
+    ```
+
+  * 저장된 데이터를 출력한다.
+
+    ````java
+    System.out.println("Data: " + data);
+    ````
+
+### Arduino
+
+* Using Thread와 동일하다.
