@@ -345,9 +345,247 @@
 
   * Activity가 뜨는 순간, Eclipse와 Network 통신을 진행한다.
 
+    * Activity(UI Thread)에서 Network처리 코드를 사용할 수 없다. (ANR 문제)
+
+    * Thread를 사용한다.
+
+    * Runnable 객체를 생성한다.
+
+      ```java
+      Runnable runnable = new Runnable(){
+          @Override
+          public void run() {
+              try {
+                  Socket socket = new Socket("70.12.229.25", 9998);
+              } catch (IOException e){
+                  Log.i("ArduinoTest", e.toString());
+              }
+          }
+      };
+      ```
+
+    * Thread를 생성하고 실행한다.
+
+      ```java
+      Thread t = new Thread(runnable);
+      t.start();
+      ```
+
+    * socket을 활용하여 Data 송수신 통로를 생성한다.
+
+      ```java
+      // onCreate() 외부
+      private Socket socket;
+      private BufferedReader br;
+      private PrintWriter pw;
+      
+      // Thread 내부
+      socket = new Socket("70.12.229.25", 9998);
+      br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      pw = new PrintWriter(socket.getOutputStream());
+      ```
+
+  * LED On/Off Button에 pw를 사용하면 문제가 발생한다.
+
+    * pw역시 Network를 사용하기 때문이다.
+    * Thread가 사용할 공용객체를 활용하여 문제를 해결한다.
+
+  * Thread가 사용할 공용객체를 만들기 위한 Class를 inner class로 선언한다.
+
+    * 해당 Class는 내부에 메시지가 존재하면 Thread를 사용하여 전송하고 아니라면 메시지가 들어오길 기다리는 역할을 수행한다.
+
+    ```java
+    class SharedObject {
+        private Object MONITOR = new Object();
+        private LinkedList<String> list = new LinkedList<>();
+    
+        SharedObject() {}
+    
+        public void put(String msg){
+            synchronized (MONITOR) {
+                list.addLast(msg);
+                MONITOR.notify();
+                Log.i("ArduinoTest", "공용개체에 데이터 입력");
+            }
+        }
+    
+        public String pop(){
+            String result = "";
+            synchronized (MONITOR) {
+                if (list.isEmpty()) {
+                    try {
+                        MONITOR.wait();
+                        result = list.removeFirst();
+                    } catch (Exception e) {
+                        Log.i("ArduinoTest", e.toString());
+                    }
+                } else {
+                    result = list.removeFirst();
+                    Log.i("ArduinoTest", "공용객체에서 데이터 추출");
+                }
+            }
+            return result;
+        }
+    }
+    ```
+
+    * Thread가 진입했을 때, MONITOR 객체를 활용하여 동기화를 설정한다.
+      * list안에 원소가 없다면 MONITOR가 wait()가 된다.
+      * 해당 Line에 진입하면 다른 위치에서 MONITOR가 notify()될 때까지 잠시 멈추게 된다.
+
+  * `onCreate()`에 final변수로 공용객체를 선언한다.
+
+    ```java
+    final SharedObject shared = new SharedObject();
+    ```
+
+  * Thread 내부에 무한Loop로 공용객체의 메시지 전송을 진행한다.
+
+    ```java
+    while(true){
+        String msg = shared.pop();
+        pw.println(msg);
+        pw.flush();
+    }
+    ```
+
+  * LED ON/OFF Button의 Event처리를 진행한다.
+
+    ```java
+    shared.put("LED_ON");
+    ```
+
+    * OFF는 메시지만 LED_OFF로 변경해주면 된다.
+
+  * [Arduino Activity Java Code]
+
 ### Eclipse
 
+* Server Program이 될 Class하나를 생성한다.
 
+* ServerSocket이 Thread로 구성되도록 만들 것이다.
+
+  * Runnable 객체를 생성한다.
+
+    ```java
+    Runnable runnable = new Runnable() {
+    	@Override
+    	public void run() {
+    		
+    	}
+    };
+    ```
+
+  * Thread를 생성하고 실행한다.
+
+    ```java
+    Thread t = new Thread(runnable);
+    t.start();
+    ```
+
+* Runnable객체 내부에 Android와의 Socket 통신을 구성한다.
+
+  ```java
+  ServerSocket server = new ServerSocket(9998);
+  System.out.println("ServerSocket Created");
+  Socket socket = server.accept();
+  System.out.println("Client Connected");
+  					
+  BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+  PrintWriter pw = new PrintWriter(socket.getOutputStream());
+  					
+  String msg = "";
+  while(true) {
+  	if((msg = br.readLine()) != null) {
+  		if(msg.equals("LED_ON")) {
+  			System.out.println("Turn on LED");
+  		}
+  		if(msg.equals("LED_OFF")) {
+  			System.out.println("Turn off LED");
+  		}
+  	}
+  }
+  ```
+
+  * `System.out.println()`은 이후 전부 Arduino와의 통신으로 변경한다.
+
+* main method에 Arduino와의 Serial 통신을 구성한다.
+
+  ```java
+  CommPortIdentifier portIdentifier = null;
+  try {
+  	portIdentifier = CommPortIdentifier.getPortIdentifier("COM9");
+  			
+  	if(portIdentifier.isCurrentlyOwned()) {
+  		System.out.println("포트가 사용중입니다.");
+  	} else {
+  		CommPort commPort = portIdentifier.open("PORT_OPEN", 2000);
+  		if(commPort instanceof SerialPort) {
+  			SerialPort serialPort = (SerialPort)commPort;
+  			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+  					
+  			InputStream in = serialPort.getInputStream();
+  			OutputStream out = serialPort.getOutputStream();
+  		} else {
+  			System.out.println("Serial Port만 이용할 수 있다.");
+  		}
+  	}
+  } catch (Exception e) {
+  	e.printStackTrace();
+  }
+  ```
+
+* OutputStream은 사용하기 힘드므로 BufferedWriter를 이용한다.
+
+  ```java
+  static BufferedWriter bw;
+  
+  // OutputStream 생성 위치
+  bw = new BufferedWriter(new OutputStreamWriter(out));
+  ```
+
+* BufferedWrtier를 이용하여 Arduino에 데이터를 전송한다.
+
+  ```java
+  bw.write(msg, 0, msg.length());
+  bw.flush();
+  ```
+
+  * Runnable 객체 내부에서 `System.out.println()`부분에 추가한다.
+  * msg의 전송길이를 지정해줘야 하기 때문에 위와같이 작성하였다.
+
+* [Eclipse Server Code]
 
 ### Arduino
 
+* `setup()`을 다음과 같이 구성한다.
+
+  ```c
+  void setup() {
+    // put your setup code here, to run once:
+    Serial.begin(9600);
+    pinMode(13, OUTPUT);
+  }
+  ```
+
+* `loop()`를 다음과 같이 구성한다.
+
+  ```c
+  void loop() {
+    // put your main code here, to run repeatedly:
+    if(Serial.available()){
+      String msg = Serial.readStringUntil('\n');
+      if(msg == "LED_ON"){
+        digitalWrite(13, HIGH);
+      } else {
+        digitalWrite(13, LOW);
+      }
+    }
+  }
+  ```
+
+  * `readStringuntil()`을 통해 `\n`이 나오기 전까지의 String을 가져온다.
+
+* Arduino의 회로를 다음과 같이 구성한다.
+
+  ![image-20200423152559044](image/image-20200423152559044.png)
