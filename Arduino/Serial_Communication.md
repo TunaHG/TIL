@@ -272,3 +272,82 @@
 ### Arduino
 
 * Using Thread와 동일하다.
+
+## Communication with Android
+
+> Android와 컴퓨터간의 Network통신을 진행하고, 컴퓨터와 Arduino간의 Serial통신을 진행한다.
+
+### Android
+
+* MainActivity에서 새로운 Activity로 이동하는 Button과 해당 Button의 Action을 처리한다.
+
+  * Layout에 Button생성
+
+    ```xml
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Arduino의 LED 제어 실습(수업)"
+        android:id="@+id/ArduinoBtn"/>
+    ```
+
+  * Activity Java에 Button의 Event처리
+
+    ```java
+    Button ArduinoBtn = findViewById(R.id.ArduinoBtn);
+    
+    ArduinoBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent i = new Intent();
+            ComponentName cname = new ComponentName("com.example.androidlectureexample",
+                    "com.example.androidlectureexample.ArduinoActivity");
+            i.setComponent(cname);
+            startActivity(i);
+        }
+    });
+    ```
+
+* ArduinoActivity로 새로운 Activity생성
+
+* ArduinoActivity의 Layout 구성
+
+  * 상태를 출력할 TextView, LED를 켤 Button, LED를 끌 Button으로 구성
+  * [Arudino Activity Layout]
+
+* ArduinoActivity의 Java 구성
+
+  * 각 Widget의 객체 생성 및 Event 기본틀 형성
+
+    ```java
+    // onCreate() 외부
+    private TextView statusTV;
+    
+    // onCreate() 내부
+    statusTV = findViewById(R.id.statusTV);
+    
+    Button ledOnBtn = findViewById(R.id.ledOnBtn);
+    ledOnBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+    
+        }
+    });
+    
+    Button ledOffBtn = findViewById(R.id.ledOffBtn);
+    ledOffBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            
+        }
+    });
+    ```
+
+  * Activity가 뜨는 순간, Eclipse와 Network 통신을 진행한다.
+
+### Eclipse
+
+
+
+### Arduino
+
