@@ -83,6 +83,10 @@
 
 > 개발자 기술면접에서 나올 수 있는 질문과 그에 대한 내용을 정리
 
+## [Certificate](Certificate)
+
+> 자격증을 취득하기 위해 공부한 내용들을 정리
+
 ## 기타
 
 * [Basic Markdown Usage](./Markdown/markdown.md)
