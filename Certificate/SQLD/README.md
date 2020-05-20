@@ -38,38 +38,46 @@
 
 ### 제 1장 SQL 기본
 
-#### 제 1절 관계형 데이터베이스 개요
+#### [제 1절 관계형 데이터베이스 개요](Section_2_1_1.md)
 
-#### 제 2절 DDL(Data Definition Language)
+#### [제 2절 DDL(Data Definition Language)](Section_2_1_2.md)
 
-#### 제 3절 DML(Data Manipulation Language)
+#### [제 3절 DML(Data Manipulation Language)](Section_2_1_3.md)
 
-#### 제 4절 TCL(Transaction Control Language)
+#### [제 4절 TCL(Transaction Control Language)](Section_2_1_4.md)
 
-#### 제 5절 Where절
+#### [제 5절 Where절](Section_2_1_5.md)
 
-#### 제 6절 함수(Function)
+#### [제 6절 함수(Function)](Section_2_1_6.md)
 
-#### 제 7절 Group By, Having 절
+#### [제 7절 Group By, Having 절](Section_2_1_7.md)
 
-#### 제 8절 Order By 절
+#### [제 8절 Order By 절](Section_2_1_8.md)
 
-#### 제 9절 조인(Join)
+#### [제 9절 조인(Join)](Section_2_1_9.md)
 
 ### 제 2장 SQL 활용
 
-#### 제 1절 표준 조인(Standard Join)
+#### [제 1절 표준 조인(Standard Join)](Section_2_2_1.md)
 
-#### 제 2절 집합 연산자(Set Operator)
+#### [제 2절 집합 연산자(Set Operator)](Section_2_2_2.md)
 
-#### 제 3절 계층형 질의와 셀프 조인
+#### [제 3절 계층형 질의와 셀프 조인](Section_2_2_3.md)
 
-#### 제 4절 서브쿼리
+#### [제 4절 서브쿼리](Section_2_2_4.md)
 
-#### 제 5절 그룹함수(Group Function)
+#### [제 5절 그룹함수(Group Function)](Section_2_2_5.md)
 
-#### 제 6절 윈도우 함수(Window Function)
+#### [제 6절 윈도우 함수(Window Function)](Section_2_2_6.md)
 
-#### 제 7절 DCL(Data Control Language)
+#### [제 7절 DCL(Data Control Language)](Section_2_2_7.md)
 
-#### 제 8절 절차형 SQL
+#### [제 8절 절차형 SQL](Section_2_2_8.md)
+
+### 제 3장 SQL 최적화 기본 원리
+
+#### [제 1절 옵티마이저와 실행계획](Section_2_3_1.md)
+
+#### [제 2절 인덱스 기본](Section_2_3_2.md)
+
+#### [제 3절 조인 수행 원리](Section_2_3_3.md)
