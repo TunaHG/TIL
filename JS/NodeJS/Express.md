@@ -34,8 +34,9 @@
 ## Start
 
 * Express를 학습할 새로운 폴더 생성
-  * `npm init -y`를 통해 `package.json`파일 생성
-
+  
+* `npm init -y`를 통해 `package.json`파일 생성
+  
 * express를 진행하기 위해 `npm install express`를 진행하여 express를 설치
 
 * `app.js`파일 생성
@@ -362,11 +363,146 @@
 
 ## Global View Variable
 
+* Login 상태를 관리할 수 있는 변수
+
+* `app.js` 파일 수정
+
+  * Middleware Setting에서 `isLogin`변수를 넘겨줌
+
+  ```js
+  app.use((req, res, next) => {
+      app.locals.isLogin = true;
+      next();
+  });
+  ```
+
+* `base.html` 파일 수정
+
+  ```html
+  {% if isLogin %}
+  	로그인 중
+  {% else %}
+  	로그인이 안되어 있음
+  {% endif %}
+  ```
+
+* `localhost:3000/admin/products`로 접속해보면 '로그인 중'이라는 표시가 나타나 있음
+
+  * `app.js`의 `isLogin`을 `false`로 변경하면 '로그인이 안되어 있음'이라는 표시로 변경
+
 ## 404, 500 Error Handling
 
-## nunjucks Macro
+* 404 Error : 페이지가 없습니다.
 
-## Express 권장 구조
+  * 작성한 Routing페이지가 존재하지 않을 때 발생하는 Error페이지
+
+  * `app.js` 파일 수정
+
+    ```js
+    app.use((req, res, _) => {
+        res.status(400).render('common/404.html');
+    });
+    ```
+
+  * `common/404.html` 파일 생성
+
+    ```html
+    {% set title = "페이자가 없습니다" %}
+    {% extends "layout/base.html" %}
+    
+    {% block content -%}
+    
+    
+    <div class="container">
+        <div class="page_area">
+            <h1>페이지가 없습니다.</h1>
+        </div>
+    </div>
+    
+    {%- endblock %} 
+    ```
+
+* 500 Error
+
+  * 서버에서 에러가 발생했을 때 나타나는 Error 페이지
+
+  * `app.js` 파일 수정
+
+    ```js
+    app.use((req, res, _) => {
+        res.status(500).render('common/500.html');
+    });
+    ```
+
+  * `common/500.html` 파일 생성
+
+    ```html
+    {% set title = "에러가 발생했습니다" %}
+    {% extends "layout/base.html" %}
+    
+    {% block content -%}
+    
+    
+    <div class="container">
+        <div class="page_area">
+            <h1>에러가 발생했습니다.</h1>
+        </div>
+    </div>
+    
+    {%- endblock %} 
+    ```
+
+## Nunjucks Macro
+
+* `base.html`의 `<body>`내의 `<div>`를 수정
+
+  ```html
+  <div class="container" style="padding-top: 10px;">
+      <nav class="navbar navbar-inverse"> 
+          <div class="container-fluid"> 
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+                  <ul class="nav navbar-nav">
+  
+                      {% from "macro/link.html" import link %}
+                      {{ link( '/admin/products' , "List" , req_path ) }}
+                      {{ link( '/admin/products/write' , "Write" , req_path ) }}
+  
+                      <li class="active">
+                          <a href="/admin/products">List</a>
+                      </li>
+                      <li><a href="/admin/products/write">Write</a></li>
+                  </ul> 
+              </div> 
+          </div> 
+      </nav>
+  </div>    
+  ```
+
+* `app.js`의 Middleware Setting을 수정
+
+  ```js
+  app.use((req, res, next) => {
+      app.locals.isLogin = true;
+      app.locals.req_path = req.path;
+      next();
+  });
+  ```
+
+* `template/macro/link.html` 파일 생성
+
+  ```html
+  {#
+      href : 링크
+      text : 링크안에 들어갈 텍스트
+      current_url : 현재 URL
+  #}
+  
+  {% macro link(  href , text , current_url ) %}
+      <li {% if href == current_url  %} class="active" {% endif %}>
+          <a href="{{ href }}">{{ text }}</a>
+      </li>
+  {% endmacro %} 
+  ```
 
 # 참고
 
