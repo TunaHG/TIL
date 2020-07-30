@@ -15,11 +15,11 @@
 * 기본 쉘 변경
 
   ```bash
+  # which zsh로 위치를 확인함
+  $ which zsh
+  
   # which zsh로 확인한 위치가 /usr/bin/zsh인 경우
   $ chsh -s /usr/bin/zsh
-  
-  # 위치를 확인함과 동시에 해당 경로로 변경
-  $ chsh -s 'which zsh'
   ```
 
 * 재부팅하면 ZSH 환경 설정
@@ -116,6 +116,9 @@
   ```
 
   * `python-pip`를 찾지 못한다는 에러가 발생하면 `python3-pip`로 수정하여 진행
+  * Error
+    * `python3-pip`를 진행했는데 `Package 'python3-pip' has no installation candidate`로 설치되지 않음
+    * `sudo apt-get update`를 먼저 진행하고 다시 시도해볼것
 
 * github url을 이용하여 pip install
 
