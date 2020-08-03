@@ -30,3 +30,9 @@
 * 원하는 Theme를 선택한 후, `profiles`의 `defaults`에 `"colorScheme"`를 입력하여 모든 탭에 대하여 지정
 
   * 혹은 `list`의 각 탭에 대하여 `"colorScheme"`를 따로 지정
+
+## Ubuntu Password Setting
+
+> Ubuntu의 비밀번호를 까먹었을 때 재설정 방법
+
+* [Site](https://see-ro-e.tistory.com/156)
