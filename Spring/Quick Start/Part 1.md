@@ -156,7 +156,158 @@ AbstractApplicationContext factory = new GenericXmlApplicationContext("applicati
 
   > `<import>` 태그를 이용하여 여러 스프링 설정 파일을 포함함으로써 한 파일에 작성하는 것과 같은 효과를 낼 수 있다.
 
-  
+
+## Dependency Injection
+
+의존성(Dependency) 관계란 객체와 객체의 결합 관계이다.
+즉, 하나의 객체에서 다른 객체의 변수나 메소드를 이용해야 한다면 이용하려는 객체에 대한 객체 생성과 생성된 객체의 레퍼런스 정보가 필요하다.
+
+Spring F/W의 가장 중요한 특징은 객체의 생성과 의존관계를 컨테이너가 자동으로 관리한다는 점이다.
+이러한 IoC를 Spring은 **Dependency Lookup**과 **Dependency Injection** 두 가지 형태로 지원한다.
+
+* **Dependency Lookup**
+  컨테이너가 애플리케이션 운용에 필요한 객체를 생성하고 클라이언트는 컨테이너가 생성한 객체를 검색(Lookup)하여 사용하는 방식이다.
+  실제 애플리케이션 개발과정에서는 사용하지 않는다.
+
+* **Dependency Injection**
+
+  객체 사이의 의존관계를 스프링 설정 파일에 등록된 정보를 바탕으로 컨테이너가 자동으로 처리해준다.
+  따라서 의존성 설정을 바꾸고 싶을 때 프로그램 코드를 수정하지 않고 스프링 설정 파일 수정만으로 변경사항을 적용할 수 있어 유지보수가 향상된다.
+  Setter 메소드를 기반으로 하는 **Setter Injection**과 생성자를 기반으로 하는 **Constructor Injection**으로 나뉜다.
+
+  * **Constructor Injection**
+    스프링 컨테이너는 XML 설정 파일에 등록된 클래스를 찾아서 객체를 생성할 때 기본적으로 매개변수가 없는 기본(default) 생성자를 호출한다.
+    하지만 다른 생성자를 호출하도록 설정할 수 있는데, 이를 이용하여 **Constructor Injection**을 처리한다.
+    생성자 인젝션을 사용하면 생성자의 매개변수로 의존관계에 있는 객체의 주소 정보를 전달할 수 있다.
+    생성자 인젝션을 위해서는 `<bean>` 등록 설정에서 시작 태그와 종료 태그 사이에 `<constructor-arg>` 엘리먼트를 추가한다.
+    그리고 생성자 인자로 전달할 객체의 아이디를 `<constructor-arg>` 엘리먼트에 ref 속성으로 참조한다.
+
+    ```xml
+    <bean id="tv" class="package.class">
+    	<constructor-arg ref="sony"></constructor-arg>
+    </bean>
+    <bean id="sony" class="package.class"></bean>
+    ```
+
+    스프링 컨테이너는 기본적으로 bean이 등록된 순서대로 객체를 생성하며, 모든 객체는 기본 생성자 호출을 원칙으로 한다.
+    그런데 생성자 인젝션으로 의존성 주입될 sony가 먼저 객체생성되었으며, 해당 객체를 매개변수로 받아들이는 생성자를 호출하여 객체를 생성하였다.
+
+    여러 개의 값을 매개변수로 전달하고자 한다면, `<constructor-arg>` 엘리먼트를 여러 개 추가한다.
+    이 때 인자로 전달될 데이터가 `<bean>`으로 등록된 다른 객체일 때는 **ref 속성**을 이용하여 해당 객체의 아이디나 이름을 참조하지만, 고정된 문자열이나 정수 같은 기본형 데이터일 때는 **value 속성**을 사용한다.
+
+    그런데 생성자가 여러 개 오버로딩 되어있다면 어떤 생성자를 호출해야 할지 분명하지 않을 수 있다.
+    이를 위해 index 속성을 지원하며, **index 속성**을 이용하면 어떤 값이 몇 번째 매개변수로 매핑되는지 지정할 수 있다. index는 0부터 시작한다.
+
+    ```xml
+    <bean id="tv" class="package.class">
+    	<constructor-arg index="0" ref="sony"></constructor-arg>
+    	<constructor-arg index="1" value="27000000"></constructor-arg>
+    </bean>
+    <bean id="sony" class="package.class"></bean>
+    ```
+
+  * **Setter Injection**
+    Setter 메소드를 호출하여 의존성 주입을 처리하는 방법이다.
+    코딩 컨벤션에 따라 Setter/Constructor 둘 중 한 가지로 통일해서 사용하는데 대부분은 Setter를 사용한다. Setter 메소드가 제공되지 않는 클래스에 대해서만 Constructor Injection을 사용한다.
+
+    Setter 메소드는 스프링 컨테이너가 자동으로 호출하며, 호출하는 시점은 `<bean>` 객체 생성 직후이다. 따라서, Setter Injection이 동작하려면 Setter 메소드뿐만 아니라 기본 생성자도 반드시 필요하다.
+    Setter 인젝션을 위해서는 `<constructor-arg>` 엘리먼트 대신 `<property>` 엘리먼트를 사용한다.
+
+    ```xml
+    <bean id="tv" class="package.class">
+    	<property name="speaker" ref="sony"></constructor-arg>
+    	<property name="price" value="27000000"></constructor-arg>
+    </bean>
+    <bean id="sony" class="package.class"></bean>
+    ```
+
+    > name 속성값이 호출하고자 하는 메소드 이름이다. 즉, name 속성값이 speaker라면 호출되는 메소드는 setSpeaker()이다.
+    > 생성자 인젝션과 마찬가지로 다른 `<bean>` 객체를 넘기려면 ref 속성을, 기본형 데이터를 넘기려면 value 속성을 사용한다.
+
+    * **p Namespace**
+      Setter Injection을 설정할 때, p 네임스페이스를 이용하면 더 효율적으로 의존성 주입을 처리할 수 있다.
+      p 네임스페이스는 네임스페이스에 대한 별도의 schemaLocation이 없어서 네임스페이스만 적절히 선언하고 사용할 수 있다.
+      p 네임스페이스는 다음과 같이 사용한다.
+
+      ```xml
+      <bean id="tv" class="package.class" p:speaker-ref="sony" p:price="2700000"/>
+      <bean id="sony" class="package.class"/>
+      ```
+
+      > **p:변수명-ref="참조할 객체의 이름이나 아이디"**와 같은 형태로 참조형 변수에 참조할 객체를 할당하고
+      > **p:변수명="설정할 값"**과 같은 형태로 기본형이나 문자형 변수에 직접 값을 설정한다.
+
+      STS 기능을 이용하면, 스프링 설정 파일에서 [Namespace] 탭을 선택하고 p 네임스페이스를 체크하면 `<beans>` 엘리먼트에 자동으로 추가된다.
+
+    * **Collection 객체 설정**
+      배열이나 List 같은 컬렉션 객체를 매핑하는 엘리먼트가 존재한다.
+      java.util.List나 배열은 `<list>`, java.util.Set은 `<set>`, java.util.Map은 `<map>`, java.util.Properties는 `<props>`로 사용한다.
+      스프링 설정 파일에 다음과 같이 `<bean>`을 등록한다.
+
+      * List 타입
+
+        ```xml
+        <bean id="tv" class="package.class">
+            <property name="list">
+            	<list>
+                	<value>값1</value>
+                    <value>값2</value>
+                </list>
+            </property>
+        </bean>
+        ```
+
+        > 두 개의 문자열 주소가 저장된 List 객체를 setList() 메소드를 호출할 때, 인자로 전달하여 list멤버변수를 초기화하는 설정이다.
+
+      * Set 타입
+
+        ```xml
+        <bean id="tv" class="package.class">
+            <property name="list">
+    			<set value-type="java.lang.String">
+                	<value>값1</value>
+                    <value>값2</value>
+                    <value>값1</value>
+                </set>
+            </property>
+        </bean>
+        ```
+        
+        > Set 컬렉션에서는 같은 데이터를 중복해서 저장하지 않으므로 "값1"이라는 데이터는 하나만 저장된다.
+        
+      * Map 타입
+      
+        ```xml
+        <bean id="tv" class="package.class">
+            <property name="list">
+                <map>
+                	<entry>
+                    	<key><value>키1</value></key>
+                        <value>값1</value>
+                    </entry>
+                    <entry>
+                    	<key><value>키2</value></key>
+                        <value>값2</value>
+                    </entry>
+                </map>
+            </property>
+        </bean>
+        ```
+      
+      * Properties 타입
+      
+        ```xml
+        <bean id="tv" class="package.class">
+            <property name="list">
+        		<props>
+                	<prop key="키1">값1</prop>
+                    <prop key="키2">값2</prop>
+                </props>
+            </property>
+        </bean>
+        ```
+      
+        
 
 ------
 
