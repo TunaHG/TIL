@@ -25,6 +25,7 @@ console.log(tuna);
 ```
 
 > Function을 Anonymous Function으로 만들기 좋다.
+> Function 내부 코드를 여러 줄 작성하고 싶다면 `{ }`를 활용하여 묶어주면 된다.
 
 이러한 방식으로, Callback함수도 Arrow function을 사용하지 않는 과거에서 사용하는 형태로 변경한다.
 
