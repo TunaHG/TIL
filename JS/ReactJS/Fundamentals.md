@@ -162,3 +162,43 @@ console.log(two);
 ```js
 const shi = (something, ...args) => console.log(...args);
 ```
+
+## Classes
+
+React의 Component는 대부분 Class이다. 그래서 Class가 어떻게 동작하는지 알아야 할 필요가 있다.
+
+```js
+class Human {
+    constructor(name, lastName) {
+        this.name = name;
+        this.lastName = lastName;
+    }
+}
+
+const tuna = new Human("Tuna", "Kim");
+console.log(tuna);
+```
+
+> this는 Human Class를 의미하는 것이다. 그러므로 this.name은 Human Class내의 name 변수를 의미하는 것이다.
+
+constructor는 class를 생성할 때 필요한 것들을 가지고 있다다. 이러한 Class를 확장할 수 있다.
+
+```js
+class Baby extends Human {
+    cry() {
+        console.log("Waaaaaa");
+    }
+    sayName() {
+        console.log(`My name is ${this.name}`);
+    }
+}
+
+const myBaby = new Baby("mini", "me");
+console.log(myBaby);
+console.log(myBaby.cry());
+```
+
+> 위의 코드를 실행하면 Baby Class의 name과 lastName이 나오고 Waaaaa가 출력된다.
+> Human Class를 상속받기 때문에 Human Class에 존재하는 constructor를 사용하여 name과 lastName이 선언되는 것이다.
+
+이러한 상속 작업을 React에서 많이 진행한다. React Component들은 State 등의 많은 것들을 가지고 있으며 그들은 모두 Class들이다.
