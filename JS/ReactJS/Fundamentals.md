@@ -1,0 +1,124 @@
+# Fundamentals
+
+## Arrow function
+
+Arrow function을 사용하지 않는 코딩은 다음과 같다.
+
+```javascript
+function sayHello(name = "Tuna") {
+    return "Hello " + name;
+}
+
+const tuna = sayHello();
+
+console.log(tuna);
+```
+
+> return을 추가해주지 않는다면, tuna에 값이 들어가지 않기 때문에 console.log()로 undefined가 표시된다.
+> sayHello() 메소드의 name에는 위와같이 default값을 설정할 수 있다.
+
+Arrow function을 사용하는 코딩은 다음과 같다.
+
+```js
+const sayHello = (name = "Tuna") => "Hello" + name;
+
+const tuna = sayHello("Tuna");
+console.log(tuna);
+```
+
+> Function을 Anonymous Function으로 만들기 좋다.
+> Function 내부 코드를 여러 줄 작성하고 싶다면 `{ }`를 활용하여 묶어주면 된다.
+
+이러한 방식으로, Callback함수도 Arrow function을 사용하지 않는 과거에서 사용하는 형태로 변경한다.
+
+```html
+const button = document.querySelector("button");
+
+button.addEventListener("click", (event) => console.log(event));
+```
+
+보기에도 간편하고 좋아보인다.
+
+## Template Literals
+
+Template, Variables, Strings를 다루기에 좋은 방법
+
+```js
+const sayHello = (name = "Tuna") => "Hello " + name;
+
+const tuna = sayHello();
+console.log(tuna);
+```
+
+> 이전 Arrow Function에서 진행했던 코드
+
+위의 코드에서 name을 `+`를 사용해서 추가하지 않고 String 내부에 넣어줄 수있다.
+
+```js
+const sayHello = (name = "Tuna") => `Hello ${name}`
+```
+
+> 여기서 중요한건, `' '` (Single Quote)를 사용하는 것이 아니라 `` `(Backtick)을 사용한다는 점이다.  (키보드 좌측 위 물결표시의 그 키)
+
+## Object Destructuring
+
+적은 코드를 사용해서 좀 더 깔끔하게 보이게 하는 것이다.
+
+```js
+const human = {
+    name: "Tuna",
+    lastName: "Kim",
+    nationality: "Wish i was korean"
+}
+
+const name = human.name;
+const lastname = human.lastname;
+
+console.log(name, lastname);
+```
+
+> 이와 같은 방법은 동일한 변수를 두 번 선언하기 때문에 효율적이지 않다. 이를 해결할 방법이 Structuring
+
+```js
+const human = {
+    name: "Tuna",
+    lastName: "Kim",
+    nationality: "Wish i was korean"
+}
+
+// const name = human.name;
+// const lastname = human.lastname;
+
+const { name, lastname } = human;
+
+console.log(name, lastname);
+```
+
+> `{ }`로 묶어주면 human 변수 안의 값들을 변수명을 활용하여 가져온다.
+
+하지만 human 내부의 값을 동일한 변수명을 사용하지 않고 다른 변수명으로 가져오고 싶다면 다음과 같이 변수명을 변경한다.
+
+```js
+const { name, lastname, nationality: difName } = human;
+```
+
+또한 human 내부에서 `{ }`의 값들을 각각 가져올수도 있다.
+
+```js
+const human = {
+    name: "Tuna",
+    lastName: "Kim",
+    nationality: "Wish i was korean",
+    favFood: {
+    	breakfast: "Bread",
+        lunch: "Doncas",
+        dinner: "Sang + Doncas"
+	}
+}
+
+const { name, lastName, nationality: difName, favFood: { breakfast, lunch, dinner } } = human;
+console.log(name, lastName, difName, breakfast, lunch, dinner);
+```
+
+> breakfast, lunch, dinner가 각각 변수로 사용된다.
+
