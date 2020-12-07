@@ -122,3 +122,43 @@ console.log(name, lastName, difName, breakfast, lunch, dinner);
 
 > breakfast, lunch, dinner가 각각 변수로 사용된다.
 
+## Spread Operator
+
+```js
+const days = ["Mon", "Tues", "Wed"];
+const otherDays = ["Thu", "Fri", "Sat"];
+
+// const allDays = days + otherDays;
+const allDays = [days, otherDays];
+console.log(allDays);
+```
+
+> allDays는 각 배열들을 출력한다. 우리가 원하는 것은 배열 내에 있는 아이템들을 가지고 싶지 배열을 가지고 싶진 않다.
+
+이러한 경우 `...`을 사용한다.
+
+```js
+const allDays = [...days, ...otherDays, "Sun"];
+```
+
+이러한 Spread Operator는 Array가 아니라 Object에서도 동작한다.
+
+```js
+const ob = {
+    first: "hi",
+    second: "hello"
+}
+
+const ab = {
+    third: "bye bye"
+}
+
+const two = { ...ob, ...ab };
+console.log(two);
+```
+
+다음과 같은 형태로 함수 내에서도 매개변수의 형태로 사용할 수 있다.
+
+```js
+const shi = (something, ...args) => console.log(...args);
+```
