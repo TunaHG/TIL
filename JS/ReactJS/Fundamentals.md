@@ -202,3 +202,22 @@ console.log(myBaby.cry());
 > Human Class를 상속받기 때문에 Human Class에 존재하는 constructor를 사용하여 name과 lastName이 선언되는 것이다.
 
 이러한 상속 작업을 React에서 많이 진행한다. React Component들은 State 등의 많은 것들을 가지고 있으며 그들은 모두 Class들이다.
+
+## Array Map
+
+API에서 데이터를 받게되면 그 배열의 데이터를 이용해서 어떠한 Component의 배열을 만들게 될 것이다.
+우리가 사용할 것은 배열에 `.`을 찍어서 사용할 수 있는 메소드 중에 map이다.
+`map()`에서 메소드를 입력하여 원하는 배열의 각각의 값을 해당 메소드에 적용하여 실행한다.
+`map()`의 return값은 배열이며, `()`안의 메소드를 실행시킨 결과값을 배열로 가진다.
+매개변수의 첫번째 값은 주어지는 배열의 값들을 각각 받을 것이며, 두번째 값은 배열의 인덱스를 받을것이다.
+
+```js
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+
+const today = (day, index) => `Today is ${day} #${index + 1}`;
+
+const smilingDays = days.map(today);
+
+console.log(smilingDays);
+```
+
