@@ -237,3 +237,41 @@ console.log(biggerThan15);
 
 > method의 return값이 true혹은 false여야 한다.
 
+## forEach, includes, push
+
+`forEach`는 각각에 대해서~ 라는 뜻이다.
+새로운 배열을 생서하지 않고 그저 현재 있는 배열 각각의 값에 대해 어떤 메소드를 실행하고 싶다.
+
+```js
+let posts = ["Hi", "Hello", "Bye"];
+
+posts.forEach(post => console.log(post));
+```
+
+> forEach() 내부의 Function을 posts의 배열 각각의 값에 대해 실행했다.
+
+`push`는 배열에 새로운 값을 넣을 때 사용한다.
+
+```js
+posts.push("new");
+
+console.log(posts);
+```
+
+> new라는 새로운 값이 포함된 배열을 확인할 수 있다.
+
+`includes`는 배열에 해당 값이 존재하는 지 확인할 때 사용한다.
+
+```js
+let greetings = ["Hi", "Howdy", "Suup"];
+
+if (!greetings.includes("Hello")) {
+    greetings.push("Hello");
+}
+
+console.log(greetings);
+```
+
+> includes() 내부에 입력한 값이 배열에 존재한다면 true값을 반환한다.
+
+이외에도 MDN을 살펴보면 배열과 관련된 함수들이 정말 많은 것을 확인할 수 있다.
