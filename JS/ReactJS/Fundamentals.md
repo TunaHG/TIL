@@ -221,3 +221,19 @@ const smilingDays = days.map(today);
 console.log(smilingDays);
 ```
 
+## Array Filter
+
+주어진 Function을 통과한 모든 원소들로 이루어진 배열을 생성한다.
+filter의 역할은 map과 비슷하다. 배열의 각각의 아이템에 Function을 실핸한다. 하지만 단지 그들을 포함하는게 아니라 아이템들을 살펴보고 우리가 넣을 Function의 return이 true이면 해당 아이템을 배열에 넣는 형태이다.
+
+```js
+const numbers = [2, 45, 6454, 22, 456, 23, 67, 11, 443, 66, 223, 2, 4, 6, 89, 4, 2, 1];
+
+const testCondition = (number) => number > 15;
+const biggerThan15 = numbers.filter(testCondition);
+
+console.log(biggerThan15);
+```
+
+> method의 return값이 true혹은 false여야 한다.
+
