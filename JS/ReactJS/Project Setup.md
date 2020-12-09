@@ -112,3 +112,94 @@ class App extends Component {
 }
 ```
 
+### Header
+
+다음은 Header를 추가해본다.
+
+Components 폴더에 Header.js 파일을 추가한다.
+Header.js 파일에는 `<header>` 태그의 내부내용을 export한다.
+
+```js
+import React from "react";
+
+export default () => (
+    <header>
+        <ul>
+            <li>
+                <a href="/">Movies</a>
+            </li>
+            <li>
+                <a href="/tv">TV</a>
+            </li>
+            <li>
+                <a href="/search">Search</a>
+            </li>
+        </ul>
+    </header>
+);
+```
+
+> Movies, TV, Search와 같이 3개의 아이템을 가진다.
+
+Header는 App.js의 `<Router />`의 위에 똑같이 넣는다.
+
+```js
+class App extends Component {
+  render() {
+    return (
+      <>
+        <Header />
+        <Router />
+      </>
+    );
+  }
+}
+```
+
+### Redirect
+
+Redirect는 어떤 경로를 받았을 경우 다른 페이지로 연결해주는 기능이다.
+Router.js에 추가하며 다음과 같이 추가한다.
+
+```js
+export default () => {
+    <Router>
+        <>
+            <Route path="/" exact component={Home} />
+            <Route path="/tv" exact component={TV} />
+            <Route path="/search" component={Search} />
+            <Redirect from="*" to="/" />
+        </>
+    </Router>
+}
+```
+
+하지만 이렇게 진행하면 `/`, `/tv`, `/search` 어디로 이동하든 전부 `/`로 이동하게 된다.
+우리의 목적은 `<Route>`가 실행되지 않으면 마지막으로 `<Redirect>`가 실행되게 하는 것이 목적이다.
+그럴때 사용하는 것이 **Switch**이다.
+
+### Switch
+
+Switch는 내부에 들어있는 `<Route>`와 `<Redirect>`중 하나가 실행되면 나머지는 실행시키지 않는 태그이다.
+
+```js
+export default () => {
+    <Router>
+        <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/tv" exact component={TV} />
+            <Route path="/search" component={Search} />
+            <Redirect from="*" to="/" />
+        </Switch>
+    </Router>
+}
+```
+
+위와같이 `<> </>`로 묶여있던 `<Route>`들을 `<Switch>`로 묶어준다.
+이제 모든 `<Route>`가 실행되지 않았을 경우 `<Redirect>`가 실행될 것이다.
+
+### Link
+
+위의 Header를 작성하며 우리는 `<a>`태그를 사용하여 이동하였다.
+하지만 `<a>`를 사용하지 않고 **react-router-dom**의 `<Link>`를 이용하여 동일한 동작을 하도록 만들 수 있다.
+
