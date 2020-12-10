@@ -85,6 +85,55 @@ import styles from "./Header.module.css"
 
 하지만 여기서도 생기는 문제는 JS와 CSS는 역시 다른 파일로 존재하며, navList라는 이름 또한 기억해줘야 한다는 점이다.
 
+### JS에 포함된 스타일
+
+`styled-components`라는 모듈을 다운로드 받아서 사용한다.
+
+```shell
+yarn add styled-components
+```
+
+이는 JS에서 import해서 사용하며, 다음과 같이 사용한다.
+
+```js
+import React from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const Header = styled.header``;
+const List = styled.ul`
+    display:flex;
+    &:hover {
+        background-color: blue;
+    }
+`;
+
+const Item = styled.li``;
+const SLink = styled(Link)``;
+
+export default () => (
+    <Header>
+        <List>
+            <Item>
+                <SLink to="/">Movies</SLink>
+            </Item>
+            <Item>
+                <SLink to="/tv">TV</SLink>
+            </Item>
+            <Item>
+                <SLink to="/search">Search</SLink>
+            </Item>
+        </List>
+    </Header>
+);
+```
+
+> Link는 이전 Project Setting에서 배웠던 react-router-dom의 Link이다.
+
+이 방법을 사용하면, Javascript 안에 CSS가 있고 Components를 바꾸면된다.
+이런 방식은 코드가 HTML 태그들이 많은 것보다 더 나아보이고 내가 원하는 이름을 사용한다.
+그리고 모든 Component들의 스타일을 쉽게 바꿀 수 있다.
+
 ## Global Styles and Header
 
 ## Location Aware Header
