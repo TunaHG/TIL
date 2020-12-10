@@ -50,7 +50,40 @@ index.js를 생성하는 이유는 App.js에서 Header를 호출할 때 폴더�
 Header에서 nav라는 className을 사용했다면, 다른 Components에서 nav를 사용하지 않아야 하는데 이를 기억하긴 힘들다.
 (현재 CSS를 App.js에서 호출하여 Global하게 동작하도록 정해두었기 때문)
 
+### 발전된 CSS 스타일
 
+이전보다 발전된 방법인 CSS 모듈을 활용해본다.
+CSS가 Global이 아닌 Local에서 동작하도록 설정하는 방법이다.
+CSS 모듈로 설정하고자 한다면, 파일이름을 `Header.module.css`와 같이 변경한다.
+
+```css
+.navList {
+	display: flex;
+}
+```
+
+사용할 때에는 JS를 import하는 것처럼 CSS Module도 import한다. 또한 className을 JS Object처럼 사용한다.
+
+```js
+import styles from "./Header.module.css"
+
+...
+	<ul className={styles.navList}>
+...
+```
+
+이렇게 모듈을 사용하면 웹페이지에서 나타나는 className에는 `__1bmZ3`과 같은 이상한 문자열이 추가된다. (인스타그램도 흡사하게 사용한다)
+이렇게 진행하면 다른 파일에서도 `navList`라는 className을 반복해서 사용할 수 있게 된다.
+
+이렇게 사용할 때에는 CSS Module에 `nav-list`와 같은 `-`은 사용하지 않는다. 왜냐하면 사용할 때 다음과 같이 사용해야 되기 때문이다.
+
+```js
+...
+	<ul className={styles["nav-list"]}>
+...
+```
+
+하지만 여기서도 생기는 문제는 JS와 CSS는 역시 다른 파일로 존재하며, navList라는 이름 또한 기억해줘야 한다는 점이다.
 
 ## Global Styles and Header
 
