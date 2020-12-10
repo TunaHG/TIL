@@ -136,5 +136,62 @@ export default () => (
 
 ## Global Styles and Header
 
+현재 local한 SC(Styled-Components)를 Global하게 설정할 수 있다.
+Global하게 설정하는 이유는 해당 사이트의 폰트를 설정하거나, SC를 설치하는 등의 작업을 하고 싶기 때문이다.
+
+Global하게 설정하기 이전에, 기존에 존재하는 CSS 설정들을 없애고 0부터 다시 시작할 수 있게 해주는 `styled-reset`을 설치한다
+
+```shell
+yarn add styled-reset
+```
+
+이제 다음과 같이 코딩하여 Global하게 CSS를 설정해본다.
+
+```js
+import { createGlobalStyle } from "styled-components";
+import reset from "styled-reset";
+
+const globalStyles = createGlobalStyle`
+    ${reset};
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Canta
+        font-size: 12px;
+        background-color:rgba(20, 20, 20, 1);
+        color: white;
+        padding-top: 50px;
+    }
+`;
+
+export default globalStyles;
+```
+
+해당 Global Style을 App.js에서 import해야한다.
+
+```js
+import React, { Component } from "react";
+import Router from "../Components/Router";
+import GlobalStyles from "./GlobalStyles";
+
+class App extends Component {
+  render() {
+    return (
+      <>
+        <Router />
+        <GlobalStyles />
+      </>
+    );
+  }
+}
+```
+
+이후 기존에 하던것처럼 CSS 세팅을 진행하면 Global한 CSS 설정 이후 각 Component의 CSS 설정을 진행한다.
+
 ## Location Aware Header
 
