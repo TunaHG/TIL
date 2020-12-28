@@ -1,5 +1,8 @@
 # Java
 
+> 추가적인 참고자료의 URL이 명시되어 있지 않은 자료들은 모두 Github의 Interview_Question_for_Beginner에서 가져왔다.
+> https://github.com/JaeYeopHan/Interview_Question_for_Beginner
+
 ## OOP
 
 객체지향 프로그래밍 (Object Oriented Programming)
@@ -32,10 +35,6 @@
    인터페이스는 그 인터페이스를 사용하는 클라이언트를 기준으로 분리해야 한다.
 5. 의존 역전 원칙, DIP(Dependency Inversion Principle)
    고수준 모듈은 저수준 모듈의 구현에 의존해서는 안된다.
-
-### 참고
-
-https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Development_common_sense
 
 ## JVM, GC
 
@@ -228,3 +227,140 @@ https://asfirstalways.tistory.com/159
 https://d2.naver.com/helloworld/1329
 
 https://d2.naver.com/helloworld/329631 (추가적인 내용 있을 수 있음)
+
+## Collection
+
+다수의 Data를 다루는데 표준화된 클래스들을 제공해주기 때문에 Data Structure를 직접 구현하지 않고 편하게 사용할 수 있는 기능
+배열과 다르게 객체를 보관하기 위한 공간을 미리 정하지 않아도 되므로, 상황에 따라 객체의 수를 동적으로 정할 수 있다. 이는 프로그램의 공간적인 효율성을 높여준다.
+
+* List
+  대표적인 구현체로 ArrayList가 존재하며, 이외에도 LinkedList가 존재한다.
+
+  ```java
+  import java.util.ArrayList;
+  import java.util.LinkedList;
+  
+  ...
+      
+  ArrayList<Integer> list = new ArrayList<Integer>();
+  LinkedList<Integer> linkedList = new LinkedList<Integer>();
+  ```
+
+* Map
+  대표적인 구현체로 HashMap가 존재하며, Key에 대한 순서를 보장하는 LinkedHashMap이 존재한다.
+  key-value의 구조로 이루어져 있으며 key를 기준으로 중복된 값을 저장하지 않으며 순서를 보장하지 않는다.
+
+  ```java
+  import java.util.Map;
+  import java.util.HashMap;
+  
+  ...
+  
+  Map<Integer, Integer> map = new HashMap<>();
+  ```
+
+* Set
+  대표적인 구현체로 HashSet이 존재하며, key에 대한 순서를 보장하는 LinkedHashSet이 존재한다.
+  value에 대해서 중복된 값을 저장하지 않는다. 사실 Set은 Map의 key-value 구조에서 key대신 value가 들어가 value를 key로 하는 자료구조일 뿐이다.
+
+  ```java
+  import java.util.Set;
+  import java.util.HashSet;
+  
+  ...
+  
+  Set<Integer> set = new HashSet<>();
+  ```
+
+* Stack, Queue
+  Stack 객체는 직접 new 키워드로 사용할 수 있으며, Queue 인터페이스는 LinkedList에 new 키워드를 적용하여 사용할 수 있다.
+
+  ```java
+  import java.util.Stack;
+  import java.util.Queue;
+  import java.util.LinkedList;
+  
+  ...
+  
+  Stack<Integer> stack = new Stack<>();
+  Queue<Integer> queue = new LinkedList<>();
+  ```
+
+## Annotation
+
+본래 주석이란 뜻으로, 인터페이스를 기반으로 한 문법.
+주석과는 그 역할이 다르지만 주석처럼 코드에 달아 클래스에 특별한 의미를 부여하거나 기능을 주입하거나 해석되는 시점을 정할수도 있다.
+
+* built-in annotation
+  JDK에 내장되어 있는 어노테이션
+  상속받아서 메소드를 오버라이딩 할 때 나타나는 `@Override`가 대표적인 예시.
+* Meta annotation
+  어노테이션에 사용되는 어노테이션으로 해당 어노테이션의 동작 대상을 결정한다. 주로 새로운 어노테이션을 정의할 때 사용한다.
+  어노테이션의 동작 대상을 결정하는 Meta annotation에도 여러 가지가 존재한다.
+* Custom annotation
+  개발자가 직접 만들어내는 어노테이션
+
+### 참고
+
+https://asfirstalways.tistory.com/309
+
+## Generic
+
+자바에서 안정성을 맡고 있다.
+다양한 타입의 객체들을 다루는 메소드나 Collection 클래스에서 사용하는 것으로, 컴파일 과정에서 타입체크를 해주는 기능이다.
+그렇기에 객체의 타입 안전성을 높이고 형변환의 번거로움을 줄여준다.
+
+## Final keyword
+
+* **final class**
+  다른 클래스에서 상속하지 못한다.
+* **final method**
+  다른 메소드에서 오버라이딩하지 못한다.
+* **final variable**
+  변하지 않는 상수값이 되어 새로 할당할 수 없는 변수가 된다.
+* finally
+  try-catch 혹은 try-catch-resource 구문을 사용할 때, 정상적으로 작업을 한 경우와 에러가 발생했을 경우를 포함하여 마무리해줘야하는 작업이 존재하는 경우에 해당하는 코드를 작성해주는 코드 블록이다.
+* finalize()
+  GC에 의해 호출되는 함수로 절대 호출해서는 안되는 함수이다.
+  Object 클래스에 정의되어 있으며 GC가 발생하는 시점이 불분명하기 때문에 해당 메소드가 실행된다는 보장이 없다.
+  해당 메소드가 오버라이딩 되어 있으면 GC가 이루어질때 바로 Garbage Collecting 되지 않는다. GC가 지연되며 OOME(Out of Memory Exception)이 발생할 수 있다.
+
+## Overriding vs Overloading
+
+둘 다 다형성을 높여주는 개념이지만 전혀 다른 개념이라고 볼만큼 차이가 있다.
+
+* 오버라이딩 (Overriding)
+  상위 클래스 혹은 인터페이스에 존재하는 메소드를 하위 클래스에서 필요에 맞게 재정의하는 것을 의미한다.
+  Java의 경우 오버라이딩 시 동적바인딩된다.
+* 오버로딩 (Overloading)
+  메소드 이름과 return 타입은 동일하지만, 매개변수만 다른 메소드를 만드는 것을 의미한다.
+  다양한 상황에서 메소드가 호출될 수 있도록 한다.
+  Java의 경우 오버로딩은 다른 시그니쳐를 만드는 것으로, 아예 다른 함수를 만든것과 비슷하다.
+  시그니쳐가 다르므로 정적바인딩으로 처리 가능하며, Java의 경우 정적으로 바인딩된다.
+
+## Access Modifier
+
+변수 또는 메소드의 접근 범위를 설정해주기 위해서 사용하는 Java의 예약어를 의미하며 4가지 종류가 존재한다.
+
+* **public**
+  어떤 클래스에서라도 접근이 가능하다.
+* **protected**
+  클래스가 정의되어 있는 해당 패키지 내 그리고 해당 클래스를 상속받은 외부 패키지의 클래스에서 접근이 가능하다.
+* **(default)**
+  클래스가 정의되어 있는 해당 패키지 내에서만 접근이 가능하도록 접근 범위를 제한한다.
+  생략이 가능하다.
+* **private**
+  정의된 해당 클래스에서만 접근이 가능하도록 접근 범위를 제한한다.
+
+## Wrapper Class
+
+기본 자료형 (Primitive data type)에 대한 클래스 표현을 의미한다. `Integer`, `Float`, `Boolean`등이 예시이다.
+Collection에서 Generic을 사용하기 위해서 Wrapper Class를 사용해야 하고 `null`값을 반환해야만 하는 경우에 return type을 Wrapper Class로 지정하여 `null`을 반환하도록 할 수 있다.
+일반적인 상황에서 Wrapper Class를 사용해야 하는 이유는 객체지향적인 프로그래밍이 아니고서야 없다.
+기본 자료형의 경우 `==`를 사용하여 값을 비교할 수 있지만, Wrapper Class의 경우 `intValue()` 메소드를 통해 값을 가져와 비교해야 한다.
+
+### Autoboxing
+
+JDK 1.5부터 제공하는 기능.
+각 Wrapper Class에 상응하는 기본 자료형일 경우에만 가능하다.
+`Integer`라는 Wrapper Class로 설정한 Collection 데이터에 add할 때 Integer 객체로 감싸서 넣지 않는다. Java 내부에서 Autoboxing 해주기 때문이다.
