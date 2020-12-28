@@ -195,3 +195,45 @@ class App extends Component {
 
 ## Location Aware Header
 
+현재 사이트의 위치가 Header중에서 어느 사이트인지 알 수 있게 설정한다.
+기존 Header.js에서 `<Item>`태그에 사용한다.
+
+```js
+...
+const Item = styled.li`
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border-bottom: 5px solid ${props => props.current? "#3498db" : "transparent"};
+`;
+const SLink = styled(Link)`
+    height:50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+// navList라는 것을 다른곳에서도 사용할 수 있기 때문에 뒤에 값이 추가됨
+export default () => (
+    <Header>
+        <List>
+            <Item current={false}>
+                <SLink to="/">Movies</SLink>
+            </Item>
+            <Item current={true}>
+                <SLink to="/tv">TV</SLink>
+            </Item>
+            <Item current={false}>
+                <SLink to="/search">Search</SLink>
+            </Item>
+        </List>
+    </Header>
+);
+```
+
+> 현재는 임의로 current값을 지정해준 상태이다. 이후에 변경할 예정이다.
+
+Item의 SC를 살펴보면, border-bottom값의 색을 지정할 때, `${}`를 사용하여 조건식을 주었다.
+props를 살펴보고, 해당 props가 true인지 false인지에 대하여 값을 변경한다
+
+withRouter를 사용한다.
