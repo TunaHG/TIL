@@ -367,19 +367,19 @@ JDK 1.5부터 제공하는 기능.
 
 ## Multi-Thread 환경에서의 개발
 
-* Field member
+* **Field member**
   field란 클래스에 변수를 정의하는 공간을 의미한다.
   이곳에 변수를 만들어두면 메소드끼리 변수를 주고 받는데 있어서 참조하기 쉬우므로 정말 편리한 공간 중 하나이다.
   하지만 객체에 여러 Thread가 접근하는 싱글톤 객체라면 field에서 상태값을 갖고 있으면 안된다. 모든 변수를 parameter로 넘겨받고 return하는 방식으로 코드를 구성해야 한다.
 
-* 동기화 (Synchronized)
+* **동기화 (Synchronized)**
   필드에 Collection이 불가피하게 필요할 때는 synchronized 키워드를 사용하여 Thread간 race condition을 통제한다.
   이 키워드를 기반으로 구현된 Collection으로 List를 대신한 Vector와 Map을 대신한 HashTable을 사용할 수 있다. 하지만 이 Collection들은 제공하는 API가 적고 성능도 좋지 않다.
   기본적으로 Collections라는 util 클래스에서 제공되는 static 메소드를 통해 이를 해결할 수 있다.
   `Collections.synchronizedList()`, `Collections.synchronizedMap()`, `Collections.synchronizedSet()` 등이 존재한다.
   JDK 1.7 부터는 `concurrent package`를 통해 `ConcurrentHashMap`이라는 구현체를 제공한다. Collections util을 사용하는 것보다 `synchronized` 키워드가 적용된 범위가 좁아서 보다 좋은 성능을 낼 수 있는 자료구조이다.
 
-* ThreadLocal
+* **ThreadLocal**
   Thread 사이에 간섭이 없어야 하는 데이터에 사용한다.
   멀티스레드 환경에서는 클래스의 필드에 멤버를 추가할 수 없고 매개변수로 넘겨받아야하기 때문이다.
   즉, Thread 내부의 싱글톤을 사용하기 위해 사용한다. 주로 사용자 인증, 세션 정보, 트랜잭션 컨텍스트에 사용한다.
@@ -393,3 +393,23 @@ JDK 1.5부터 제공하는 기능.
   2. ThreadLocal.set() 메소드를 이용하여 현재 Thread의 로컬 변수에 값을 저장한다.
   3. ThreadLocal.get() 메소드를 이용하여 현재 Thread의 로컬 변수 값을 읽어온다.
   4. ThreadLocal.remove() 메소드를 이용하여 현재 Thread의 로컬 변수 값을 삭제한다.
+
+## Error vs Exception
+
+**Error**는 프로그래머가 코드상에서 수정할 수 없는 에러를 의미한다.
+메모리가 부족하거나 Eclipse와 같은 Tool에서 발생하는 에러가 예시이며 처리가 불가능하다.
+
+**Exception**은 예외로 수정이 가능한 가벼운 에러를 의미한다.
+파일입출력이나 잘못된 입력 등 코드를 수정하는 것으로 처리가 가능하다.
+
+Exception은 두 가지 종류가 있다.
+
+* **Checked Exception**
+  반드시 예외처리를 해줘야 하며, 컴파일단계에서 예외처리를 확인하여 처리가 되어있지 않다면 실행되지 않는다.
+  예시로 SQLException이나 FileNotFoundException 등이 있다.
+* **Uncheck Exception**
+  예외처리를 확인하지 않으며 생략할 수 있다. 하지만 실행시 해당 코드에서 에러가 발생할 수 있다.
+  ArrayIndexOutOfBoundException이나 NullPointerException 등 Runtime Exception이 포함되어 있다.
+
+예외는 반드시 처리해줘야 한다.
+예외가 발생하면 프로그램이 멈춰버리기 때문에 예외가 발생하더라도 프로그램이 멈추지 않도록 처리해줘야한다.
