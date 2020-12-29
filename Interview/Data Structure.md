@@ -130,6 +130,7 @@ RBT는 다음의 성질들을 만족하는 BST이다.
 * Root node의 색깔은 `Black`이다.
 * 각 Leaf node의 색깔은 `Black`이다.
 * 어떤 노드의 색깔이 `Red`라면 두 개의 Children의 색깔은 모두 `Black`이다.
+  이 사실은 Red 노드가 연달아서 나올 수 없음을 의미한다. (Black 노드만이 Red 노드의 부모가 될 수 있다.)
 * 각 노드에 대해서 노드로부터 descendant leaves 까지의 단순 경로는 모두 같은 수의 Black nodes를 포함하고 있다.
   이를 해당 노드의 Black-Height라고한다.
   *Black-Height: 노드 X로부터 X를 포함하지 않은 Leaf node까지의 simple path상에 잇는 black nodes의 개수*
@@ -139,7 +140,10 @@ RBT는 다음의 성질들을 만족하는 BST이다.
 * Binary Search Tree이므로 BST의 특징을 모두 가진다.
 * Root node부터 Leaf node까지의 모든 경로 중 최소 경로와 최대 경로의 크기 비율은 2보다 크기 않다.
   이러한 상태를 `balanced`라고한다.
+  왜냐하면, 경로중에 Black만 존재하는 경로가 최소 경로이며, Black과 Red가 번갈아서 나오는 경우가 최대 경로이기 때문이다.
 * node의 child가 없을 경우 child를 가리키는 포인터는 `NIL` 값을 저장한다. 이러한 `NIL` 들을 Leaf node로 간주한다.
+  이를 이용하지 않을 경우, RBT의 특성이 변하고 알고리즘과 상충될 수 있다.
+  `NIL`은 자료를 갖지 않으며 트리의 끝을 나타내는데만 쓰인다.
 
 RBT는 BST의 삽입, 삭제 연산 과정에서 발생할 수 있는 문제점을 해결하기 위해 만들어진 자료구조이다.
 
