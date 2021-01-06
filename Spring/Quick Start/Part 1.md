@@ -307,7 +307,89 @@ Spring F/W의 가장 중요한 특징은 객체의 생성과 의존관계를 컨
         </bean>
         ```
       
-        
+
+## Annotation-based Configuration
+
+대부분의 프레임워크가 그렇듯 Spring F/W 역시 XML 설정이 매우 중요하다.
+그만큼 XML 파일의 과도한 설정에 대한 부담도 크며, 이로 인해 프레임워크 사용을 꺼리기도 한다.
+
+**Context Namespace 추가**
+어노테이션 설정을 추가하려면 스프링 설정 파일의 루트 엘리먼트인 `<beans>`에 Context 관련 네임스페이스와 스키마 문서의 위치를 등록해야 한다.
+이는 p 네임스페이스를 추가했을 때처럼 Namespace 탭을 선택하고 context 항목만 체크하면 추가할 수 있다.
+
+**Component-scan 설정**
+스프링 설정파일에 애플리케이션에서 사용할 객체들을 `<bean>`등록하지 않고 자동으로 생성하려면 `<context:component-scan/>`을 정의해야 한다.
+이 설정을 추가하면 스프링 컨테이너는 클래스 패스에 있는 클래스들을 스캔하여 **@Component**가 설정된 클래스들을 자동으로 객체 생성한다.
+중요한 것은 해당 엘리먼트의 base-package 속성인데, `com.springbook.biz`형태로 지정하면 해당 패키지로 시작하는 모든 패키지를 스캔대상에 포함한다.
+
+**@Component**
+Component-scan을 설정했으면 스프링 설정 파일에 클래스들을 일일이 `<bean>` 엘리먼트로 등록할 필요가 없다.
+클래스 선언부 위에 @Component만 설정하면 된다.
+당연히 <u>해당 클래스에 기본 생성자가 있어야만 컨테이너가 객체를 생성</u>할 수 있다.
+또, 클라이언트가 스프링 컨테이너가 생성한 객체를 요청하려면 요청할 때 사용할 아이디나 이름이 반드시 설정되어 있어야 한다.
+`@Component("tv")`와 같이 사용한다. 만약 id나 name속성을 지정하지 않았다면, <u>컨테이너가 자동으로 이름을 설정</u>한다.
+자동으로 설정하는 이름 규칙은 <u>클래스 이름의 첫 글자를 소문자로 변경</u>하기만 하면 된다.
+
+**Dependency Injection Annotation**
+스프링에서는 @Autowired와 @Qualifier를 제공하지만, 나머지는 제공하지 않는다.
+
+* **@Autowired**
+  생성자나 메소드, 멤버변수 위에 모두 사용할 수 있다. <u>대부분은 멤버변수 위에 선언하여 사용</u>한다.
+  스프링 컨테이너는 멤버변수 위의 `@Autowired`를 확인하는 순간 **해당 변수의 타입을 체크**한다. 해당 타입의 객체가 메모리에 존재하는지를 확인한 후에, 객체를 변수에 주입한다. 만약 `@Autowired`가 붙은 객체가 메모리에 없다면 컨테이너가 `NoSuchBeanDefinitionException`을 발생시킨다.
+  해당 객체를 `<bean>`선언하는 XML 방법이나 `@Component`를 붙이는 Annotation 방법을 활용하여 메모리에 객체를 생성해놔야 한다.
+  어떤 방법을 사용하든 해당 객체가 메모리에 생성만 되면 `@Autowired`에 의해서 컨테이너가 객체를 변수에 자동으로 할당한다.
+* **@Qualifier**
+  동일한 타입의 객체가 두 개 이상일 때 `@Autowired`를 사용하면 `NoUniqueBeanDefinitionException`이 발생한다.
+  이러한 경우 `@Autowired`와 함께 `@Qualifier`를 사용하면된다. `@Qualifier`를 이용하면 의존성 주입될 객체의 `id`나 `name`을 지정할 수 잇는데, 이 때 객체의 이름중 하나를 지정하면 간단하게 처리할 수 있다.
+* **@Resource**
+  변수의 타입을 기준으로 객체를 검색하여 의존성 주입을 처리하는 `@Autowired`와 다르게 `@Resource`는 객체의 이름을 이용하여 의존성 주입을 처리한다.
+  `name`속성을 사용할 수 있어서, 스프링 컨테이너가 해당 이름으로 생성된 객체를 검색하여 의존성 주입을 처리한다.
+
+**Annotation과 XML 설정 병행사용**
+XML 설정은 Java Source를 수정하지 않고 XML 파일의 설정만 변경하면 실행되는 객체를 교체할 수 있어서 유지보수가 편하다. 하지만 Java Source에 의존관계와 관련된 어떤 메타데이터도 없으므로 XML 설정을 해석해야만 무슨 객체가 의존성 주입되는지를 확인할 수 있다는 부담이 있다.
+반면 Annotation 설정은 XML 설정에 대한 부담도 없고 의존관계에 대한 정보가 Java Source에 들어있어서 사용하기는 편하다. 하지만 의존성 주입할 객체의 이름이 Java Source에 명시되어야 하므로 Source를 수정하지 않고 객체를 교체할 수 없다는 문제가 생긴다.
+이런 문제를 서로의 장점을 조합하는 것으로 해결할 수 있다.
+@Autowired로 할당받을 객체를 @Component를 사용하지 않고 `<bean>`을 사용하는 것이다. 이러한 경우 객체를 변경하고자 할 때 Java Source는 수정하지 않고 XML 수정만으로 객체를 교체할 수 있다.
+또한 우리가 직접 개발한 클래스는 Annotation, XML 둘 다 사용할 수 있지만, 라이브러리 형태로 제공되는 클래스는 반드시 XML 설정을 통해서만 사용할 수 있다.
+
+**추가 어노테이션**
+사용자의 요청을 제어하는 Controller Class, 비즈니스 로직을 처리하는 ServiceImpl Class, 데이터베이스 연동을 담당하는 DAO Class
+이러한 시스템을 구성하는 모든 Class에 @Component를 할당하면 어떤 클래스가 어떤 역할을 수행하는지 파악하기 어렵다.
+Spring F/W에서는 이런 클래스들을 분류하기 위해 @Component를 상속하여 다음 세 개의 어노테이션을 추가로 제공한다.
+
+* @Service
+  ServiceImpl Class에 할당하며 비즈니스 로직을 처리하는 Service Class임을 의미한다.
+* @Repository
+  DAO Class에 할당하며 데이터베이스 연동을 처리하는 DAO Class임을 의미한다.
+  DB 연동 과정에서 발생하는 예외를 변환해주는 특별한 기능이 추가되어 있다.
+* @Controller
+  Controller Class에 할당하며 사용자 요청을 제어하는 Controller Class임을 의미한다.
+  MVC 아키텍처에서 해당 객체를 Controller 객체로 인식하도록 해준다.
+
+## Example
+
+비즈니스 컴포넌트에 대한 실습으로 Spring Quick Start 책의 p.109 ~ p.139 에 서술되어있다.
+예제 실습들이므로 해당 문서에서는 자세하게 다루지 않으나 생각해야할 부분을 작성해본다.
+
+**폴더 구조**
+프로젝트마다 조금씩 다르겠지만 일반적으로 비즈니스 컴포넌트는 4개의 Java 파일로 구성된다.
+책에서 사용한 방식을 예로 들어 설명하면, `/src/main/java`에 `com.springbook.biz.board`패키지와 `com.springbook.biz.board.impl`패키지가 존재하며 각각의 패키지에는 `BoardService.java`, `BoardVO.java`와 `BoardDAO.java`, `BoardServiceImpl.java`가 포함되어 있다. 그리고 `/src/test/java`의 `com.springbook.biz.board`패키지에 `BoardServiceClient.java`가 존재한다.
+
+```bash
+└── src
+    ├── main
+    	└── java
+    		├── com.springbook.biz.board
+    			├── BoardService.java
+    			└── BoardVO.java
+    		└── com.springbook.biz.board.impl
+    			├── BoardServiceImpl.java
+    			└── BoardDAO.java
+    └── test
+    	└── java
+    		└── com.springbook.biz.board
+    			└── BoardServiceClient.java
+```
 
 ------
 
