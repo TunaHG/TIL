@@ -32,9 +32,9 @@ IntelliJ IDEA에 대한 기본적인 설정들을 진행한 이후 프로젝트 
 
 ### Change gradle project to spring boot project
 
-초기 프로젝트 생성시 Spring Intializer를 사용하면 간단하지만, 그렇게 하면 bundle.gradle의 코드가 무슨역할을 하는지와 의존성 추가가 필요하면 어떻게 해야 할지 등을 모르는 상태로 개발할 수 있기에 Gradle로 시작하였다.
+초기 프로젝트 생성시 Spring Intializer를 사용하면 간단하지만, 그렇게 하면 build.gradle의 코드가 무슨역할을 하는지와 의존성 추가가 필요하면 어떻게 해야 할지 등을 모르는 상태로 개발할 수 있기에 Gradle로 시작하였다.
 
-Bundle.gradle의 가장 위에 위치할 코드는 다음과 같다.
+build.gradle의 가장 위에 위치할 코드는 다음과 같다.
 
 ```
 buildscript {
