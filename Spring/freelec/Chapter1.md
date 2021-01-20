@@ -6,7 +6,7 @@
 
 ### Eclipse vs IntelliJ
 
-많은 자바 웹 개발자들이 이클립스를 사용하는데, 이클립스에 비해 인텔리제이가 가지는 강점은 다음과 같다.
+많은 자바 웹 개발자들이 이클립스를 사용하는데, 이클립스에 비해 **인텔리제이가 가지는 강점**은 다음과 같다.
 
 * 강력한 추천 기능 (Smart Completion)
 * 다양한 리팩토링과 디버깅 기능
@@ -17,9 +17,9 @@
 
 ### Install IntelliJ
 
-IntelliJ를 바로 설치할 수도 있지만, 추천하는 방법은 JetBrains사의 Toolbox를 이용하는 방법이 있다.
+IntelliJ를 바로 설치할 수도 있지만, 추천하는 방법은 JetBrains사의 **Toolbox**를 이용하는 방법이 있다.
 새로운 버전이 나올경우 Toolbox에서 업데이트를 바로 확인하고 진행할 수 있으며 Settings에서 다양한 기능을 설정할 수 있다.
-IntelliJ JVM 옵션 설정 화면을 보면, Maximum Heap Size가 750MB로 되어있는데, 이는 개발 PC의 메모리가 4G 이하일 때를 가정하고 설정된 값이다. 개발 PC의 메모리가 8G라면 1024~2048을, 16G라면 2048~4096을 선택해서 사용하면 된다.
+IntelliJ JVM 옵션 설정 화면을 보면, **Maximum Heap Size**가 750MB로 되어있는데, 이는 개발 PC의 메모리가 4G 이하일 때를 가정하고 설정된 값이다. 개발 PC의 메모리가 8G라면 1024~2048을, 16G라면 2048~4096을 선택해서 사용하면 된다.
 
 ### Create Project in IntelliJ
 
@@ -48,10 +48,10 @@ buildscript {
 }
 ```
 
-이 코드는 이 프로젝트의 플러그인 의존성 관리를 위한 설정이다. 인텔리제이의 플러그인 관리가 아니다.
+이 코드는 이 프로젝트의 **플러그인 의존성 관리를 위한 설정**이다. 인텔리제이의 플러그인 관리가 아니다.
 `ext`라는 키워드는 build.gradle에서 사용하는 전역변수를 설정하겠다는 의미이며, springBootVersion 전역변수를 생성하고 그 값을 2.1.7.RELEASE로 하겠다는 의미다. 즉, spring-boot-gradle-plugin이라는 스프링 부트 그레이들 플러그인의 2.1.7.RELEASE를 의존성으로 받겠다는 의미다.
 
-다음 코드들은 앞서 선언한 플러그인 의존성들을 적용할 것인지 결정하는 코드다.
+다음 코드들은 앞서 선언한 **플러그인 의존성들을 적용할 것인지 결정하는 코드**다.
 
 ```
 apply plugin: 'java'
@@ -60,7 +60,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 ```
 
-io.spring.dependency-management 플러그인은 스프링 부트의 의존성들을 관리해 주는 플러그인이라 꼭 추가해야 한다.
+`io.spring.dependency-management` 플러그인은 스프링 부트의 의존성들을 관리해 주는 플러그인이라 꼭 추가해야 한다.
 위 4개의 플러그인은 자바와 스프링 부트를 사용하기 위해서는 필수 플러그인들이니 항상 추가하면 된다.
 
 이후에 들어갈 코드들은 다음과 같다.
@@ -80,11 +80,11 @@ dependencies {
 }
 ```
 
-repositories는 각종 의존성 라이브러리들을 어떤 원격 저장소에서 받을지를 정한다.
-mavenCentral과 **jcenter* 두 개의 원격 저장소에서 의존성 라이브러리를 받아온다.
+**repositories는 각종 의존성 라이브러리들을 어떤 원격 저장소에서 받을지를 정한다.**
+mavenCentral과 [**jcenter*](#Footnote) 두 개의 원격 저장소에서 의존성 라이브러리를 받아온다.
 
-dependencies는 프로젝트 개발에 필요한 의존성들을 선언하는 곳이다.
-여기서는 선언한 두 가지를 받도록 되어있다. 커뮤니티버전에서도 **자동완성*이 된다.
+**dependencies는 프로젝트 개발에 필요한 의존성들을 선언하는 곳이다.**
+여기서는 선언한 두 가지를 받도록 되어있다. 커뮤니티버전에서도 [**자동완성*](#Footnote)이 된다.
 compile 메소드 안에 라이브러리 이름의 앞부분만 추가한 뒤 자동완성 단축키(Control + Space)를 사용하면 목록을 볼 수 있다.
 
 의존성 코드는 직접 작성해도 되고, 자동완성으로 만들어도 되지만 특정 버전을 명시하면 안된다.
@@ -99,7 +99,7 @@ compile 메소드 안에 라이브러리 이름의 앞부분만 추가한 뒤 �
 책 기준에서는 인텔리제이 우측 아래 Event Log 근처에 변경을 적용할 것인지 묻는 알림이 뜬다.
 변경이 완료되면 인텔리제이 우측상단의 Gradle 탭을 클릭해서 의존성들이 잘 받아졌는지 확인한다.
 
-버전업으로 인해 변경된 부분이 존재한다. [책 작성자 블로그 링크](https://jojoldu.tistory.com/539)
+**버전업으로 인해 변경된 부분이 존재한다.** [책 작성자 블로그 링크](https://jojoldu.tistory.com/539)
 책에서 안내한 dependencies로 진행하면 Gradle 7.0에 incompatible한 feature가 존재한다는 warning이 표시된다.
 compile()과 testCompile()이 soft deprecated되었기 때문에 발생하는 warning이며 버전이 올라가면서 작성방식에 대한 차이도 생겼다.
 변경된 코드는 다음과 같이 작성하면 된다.
@@ -138,7 +138,7 @@ deprecated된 compile()과 testCompile()이 implementation()과 testImplementati
 인텔리제이에서 Git을 활용한다.
 
 Command + Shift + A 단축키를 사용하여 Action 검색창을 열고 share project on github을 검색한다.
-해당 Action을 선택하면 Github로그인 화면이 나온다.
+해당 Action을 선택하면 Github로그인 화면이 나온다. [**로그인 404 에러*](#Footnote)
 로그인을 완료하면 바로 Initial Commit을 진행하는 메시지가 출력되는데, .idea 폴더를 제외하기 위해 여기서는 커밋을 진행하지 않는다.
 이후 .gitignore에 .idea폴더를 입력하여 커밋대상에서 제외한 이후에 커밋을 진행한다.
 

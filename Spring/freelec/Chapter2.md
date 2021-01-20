@@ -4,28 +4,28 @@
 
 ## Introduction of Test code
 
-TDD vs Unit Test
+**TDD vs Unit Test**
 TDD는 테스트가 주도하는 개발을 의미하며 Test code를 먼저 작성한다.
-레드그린사이클과 같이, 항상 실패하는 테스트를 먼저 작성하고(Red) 테스트가 통과하는 프로덕션 코드를 작성하고(Green) 테스트가 통과하면 프로덕션 코드를 리팩토링하는(Refactor) 과정이다.
+**레드그린사이클**과 같이, 항상 실패하는 테스트를 먼저 작성하고(Red) 테스트가 통과하는 프로덕션 코드를 작성하고(Green) 테스트가 통과하면 프로덕션 코드를 리팩토링하는(Refactor) 과정이다.
 반면 단위 테스트는 TDD의 첫 번째 단계인 기능 단위의 테스트 코드를 작성하는 것을 의미한다.
 TDD와 달리 테스트 코드를 꼭 먼저 작성해야 하는 것도 아니고, 리팩토링도 포함되지 않는다. 순수하게 테스트 코드만 작성하는 것을 의미한다.
 여기서는 TDD가 아닌 단위 테스트 코드를 학습한다.
 
-테스트 코드는 왜 작성해야 할까? 위키피디아에서 단위 테스트 코드를 작성함으로써 얻는 이점으로 다음을 이야기한다.
+테스트 코드는 왜 작성해야 할까? 위키피디아에서 **단위 테스트 코드를 작성함으로써 얻는 이점**으로 다음을 이야기한다.
 
 * 단위 테스트는 개발단계 초기에 문제를 발견하게 도와준다.
 * 단위 테스트는 개발자가 나중에 코드를 리팩토링하거나 라이브러리 업그레이드 등에서 기존 기능이 올바르게 작동하는지 확인할 수 있다.
 * 단위 테스트는 기능에 대한 불확실성을 감소시킬 수 있다.
 * 단위 테스트는 시스템에 대한 실제 문서를 제공한다. 즉, 단위 테스트 자체를 문서로 사용할 수 있다.
 
-저자의 경험담으로서의 이점은 다음과 같다.
+저자의 **경험담으로서의 이점**은 다음과 같다.
 
-* 빠른 피드백
+* **빠른 피드백**
   WAS로 사용하는 톰캣 등을 계속 내렸다가 올렸다가 반복할 필요가 없다.
   코드를 수정할 때마다 눈과 손으로 직접 수정된 기능을 확인해야 하기에 그랬는데, 테스트코드를 작성하면 문제가 해결된다.
-* 자동 검증
+* **자동 검증**
   System.out.println()등을 활용하여 눈으로 검증할 필요 없이 테스트 코드가 자동으로 검증해준다.
-* 개발자가 만든 기능을 안전하게 보호
+* **개발자가 만든 기능을 안전하게 보호**
   B라는 기능이 추가되었을 경우 기존에 잘되던 A 기능에 문제가 생길 수 있다. 하나의 기능을 추가할 때마다 많은 자원이 들기에 서비스의 모든 기능을 테스트 할 수는 없기 때문이다.
   이러한 경우 테스트 코드는 기존 기능이 잘 작동되는 것을 보장해준다. 기능이 추가되어도 테스트코드가 수행된다면 문제를 찾을 수 있기 때문이다.
 
@@ -42,7 +42,7 @@ TDD와 달리 테스트 코드를 꼭 먼저 작성해야 하는 것도 아니�
 ## Hello Controller test code
 
 `/src/main/java`에 GroupId + 패키지명으로 패키지를 하나 만들었다. (com.tunahg.book.springboot)
-이후 해당 패키지에 Application이라는 Java Class를 만들고 다음의 코드를 입력한다.
+이후 해당 패키지에 **Application**이라는 Java Class를 만들고 다음의 코드를 입력한다.
 
 ```java
 package com.tunahg.book.springboot;
@@ -61,9 +61,9 @@ public class Application {
 > 이 Application Class는 앞으로 만들 프로젝트의 메인 클래스가 된다.
 > @SpringBootApplication으로 인해 스프링 부트의 자동 설정, 스프링 Bean 읽기와 생성을 모두 자동으로 설정된다. 특히 @SpringBootApplication이 있는 위치부터 설정을 읽어가기 때문에 이 클래스는 항상 프로젝트의 최상단에 위치해야 한다.
 >
-> main 메소드에서 실행하는 SpringApplication.run()으로 인해 *내장 WAS를 실행한다. 내장 WAS를 실행하기 때문에 서버에 톰캣을 설치할 필요가 없게 되고, 스프링 부트로 만들어진 Jar 파일로 실행하면 된다. 스프링 부트에서는 내장 WAS를 사용하는 것을 권장한다. 그 이유는 언제 어디서나 같은 환경에서 스프링 부트를 배포할 수 있기 때문이다.
+> main 메소드에서 실행하는 SpringApplication.run()으로 인해 [**내장 WAS*](#Footnote)를 실행한다. 내장 WAS를 실행하기 때문에 서버에 톰캣을 설치할 필요가 없게 되고, 스프링 부트로 만들어진 Jar 파일로 실행하면 된다. 스프링 부트에서는 내장 WAS를 사용하는 것을 권장한다. 그 이유는 언제 어디서나 같은 환경에서 스프링 부트를 배포할 수 있기 때문이다.
 
-테스트를 위한 Controller를 만들어 본다.
+테스트를 위한 **Controller**를 만들어 본다.
 현재 패키지 하위에 `web`이란 패키지를 만든다. 해당 패키지내에 HelloController라는 Java Class를 만들고 다음의 코드를 입력한다.
 
 ```java
@@ -87,7 +87,7 @@ public class HelloController {
 
 WAS를 실행하지 않고 테스트 코드를 사용하여 작성한 코드가 제대로 작동하는지 검증한다.
 `src/test/java`디렉토리에 아페서 생성했던 패키지를 그대로 생성한다. 그리고 테스트 코드를 작성할 클래스를 생성한다. 일반적으로 테스트 클래스는 대상 클래스 이름에 Test를 붙인다. 지금은 HelloControllerTest가 된다. 일일이 작성해줄 필요없이 HelloController의 Class에서 Command + Shift + T를 누르면 자동으로 Test Class를 만들어주는 과정이 진행된다.
-생성된 클래스에 다음의 코드를 입력한다.
+생성된 **HelloControllerTest** 클래스에 다음의 코드를 입력한다.
 
 ```java
 package com.tunahg.book.springboot.web;
@@ -135,12 +135,12 @@ class HelloControllerTest {
 > .andExpect(content().string(hello))는 mvc.perform()의 결과를 검증한다. 응답 본문의 내용을 검증한다. Controller에서 "hello"를 리턴하기 때문에 이 값이 맞는지 검증한다.
 
 테스트 코드를 모두 작성했다면 메소드 좌측에 화살표를 클릭하여 Run 한다. 테스트가 통과하는 것을 확인할 수 있다.
-우리가 검증용으로 선언했던 status().isOk()와 content().string(hello)가 모두 테스트를 통과했음을 의미한다.
+우리가 검증용으로 선언했던 `status().isOk()`와 `content().string(hello)`가 모두 테스트를 통과했음을 의미한다.
 
 수동으로도 실해해서 정상적으로 값이 출력되는지 확인해본다.
 Application.java로 이동하여 메인 메소드 좌측의 화살표를 클릭한다.
 실행해보면 스프링 부트 로그가 보이며 톰캣 서버가 8080포트로 실행되었다는 것이 로그에 출력된다.
-그럼 웹 브라우저를 열어 localhost:8080/hello로 접속해본다. hello 문자열이 출력되는 것을 확인할 수 있다.
+그럼 웹 브라우저를 열어 `localhost:8080/hello`로 접속해본다. hello 문자열이 출력되는 것을 확인할 수 있다.
 
 이후에도 테스트 코드는 계속해서 작성한다.
 브라우저로 한 번씩 검증하되 테스트 코드는 꼭 따라해야 한다. 그래야만 견고한 소프트웨어를 만드는 역량이 성장할 수 있다.
@@ -148,7 +148,7 @@ Application.java로 이동하여 메인 메소드 좌측의 화살표를 클릭�
 
 ## Lombok
 
-자바 개발자들의 필수 라이브러리
+**자바 개발자들의 필수 라이브러리**
 자주 사용하는 코드인 Getter, Setter, 기본생성자, toString등을 Annotation으로 자동생성해준다.
 
 이클립스의 경우 설치가 번거롭지만, 인텔리제이에선 플러그인덕분에 쉽게 설정이 가능하다. 먼저 프로젝트에 롬복을 추가해본다.
@@ -161,7 +161,7 @@ implementation('org.projectlombok:lombok')
 이후 gradle을 적용하여 라이브러리를 내려받는다.
 라이브러리를 받은 이후엔 플러그인을 설치한다. Command + Shift + A로 Action검색창을 열고 Plugins로 진입하여 Marketplace에서 lombok을 검색한 후 설치한다. 설치 이후엔 IntelliJ IDE를 재시작한다.
 이후에 lombok에 대한 설정으로 Command + ,로 Preferences로 접근하여 Annotation을 검색하고 Annotation Processors를 enable로 변경한다. Annotation Processors는 Settings > Build > Compiler에 존재한다.
-Lombok은 프로젝트마다 설정해야 한다. 플러그인 설치는 한번만 하면 되지만 bundle.gradle에 라이브러리를 추가하는 것과 annotation processors를 enable체크하는 것은 프로젝트마다 진행해야 한다.
+**Lombok은 프로젝트마다 설정해야 한다.** 플러그인 설치는 한번만 하면 되지만 bundle.gradle에 라이브러리를 추가하는 것과 annotation processors를 enable체크하는 것은 프로젝트마다 진행해야 한다.
 
 ## Converting Hello Controller code to Lombok
 
@@ -169,7 +169,7 @@ Lombok은 프로젝트마다 설정해야 한다. 플러그인 설치는 한번�
 큰 규모의 프로젝트였다면 롬복으로 쉽게 전환하지 못했겠지만, 테스트 코드를 잘 구현했다면 쉽게 변경할 수 있다.
 
 먼저 web 패키지에 dto 패키지를 추가한다. 앞으로 모든 응답 Dto는 이 dto 패키지에 추가한다.
-dto 패키지에 HelloResponseDto를 생성하고 다음의 코드를 작성한다.
+dto 패키지에 **HelloResponseDto**를 생성하고 다음의 코드를 작성한다.
 
 ```java
 package com.tunahg.book.springboot.web.dto;
@@ -190,7 +190,7 @@ public class HelloResponseDto {
 >   @RequiredArgsConstructor는 선언된 모든 final필드가 포함된 생성자를 생성해 준다. final이 없는 필드는 생성자에 포함되지 않는다.
 
 이 Dto에 적용된 Lombok이 잘 작동하는지 간단한 테스트 코드를 작성해본다.
-HelloResponseDtoTest 파일을 Command + Shift + T를 활용해 생성하고 다음의 코드를 작성한다.
+**HelloResponseDtoTest** 파일을 Command + Shift + T를 활용해 생성하고 다음의 코드를 작성한다.
 
 ```java
 package com.tunahg.book.springboot.web.dto;
@@ -218,11 +218,11 @@ class HelloResponseDtoTest {
 >   isEqualTo는 assertj의 동등 비교 메소드이다. assertThat에 있는 값과 isEqualTo의 값을 비교하여 같을 때만 성공이다.
 
 이 코드에서는 JUnit의 기본 assertThat이 아닌 assertj의 assertThat을 사용했다. assertj 역시 JUnit에서 자동으로 라이브러리를 등록해준다.
-JUnit과 비교하여 assertj의 장점은 다음과 같다. [참고 유튜브(백기선님)](http://bit.ly/30vm9Lg)
+JUnit과 비교하여 **assertj의 장점**은 다음과 같다. [참고 유튜브(백기선님)](http://bit.ly/30vm9Lg)
 
-* CoreMatchers와 달리 추가적으로 라이브러리가 필요하지 않다.
+* *CoreMatchers와 달리 추가적으로 라이브러리가 필요하지 않다.*
     JUnit의 assertThat을 쓰게되면 is()와 같이 CoreMatchers 라이브러리가 필요하다.
-* 자동완성이 좀 더 확실하게 지원된다.
+* *자동완성이 좀 더 확실하게 지원된다.*
     IDE에서는 CoreMatchers와 같은 Matcher 라이브러리의 자동완성 지원이 약하다.
 
 해당 코드에서 error: variable name not initialized in the default constructor와 같은 에러가 발생할 수 있다.
