@@ -168,6 +168,9 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
 >   여기서 주의할 점은 Entity 클래스와 기본 Entity Repository는 같은 패키지에 위치해야 한다는 점이다. Entity 클래스는 기본 Repository 없이는 제대로 역할을 수행할 수 없다. 나중에 프로젝트가 커져 도메인별로 프로젝트를 분리해야 한다면 Entity 클래스와 기본 Repository는 함께 움직여야 하므로 도메인패키지에서 함께 관리한다.
 
 모두 작성되었다면, 테스트 코드로 기능을 검증한다.
+
+## Write test code about Spring Data JPA
+
 PostsRepository 클래스에서 Command + Shift + T 단축키를 통해 Test 클래스를 생성한다. Test 클래스에서 save(), findAll() 기능을 테스트한다.
 
 ```java
@@ -247,7 +250,405 @@ spring.datasource.hikari.username=sa
 
 >   책에는 `spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect`만 입력하라고 되어있는데 이렇게만 입력하면 오류가 발생한다. 위의 코드는 저자 블로그에서 버전업으로 수정된 내용을 가져온 것이므로 위의 코드를 사용한다.
 >
->   코드 중 `pring.datasource.hikari.jdbc-url`와 `spring.datasource.hikari.username`는 real-db를 사용할 경우 override된다.
+>   코드 중 `pring.datasource.hikari.jdbc-url`와 `spring.datasource.hikari.username`는 real-db를 사용할 경우 override된다.3
+
+## Create API about CRUD
+
+API를 만들기 위해서은 총 3개의 클래스가 필요하다.
+
+*   Request 데이터를 받을 Dto
+*   API 요청을 받을 Controller
+*   트랜잭션, 도메인 기능 간의 순서를 보장하는 Service
+
+많은 사람들이 <u>오해하는 것중 하나가 Service에서 비즈니스 로직을 처리해야 한다는 것</u>이다. **Service는 트랜잭션, 도메인 간 순서를 보장하는 역할만 한다**. 그럼 비즈니스 로직은 누가 처리할까? 그것을 알기 위해 **Spring Web 계층**을 살펴본다.
+
+*   **Web Layer**
+    흔히 사용하는 컨트롤러(@Controller)와 JSP/Freemarker 등의 뷰 템플릿 영역이다.
+    이외에도 필터(@Filter), 인터셉터, 컨트롤러 어드바이스(@ControllerAdvice)등 외부 요청과 응답에 대한 전반적인 영역을 이야기한다.
+*   **Service Layer**
+    @Service에 사용되는 서비스 영역이다.
+    일반적으로 Controller와 Dao의 중간 영역에서 사용된다.
+    @Transactional이 사용되어야 하는 영역이다.
+*   **Repository Layer**
+    Database와 같이 데이터 저장소에 접근하는 영역이다.
+    기존에 개발하던 사람들은 Dao(Data Access Object) 영역으로 이해하면 쉽다.
+*   **Dtos**
+    Dto(Data Transfer Object)는 계층 간에 데이터 교환을 위한 객체를 이야기하며 Dtos는 이들의 영역을 이야기한다.
+    예를 들어 뷰 템플릿 엔진에서 사용될 객체나 Repository Layer에서 결과로 넘겨준 객체등을 의미한다.
+*   **Domain Model**
+    도메인이라 불리는 개발 대상을 모든 사람이 동일한 관점에서 이해할 수 있고 공유할 수 있도록 단순화시킨 것을 도메인 모델이라고 한다.
+    이를테면 택시 앱이라고 하면 배차, 탑승, 요금 등이 모두 도메인이 될 수 있다.
+    @Entity를 사용해본 사람들은 @Entity가 사용된 영역 역시 도메인 모델이라고 이해하면 된다.
+    다만, 무조건 데이터베이스의 테이블과 관계가 있어야만 하는 것은 아니다. VO처럼 값 객체들도 이 영역에 해당하기 때문이다.
+
+이 5개의 Layer에서 **비즈니스 처리를 담당해야 하는 곳은 Domain**이다.
+기존에 서비스로 처리하던 방식을 <u>트랜잭션 스크립트</u>라고 한다. 주문 취소 로직을 작성한 코드를 살펴보면 다음과 같다.
+
+```java
+@Transactional
+public Order cancelOrder(int orderId) {
+	// 1) 데이터베이스로부터 주문정보(Orders), 결제정보(Billing), 배송정보(Delivery) 조회
+  OrdersDto order = ordersDao.selectOrders(orderId);
+  BillingDto billing = billingDao.selectBilling(orderId);
+  DeliveryDto delivery = deliveryDao.selectDelivery(orderId);
+
+	// 2) 배송 취소를 해야하는지 확인
+  String deliveryStatus = delivery.getStatus();
+ 
+	// 3) if(배송 중이라면) {
+	//		배송 취소로 변경
+	//	  }
+  if("IN_PROGRESS".equals(deliveryStatus)) {
+    delivery.setStatus("CANCEL");
+    deliveryDao.update(delivery);
+  }
+  
+	// 4) 각 테이블에 취소 상태 Update
+  order.setStatus("CANCEL");
+  ordersDao.update(order);
+  
+  billing.setStatus("CANCEL");
+	billingDao.update(billing);
+  
+  return order;
+}
+```
+
+>   모든 로직이 서비스 클래스 내부에서 처리된다. 그러다 보니 서비스 계층이 무의미하며, 객체란 단순히 데이터 덩어리 역할만 하게 된다.
+
+반면 도메인 모델에서 처리할 경우 다음과 같은 코드가 될 수 있다.
+
+```java
+@Transactional
+public Order cancelOrder(int orderId) {
+  // 1)
+  Orders order = ordersRepository.findById(orderId);
+  Billing billing = billingRepository.findByOrderId(orderId);
+  Delivery delivery = deliveryRepository.findByOrderId(orderId);
+  
+  // 2~3)
+  delivery.cancel();
+  
+  // 4)
+  order.cancel();
+  billing.cancel();
+  
+  return order;
+}
+```
+
+> order, billing, delivery가 본인의 취소 이벤트 처리를 하며, 서비스 메소드는 트랜잭션과 도메인 간의 순서만 보장해준다.
+
+그럼 이제 등록, 수정, 삭제 기능을 만들어 본다.
+PostsAPIController을 web 패키지에, PostsSaveRequestDto를 web.dto 패키지에, PostsService를 service.posts 패키지에 생성한다.
+
+먼저 PostsAPIController의 코드는 다음과 같다.
+
+```java
+package com.tunahg.book.springboot.web;
+
+import com.tunahg.book.springboot.service.posts.PostsService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequiredArgsConstructor
+@RestController
+public class PostsAPIController {
+    private final PostsService postsService;
+    
+    @PostMapping("/api/v1/posts")
+    public Long save(@RequestBody PostsSaveRequestDto requestDto) {
+        return postsService.save(requestDto);
+    }
+}
+```
+
+다음으로 PostsService의 코드는 다음과 같다.
+
+```java
+package com.tunahg.book.springboot.service.posts;
+
+import com.tunahg.book.springboot.domain.posts.PostsRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+@Service
+public class PostsService {
+    private final PostsRepository postsRepository;
+
+    @Transactional
+    public Long save(PostsSaveRequestDto requestDto) {
+        return postsRepository.save(requestDto.toEntity()).getId();
+    }
+}
+```
+
+스프링을 어느정도 사용해본 사람이라면 Controller와 Service에서 @Autowired가 없는 것이 어색하다.
+스프링에서 Bean을 주입받는 방식들은 <u>@Autowired, Setter, 생성자</u> 세가지 방법이 있다. 이중 가장 권장하는 방법이 생성자로 주입받는 방식이다. @Autowired는 권장하지 않는다. 여기서 생성자는 @RequiredArgsConstructor가 final이 선언된 모든 필드를 인자값으로 하는 생성자를 생성해준다. 
+생성자로 주입받는다는게...?
+
+이제는 Controller와 Service에서 사용할 Dto 클래스를 생성한다. 코드는 다음과 같다.
+
+```java
+package com.tunahg.book.springboot.web.dto;
+
+import com.tunahg.book.springboot.domain.posts.Posts;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class PostsSaveRequestDto {
+    private String title;
+    private String content;
+    private String author;
+
+    @Builder
+    public PostsSaveRequestDto(String title, String content, String author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+    }
+
+    public Posts toEntity() {
+        return Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build();
+    }
+}
+```
+
+Entity 클래스와 유사한 형태임에도 Dto 클래스를 추가로 생성했다. **절대로 Entity 클래스를 Response/Request 클래스로 사용해서는 안된다.**
+Entity 클래스는 데이터베이스와 맞닿은 핵심 클래스이다. Entity 클래스를 기준으로 테이블이 생성되고 스키마가 변경된다. 화면변경은 사소한 기능변경인데 이를 위해 테이블과 연결된 Entity 클래스를 변경하는 것은 너무 큰 변경이다. 수많은 서비스 클래스나 비즈니스 로직들이 Entity 클래스를 기준으로 동작한다. Entity 클래스가 변경되면 여러 클래스에 영향을 끼치지만, Request와 Response용 Dto는 View를 위한 클래스라 자주 변경이 필요하다. 
+View Layer와 DB Layer의 역할 분리를 철저하게 하는 것이 좋다. 실제로 Controller에서 결과값으로 여러 테이블을 조인해서 줘야 할 경우가 빈번하므로 Entity 클래스만으로 표현하기가 어려운 경우가 많다. 꼭 Entity 클래스와 Controller에서 쓸 Dto는 분리해서 사용해야 한다.
+
+등록 기능의 코드가 완성되었으니 테스트 코드로 검증해본다.
+PostsAPIController에서 Command + Shift + T 단축키를 활용해서 Test파일을 생성한다. 코드는 다음과 같다.
+
+```java
+package com.tunahg.book.springboot.web;
+
+import com.tunahg.book.springboot.domain.posts.Posts;
+import com.tunahg.book.springboot.domain.posts.PostsRepository;
+import com.tunahg.book.springboot.web.dto.PostsSaveRequestDto;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class PostsAPIControllerTest {
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Autowired
+    private PostsRepository postsRepository;
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        postsRepository.deleteAll();
+    }
+
+    @Test
+    public void Posts_등록된다() throws Exception {
+        String title = "title";
+        String content = "content";
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .author("author")
+                .build();
+
+        String url = "http://localhost:" + port + "/api/v1/posts";
+
+        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isGreaterThan(0L);
+
+        List<Posts> all = postsRepository.findAll();
+        assertThat(all.get(0).getTitle()).isEqualTo(title);
+        assertThat(all.get(0).getContent()).isEqualTo(content);
+    }
+}
+```
+
+>   HelloControllerTest 때와 달리 @WebMvcTest를 사용하지 않았다.
+>   @WebMvcTest의 경우 JPA기능이 작동하지 않기 때문인데, Controller와 ControllerAdvice 등 외부 연동과 관련된 부분만 활성화되니 지금 같이 JPA 기능까지 한번에 테스트할 때는 @SpringBootTest와 TestRestTemplate을 사용하면 된다.
+
+테스트를 수행해보면 성공하는 것을 확인할 수 있고 로그를 확인해보면 랜덤포트 실행과 insert 쿼리가 실행된 것을 확인할 수 있다.
+
+등록 기능을 완성했으니 수정/조회 기능도 빠르게 만들어 본다.
+먼저 PostsController에 수정, 조회 메소드를 추가한다.
+
+```java
+@PutMapping("/api/v1/posts/{id}")
+public Long update(@PathVariable Long id, @RequestBody PostsUpdateRequestDto requestDto) {
+    return postsService.update(id, requestDto);
+}
+
+@GetMapping("/api/v1/posts/{id}")
+public PostsResponseDto findById(@PathVariable Long id) {
+    return postsService.findById(id);
+}
+```
+
+다음으로 `/web/dto`패키지에 PostsResponseDto를 생성하고 다음의 코드를 입력한다.
+
+```java
+package com.tunahg.book.springboot.web.dto;
+
+import com.tunahg.book.springboot.domain.posts.Posts;
+import lombok.Getter;
+
+@Getter
+public class PostsResponseDto {
+    private Long id;
+    private String title;
+    private String content;
+    private String author;
+
+    public PostsResponseDto(Posts entity) {
+        this.id = entity.getId();
+        this.title = entity.getTitle();
+        this.content = entity.getContent();
+        this.author = entity.getAuthor();
+    }
+}
+```
+
+>   PostsResponseDto는 Entity의 필드 중 일부만 사용하므로 생성자로 Entity를 받아 필드에 값을 넣는다.
+>   굳이 모든 필드를 가진 생성자가 필요하진 않으므로 Dto는 Entity를 받아서 처리한다.
+
+다음으로 수정기능을 담당할 PostsUpdateRequestDto를 `/web/dto`패키지에 생성하고 다음의 코드를 입력한다.
+
+```java
+package com.tunahg.book.springboot.web.dto;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class PostsUpdateRequestDto {
+    private String title;
+    private String content;
+    
+    @Builder
+    public PostsUpdateRequestDto(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+}
+```
+
+다음으로 Entity 클래스인 Posts 클래스에 다음의 메소드를 추가한다.
+
+```java
+public void update(String title, String content) {
+    this.title = title;
+    this.content = content;
+}
+```
+
+마지막으로 PostsService 클래스에 다음의 코드를 추가한다.
+
+```java
+@Transactional
+public Long update(Long id, PostsUpdateRequestDto requestDto) {
+    Posts posts = postsRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+    
+    posts.update(requestDto.getTitle(), requestDto.getContent());
+
+    return id;
+}
+
+public PostsResponseDto findById(Long id) {
+    Posts entity = postsRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+
+    return new PostsResponseDto(entity);
+}
+```
+
+코드를 살펴보면, update 기능에서 데이터베이스에 쿼리를 날리는 부분이 없다. 이는 **JPA의 영속성 컨텍스트** 때문이다.
+영속성 컨텍스트란, 엔티티를 영구 저장하는 환경이다. 일종의 논리적 개념이며 JPA의 핵심 내용은 엔티티가 영속성 컨텍스트에 포함되어 있냐 아니냐로 갈린다. JPA의 엔티티 매니저가 활성화된 상태(Spring Data JPA를 사용한다면 기본 옵션)로 트랜잭션 안에서 데이터베이스의 데이터를 가져오면 이 데이터는 영속성 컨텍스트가 유지된 상태이다. 이 상태에서 해당 데이터의 값을 변경하면 트랜잭션이 끝나는 시점에 해당 테이블에 변경분을 반영한다.
+즉, Entity 객체의 값만 변경하면 별도로 Update 쿼리를 날릴 필요가 없다는 것이다. 이 개념을 **더티 체킹(Dirty Checking)**이라 한다.
+
+실제로 Update 쿼리를 정상적으로 수행하는지 테스트 코드로 확인해본다.
+PostsAPIControllerTest 파일에 다음의 메소드를 추가한다.
+
+```java
+@Test
+public void Posts_수정된다() throws Exception {
+    Posts savedPosts = postsRepository.save(Posts.builder()
+            .title("title")
+            .content("content")
+            .author("author")
+            .build());
+
+    Long updateId = savedPosts.getId();
+    String expectedTitle = "title2";
+    String expectedContent = "content2";
+
+    PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
+            .title(expectedTitle)
+            .content(expectedContent)
+            .build();
+
+    String url = "http://localhost:" + port + "/api/v1/posts/" + updateId;
+
+    HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+
+    ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody()).isGreaterThan(0L);
+
+    List<Posts> all = postsRepository.findAll();
+    assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
+    assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+}
+```
+
+테스트를 진행해보면 아래와 같이 update 쿼리가 수행되는 것을 확인할 수 있다.![image-20210121152026625](/Users/user/Documents/TIL/Spring/freelec/images/image-20210121152026625.png)
+
+MyBatis를 쓰던것과 달리 JPA를 씀으로서 좀 더 객체지향적으로 코딩할 수 있다.
+
+조회 기능은 실제로 톰캣을 실행해서 확인해본다.
+앞에서 언급한 것처럼 로컬환경에선 데이터베이스로 H2를 사용한다. 메모리에서 실행하기 때문에 직접 접근하려면 웹 콘솔을 사용해야만 한다.
+먼저 웹 콘솔 옵션을 활성화한다. Application.properties에 다음과 같은 옵션을 추가한다.
+
+```properties
+spring.h2.console.enabled=true
+```
+
+추가한 이후 Application 클래스의 main 메소드를 실행한다.
+정상적으로 실행됬다면 톰캣이 8080포츠로 실행된다. 여기서 웹브라우저로 `http://localhost:8080/h2-console`로 접속하면 웹 콘솔 화면이 나타난다. 콘솔화면에서 JDBC URL이 `jdbc:h2:mem:testdb`로 되어있지 않다면 변경한다.
+이후 Connect를 클릭하면 현재 프로젝트의 H2를 관리할 수 있는 관리 페이지로 이동한다. 해당 페이지에서 SQL 쿼리를 수행할 수도 있다.
 
 # Footnote
 
