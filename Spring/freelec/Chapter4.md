@@ -246,14 +246,6 @@ var main = {
         $('#btn-save').on('click', function () {
             _this.save();
         });
-
-        $('#btn-update').on('click', function () {
-            _this.update();
-        });
-
-        $('#btn-delete').on('click', function () {
-            _this.delete();
-        });
     },
     save : function () {
         var data = {
@@ -316,7 +308,7 @@ index.js 호출 코드를 보면 절대 경로(/)로 바로 시작한다. 스프
     {{#posts}}
         <tr>
             <td>{{id}}</td>
-            <td><a href="/posts/update/{{id}}">{{title}}</a></td>
+            <td>{{title}}</td>
             <td>{{author}}</td>
             <td>{{modifiedDate}}</td>
         </tr>
@@ -415,6 +407,201 @@ public class IndexController {
 
 Controller까지 모두 완성 되었으니 `http://localhost:8080/`으로 접속한 뒤 등록 화면을 이용해 하나의 데이터를 등록해본다.
 그럼 목록 기능이 정상적으로 작동하는 것을 확인할 수 있다.
+
+## Create a screen to edit or delete posts
+
+마지막으로 게시글 수정, 삭제 화면을 만들어본다. posts-update.mustache 파일을 생성하고 다음의 코드를 입력한다.
+
+```html
+{{>layout/header}}
+
+<h1>게시글 수정</h1>
+
+<div class="col-md-12">
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <label for="title">글 번호</label>
+                <input type="text" class="form-control" id="id" value="{{post.id}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" value="{{post.title}}">
+            </div>
+            <div class="form-group">
+                <label for="author"> 작성자 </label>
+                <input type="text" class="form-control" id="author" value="{{post.author}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="content"> 내용 </label>
+                <textarea class="form-control" id="content">{{post.content}}</textarea>
+            </div>
+        </form>
+        <a href="/" role="button" class="btn btn-secondary">취소</a>
+        <button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>
+    </div>
+</div>
+
+{{>layout/footer}}
+```
+
+>   {{post.id}}는 Post 클래스의 id에 대한 접근이다. 머스테치는 객체의 필드 접근시 점(.)으로 구분한다.
+>
+>   readonly는 Input 태그에 읽기 가능만 허용하는 속성이다. id와 author는 수정할 수 없도록 읽기만 허용하도록 추가한다.
+
+Btn-update 버튼을 클릭하면 update 기능을 호출할 수 있게 index.js 파일에도 update function을 추가한다.
+
+```js
+var main = {
+    init : function () {
+        var _this = this;
+	      ...
+        $('#btn-update').on('click', function () {
+            _this.update();
+        });
+    },
+    save : function () {
+      ...
+    },
+    update : function () {
+        var data = {
+            title: $('#title').val(),
+            content: $('#content').val()
+        };
+
+        var id = $('#id').val();
+
+        $.ajax({
+            type: 'PUT',
+            url: '/api/v1/posts/'+id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function() {
+            alert('글이 수정되었습니다.');
+            window.location.href = '/';
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    }
+};
+
+main.init();
+```
+
+>   $('#btn-update').on('click')은 btn-update란 id를 가진 HTML 엘리먼트에 click 이벤트가 발생할 때 update function을 실행하도록 이벤트를 등록하는 것이다.
+>
+>   update : function ()은 신규로 추가될 update function이다.
+>
+>   type: 'PUT'은 여러 HTTP method중 PUT메소드를 선택한다. PostsAPIController에 있는 API에서 이미 @PutMapping으로 선언했기 때문에 PUT을 사용해야 한다.
+>
+>   Url: '/api/v1/posts/'+id는 어느 게시글을 수정할지 URL Path로 구분하기 위해 Path에 id를 추가한 것이다.
+
+마지막으로 전체 목록에서 수정 페이지로 이동할 수 있게 페이지 이동 기능을 추가한다. index.mustache파일을 조금 수정한다.
+
+```html
+<tbody id="tbody">
+{{#posts}}
+    <tr>
+        <td>{{id}}</td>
+        <td><a href="/posts/update/{{id}}">{{title}}</a></td>
+        <td>{{author}}</td>
+        <td>{{modifiedDate}}</td>
+    </tr>
+{{/posts}}
+</tbody>
+```
+
+>   `<a href="/posts/update/{{id}}"></a>`는 타이틀에 a 태그를 추가한 것이다. 타이틀을 클릭하면 해당 게시글의 수정화면으로 이동한다.
+
+화면 작업이 끝났으니 수정 화면을 연결할 Controller 코드를 추가한다. IndexController에 다음의 메소드를 추가한다.
+
+```java
+@GetMapping("/posts/update/{id}")
+public String postsUpdate(@PathVariable Long id, Model model) {
+    PostsResponseDto dto = postsService.findById(id);
+    model.addAttribute("post", dto);
+    
+    return "posts-update";
+}
+```
+
+역시 Controller까지 완성되었으니 실행하여 브라우저에서 접속해본다.
+메인화면으로 이동하면 타이틀 항목에 링크 표시가 된 것을 확인할 수 있다. 해당 링크를 클릭하면 수정 페이지로 이동한다.
+
+수정 기능까지 구현하였으니 삭제 기능도 구현해 본다. 삭제 버튼은 본문을 확인하고 진행해야 하므로 수정화면에 추가한다.
+posts-update.mustache에 다음의 코드를 추가한다.
+
+```html
+<a href="/" role="button" class="btn btn-secondary">취소</a>
+<button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>
+<button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+```
+
+>   btn-delete는 버튼 클릭시 JS에서 이벤트를 수신할 예정이다.
+
+삭제 이벤트를 진행할 JS 코드도 index.js에 추가한다.
+
+```js
+var main = {
+    init : function () {
+	    	...
+        $('#btn-delete').on('click', function () {
+            _this.delete();
+        });
+    },
+    save : function () {
+        ...
+    },
+    update : function () {
+        ...
+    },
+    delete : function () {
+        var id = $('#id').val();
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/v1/posts/'+id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8'
+        }).done(function() {
+            alert('글이 삭제되었습니다.');
+            window.location.href = '/';
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    }
+};
+
+main.init();
+```
+
+update function과 크게 차이 나지 않는다. 이제 삭제 API를 만들어 본다. PostsService에 다음의 메소드를 추가한다.
+
+```java
+@Transactional
+public void delete(Long id) {
+    Posts posts = postsRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+    
+    postsRepository.delete(posts);
+}
+```
+
+>   postsRepository.delete(posts)는 JpaRepository에서 지원하는 delete() 메소드이다. 엔티티를 파라미터로 삭제할 수도 있고 deleteById 메소드를 이용하면 id로 삭제할 수도 있다. 존재하는  Posts인지 확인을 위해 엔티티 조회 후 그대로 삭제한다.
+
+PostsService에서 만든 delete 메소드를 Controller가 사용하도록 PostsAPIController에 다음의 메소드를 추가한다. 
+
+```java
+@DeleteMapping("/api/v1/posts/{id}")
+public Long delete(@PathVariable Long id) {
+    postsService.delete(id);
+    return id;
+}
+```
+
+Controller까지 수정되었으니 테스트를 진행한다. 이전에 수정한 테스트 게시글의 수정화면에서 삭제 버튼을 클릭하여 삭제 성공 메시지를 확인한다.
+자동으로 메인 페이지로 이동하면, 기존 게시글이 삭제 되었는지 확인한다.
 
 # Footnote
 
