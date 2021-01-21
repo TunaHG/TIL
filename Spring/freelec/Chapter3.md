@@ -650,6 +650,101 @@ spring.h2.console.enabled=true
 정상적으로 실행됬다면 톰캣이 8080포츠로 실행된다. 여기서 웹브라우저로 `http://localhost:8080/h2-console`로 접속하면 웹 콘솔 화면이 나타난다. 콘솔화면에서 JDBC URL이 `jdbc:h2:mem:testdb`로 되어있지 않다면 변경한다.
 이후 Connect를 클릭하면 현재 프로젝트의 H2를 관리할 수 있는 관리 페이지로 이동한다. 해당 페이지에서 SQL 쿼리를 수행할 수도 있다.
 
+## Automating create/update time with JPA Auditing
+
+보통 엔티티에는 해당 데이터의 생성시간과 수정시간을 포함한다.
+언제 만들어졌는지, 언제 수정되었는지 등은 차후 유지보수에 있어서 굉장히 중요한 정보이기 때문이다. 그렇다 보니 매번 DB에 insert/update하기 전에 날짜 데이터를 등록/수정하는 코드가 여기저기 들어가게 된다. 이런 단순하고 반복적인 코드가 모든 테이블과 서비스 메소드에 포함된다고 생각하면 어마어마하게 귀찮고 코드가 지저분해진다.
+이를 해결하고자 JPA Auditing을 사용한다.
+
+### LocalDate
+
+Java8부터  LocalDate와 LocalDateTime이 등장한다. 그간 Java의 기본 날짜 타입인 Date의 [**문제점*](#Footnote)을 고친 타입이라 Java8일 경우 무조건 사용한다.
+
+LocalDate와 LocalDateTime이 데이터베이스에 제대로 매핑되지 않는 이슈가 Hibernate 5.2.10 버전에서 해결되었다.
+스프링 부트 1.x를 쓴다면 별도로 Hibernate 5.2.10 버전이상을 사용하도록 설정해야 하지만 스프링 부트 2.x 버전을 사용하면 기본적으로 해당 버전을 사용중이라 별다른 설정 없이 바로 적용하면 된다.
+
+domain패키지에 BaseTimeEntity 클래스를 생성하고 다음의 코드를 입력한다.
+
+```java
+package com.tunahg.book.springboot.domain;
+
+import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
+
+@Getter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public class BaseTimeEntity {
+    @CreatedDate
+    private LocalDateTime createdDate;
+    
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
+}
+```
+
+>   @MappedSuperclass는 JPA Entity 클래스들이 BaseTimeEntity를 상속할 경우 필드(createdDate, modifiedDate)들도 칼럼으로 인식하도록 한다.
+>
+>   @EntityListeners(AuditingEntityListener.class)는 BaseTimeEntity 클래스에 Auditing 기능을 포함시킨다.
+>
+>   @CreatedDate는 Entity가 생성되어 저장될 때 시간이 자동 저장된다.
+>
+>   @LastModifiedDate는 조회한 Entity의 값을 변경할 때 시간이 자동 저장된다.
+
+BaseTimeEntity 클래스는 모든 Entity의 상위 클래스가 되어 Entity들의 createdDate, modifiedDate를 자동으로 관리한다.
+
+그리고 Entity 클래스인 Posts 클래스가  BaseTimeEntity를 상속받도록 변경한다.
+
+```java
+public class Posts extends BaseTimeEntity {
+  ...
+}
+```
+
+마지막으로 JPA Auditing 어노테이션들을 모두 활성화할 수 있도록 Application 클래스에 활성화 어노테이션을 하나 추가한다.
+
+```java
+@EnableJpaAuditing // JPA Auditing 활성화
+@SpringBootApplication
+public class Application {
+  ...
+}
+```
+
+기능이 잘 동작하는지 테스트코드를 작성해본다.
+PostsRepositoryTest에 다음의 테스트 메소드를 추가한다.
+
+```java
+@Test
+public void BaseTimeEntity_등록() {
+    LocalDateTime now = LocalDateTime.of(2019, 6, 4, 0, 0, 0);
+    postsRepository.save(Posts.builder()
+            .title("title")
+            .content("content")
+            .author("author")
+            .build());
+
+    List<Posts> postsList = postsRepository.findAll();
+    
+    Posts posts = postsList.get(0);
+
+    System.out.println(">>>>>>>> createDate=" + posts.getCreatedDate() + ", modifiedDate=" + posts.getModifiedDate());
+
+    assertThat(posts.getCreatedDate()).isAfter(now);
+    assertThat(posts.getModifiedDate()).isAfter(now);
+}
+```
+
+테스트를 수행해보면 실제 시간이 잘 저장된 것을 확인할 수 있다.
+
+앞으로 추가될 엔티티들은 더이상 등록일/수정일로 고민할 필요가 없다. BaseTimeEntity만 상속받으면 자동으로 해결되기 때문이다.
+
 # Footnote
 
 *   ***도메인**
@@ -661,3 +756,9 @@ spring.h2.console.enabled=true
         InnoDB에서는 기본키 순서대로 데이터가 저장되기 때문에 Random PK 저장시 불필요한 I/O가 발생가능
         InnoDB의 PK는 갱신될 시 갱신된 행 이후 데이터를 하나씩 새 위치로 옮겨야 하므로 절대 갱신되지 않도록 유지한다.ㅇ
     3.  유니크한 조건이 변경될 경우 PK 전체를 수정해야 하는 일이 발생한다.
+*   ***Java8 이전의 Date와 Calendar 클래스의 문제점**
+    [관련 네이버D2 링크](https://d2.naver.com/helloworld/645609)
+    *   변경이 불가능한 객체가 아니다.
+        멀티스레드 환경에서 언제든 문제가 발생할 수 있다.
+    *   Calendar는 월(Month) 값 설계가 잘못되었다.
+        10월을 나타내는 Calendar.OCTOBER의 숫자 값은 9이다.
