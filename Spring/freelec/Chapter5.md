@@ -427,6 +427,121 @@ Application을 실행하고 테스트를 진행한다.
 현재 로그인된 사용자의 권한은 GUEST인데, 이 상태에서는 posts 기능을 전혀 사용할 수 없다. 글 등록 버튼을 눌러보면 403 권한 거부 에러가 발생한다.
 H2-console로 이동하여 사용자의 role을 USER로 변경하고 다시 진행하면 정상적으로 동작하는 것을 확인할 수 있다.
 
+## Annotation-based improvement
+
+지금까지 작성한 코드에서 IndexController 부분의 세션값을 가져오는 부분을 개선한다.
+index 메소드외에 다른 컨트롤러와 메소드에서 세션값이 필요하면 그때마다 직접 세션에서 값을 가져와야 하기 때문이다. 같은 코드가 계속해서 반복되는 것은 불필요하므로 이 부분을 **메소드 인자로 세션값을 바로 받을 수 있도록 변경**한다.
+
+Config.auth 패키지에 다음과 같이 @LoginUser 어노테이션을 생성한다. 해당 어노테이션의 코드는 다음과 같다.
+
+```java
+package com.tunahg.book.springboot.config.auth;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface LoginUser {
+}
+```
+
+>   @Target(ElementType.PARAMETER)은 어노테이션이 생성될 수 있는 위치를 지정한다. PARAMETER로 지정했으니 메소드의 파라미터로 선언된 객체에서만 사용할 수 있다. 이 외에도 클래스 선언문에 쓸 수 있는 TYPE 등이 있다.
+>
+>   @interface는 파일을 어노테이션 클래스로 지정한다. LoginUser라는 이름을 가진 어노테이션이 생성되었다고 생각하면 된다.
+
+같은 위치에 LoginUserArgumentResolver를 생성한다. Login-UserArgumentResolver라는 HandlerMethodArgumentResolver 인터페이스를 구현한 클래스다. HandlerMethodArgumentResolver는 한 가지 기능을 지원한다. 바로 조건에 맞는 경우 메소드가 있다면 구현체가 지정한 값으로 해당 메소드의 파라미터를 넘길 수 있다는 것이다. 해당 클래스의 코드는 다음과 같다.
+
+```java
+package com.tunahg.book.springboot.config.auth;
+
+import com.tunahg.book.springboot.config.auth.dto.SessionUser;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
+
+import javax.servlet.http.HttpSession;
+
+@RequiredArgsConstructor
+@Component
+public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
+    private final HttpSession httpSession;
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        boolean isLoginUserAnnotation = parameter.getParameterAnnotation(LoginUser.class) != null;
+        boolean isUserClass = SessionUser.class.equals(parameter.getParameterType());
+        return isLoginUserAnnotation && isUserClass;
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        return httpSession.getAttribute("user");
+    }
+}
+```
+
+>   supportsParameter()은 컨트롤러 메소드의 특정 파라미터를 지원하는지 판단하는 메소드이다. 여기서는 파라미터에 @LoginUser 어노테이션이 붙어있고, 파라미터 클래스타입이 SessionUser.class인 경우 true를 반환한다.
+>
+>   resolveArgument()는 파라미터에 전달할 객체를 생성하는 메소드이다. 여기서는 세션에서 객체를 가져온다.
+
+이제 @LoginUser를 사용하기 위한 환경은 구성되었다. 이렇게 생성된 LoginUserArgumentResolver가 스프링에서 인식될 수 있도록 WebMvcConfigurer에 추가한다. config 패키지에 WebConfig 클래스를 생성하여 다음과 같은 코드를 입력한다.
+
+```java
+package com.tunahg.book.springboot.config;
+
+import com.tunahg.book.springboot.config.auth.LoginUserArgumentResolver;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    private final LoginUserArgumentResolver loginUserArgumentResolver;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(loginUserArgumentResolver);
+    }
+}
+```
+
+HandlerMethodArgumentResolver는 항상 WebMvcConfigurer의 addArgumentResolvers()를 통해 추가해야 한다.
+
+모든 설정이 끝났으니 IndexController의 코드에서 반복되는 부분들을 모두 @LoginUser로 개선한다.
+
+```java
+@RequiredArgsConstructor
+@Controller
+public class IndexController {
+    private final PostsService postsService;
+
+    @GetMapping("/")
+    public String index(Model model, @LoginUser SessionUser user) {
+        model.addAttribute("posts",postsService.findAllDesc());
+
+        if(user != null) {
+            model.addAttribute("userName", user.getName());
+        }
+
+        return "index";
+    }
+```
+
+>   @LoginUser SessionUser user은 기존에 (User) httpSession.getAttribute("user")로 가져오던 세션 정보 값을 개선한 것이다. 이제는 어느 컨트롤러에서도 @LoginUser를 사용하면 세션 정보를 가져올 수 있게 되었다.
+
+
+
 # Footnote
 
 *   ***승인된 리디렉션 URI**
