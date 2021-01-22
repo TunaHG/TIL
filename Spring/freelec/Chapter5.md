@@ -590,7 +590,7 @@ spring.session.store-type=jdbc
 spring.security.oauth2.client.registration.naver.client-id={ClientId}
 spring.security.oauth2.client.registration.naver.client-secret={ClientSecret}
 spring.security.oauth2.client.registration.naver.redirect-uri={baseUrl}/{action}/oauth2/code/{registrationId}
-spring.security.oauth2.client.registration.naver.authorization-grant-type=authorizaion_code
+spring.security.oauth2.client.registration.naver.authorization-grant-type=authorization_code
 spring.security.oauth2.client.registration.naver.scope=name,email,profile_image
 spring.security.oauth2.client.registration.naver.client-name=Naver
 
@@ -641,6 +641,145 @@ public static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, 
 
 >   /oauth2/authorization/naver는 application-oauth.properties에 등록한 redirect-uri값에 맞춰서 자동으로 등록된 네이버 로그인 URL이다. /oauth2/authorization/까지는 고정이고 마지막  Path만 각 소셜로그인 코드를 사용하면 된다.
 
+## Applying security to existing tests
+
+문제가 되는 부분들은 대표적으로 다음과 같은 이유 때문이다.
+기존에는 바로 API를 호출할 수 있어 테스트 코드 역시 바로 API를 호출하도록 구성하였다. 하지만, 시큐리티 옵션이 활성화되면 인증된 사용자만 API를 호출할 수 있다. 기존의 API 테스트 코드들이 모두 인증에 대한 권한을 받지 못하였으므로 테스트 코드마다 인증한 사용자가 호출한 것처럼 작동하도록 수정한다. 인텔리제이 오른쪽 위에 Gradle 탭을 클릭한다. Tasks > verification > test를 차례로 선택해서 [**전체 테스트*](#Footnote)를 수행한다. 롬복을 이용한 테스트 외에 스프링을 이용한 테스트는 모두 실패하는 것을 확인할 수 있다.
+
+**문제 1. CustomOAuth2UserService를 찾을 수 없음.**
+Hello가_리턴된다의 메시지를 보면 `No qualifying bean of type 'com.tunahg.book.springboot.config.auth.CustomOAuth2UserService' available`라는 메시지가 등장한다.
+이는  CustomOAuth2UserService를 생성하는데 필요한 소셜 로그인 관련 설정값들이 없기 때문이다. Application-oauth.properties에 설정값들을 추가했는데 왜 설정이 없다고 할까? src/main 환경과 src/test 환경의 차이 때문이다. 둘은 본인만의 환경 구성을 가진다. 다만, application.properites가 테스트코드를 수행할 때도 적용되는 이유는 test에 해당 파일이 없으면 main의 설정을 그대로 가져오기 때문이다. 자동으로 가져오는 옵션의 범위는 application.properties까지이다. -oauth.properties는 test에 파일이 없다고 가져오는 파일이 아니라는 점이다.
+이 문제를 해결하기 위해 테스트환경을 위한 application.properties를 만들어야 한다. 실제 구글 연동까지 진행할 것은 아니므로 가짜 설정값을 등록한다. `src/test/resources/application.properties`의 코드는 다음과 같다.
+
+```properties
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL57Dialect
+spring.jpa.properties.hibernate.dialect.storage_engine=innodb
+spring.datasource.hikari.jdbc-url=jdbc:h2:mem:testdb;MODE=MYSQL
+spring.datasource.hikari.username=sa
+spring.h2.console.enabled=true
+spring.session.store-type=jdbc
+
+# Test OAuth
+spring.security.oauth2.client.registration.google.client-id=test
+spring.security.oauth2.client.registration.google.client-secret=test
+spring.security.oauth2.client.registration.google.scope=profile,email
+```
+
+다시 Gradle로 테스트를 수행해보면 7개의 실패 테스트가 4개로 줄어들어 있다. 
+<u>내 경우 문제 1을 진행하지 않은 상태에서도 실패테스트가 4개였다. Spring 버전 2.4.2였고 Gradle 버전 6.7 이였다.</u>
+
+**문제 2. 302 Status Code**
+두 번째로 Posts_등록된다의 테스트 로그를 확인해보면 200 Status code를 원했는데 302가 와서 실패했다.
+이는 스프링 시큐리티 설정 때문에 인증되지 않은 사용자의 요청은 이동시키기 때문이다. 이런 API 요청은 임의로 인증된 사용자를 추가하여 API만 테스트해 볼 수 있게 한다. 스프링 시큐리티 테스트를 위한 여러 도구를 지원하는 spring-security-test를 build.gradle에 추가한다.
+
+```
+testImplementation('org.springframework.security:spring-security-test')
+```
+
+그리고 PostsAPIControllerTest의 2개 테스트 메소드에 다음과 같이 임의 사용자 인증을 추가한다.
+
+```java
+@Test
+@WithMockUser(roles="USER")
+public void Posts_수정된다() throws Exception {
+  ...
+}
+```
+
+>   @WithMockUser(roles="USER")은 인증된 모의(가짜) 사용자를 만들어서 사용한다. roles에 권한을 추가할 수 있다.
+>   즉, 이 어노테이션으로 인해  ROLE_USER 권한을 가진 사용자가 API를 요청하는 것과 동일한 효과를 가지게 된다.
+
+이 정도만 하면 테스트가 될 것 같지만, 실제로 작동하진 않는다. @WithMockUser가 MockMvc에서만 작동하기 때문이다. 현재 PostsAPIControllerTest는 @SpringBootTest로만 되어있으며 MockMvc를 전혀 사용하지 않는다. 그래서 @SpringBootTest에서 MockMvc를 사용하는 방법은 PostsAPIControllerTest 클래스의 코드를 다음과 같이 변경한다.
+
+```java
+@Autowired
+private WebApplicationContext context;
+private MockMvc mvc;
+
+@BeforeEach
+public void setup() {
+    mvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
+}
+
+@Test
+@WithMockUser(roles="USER")
+public void Posts_등록된다() throws Exception {
+    String title = "title";
+    String content = "content";
+    PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+            .title(title)
+            .content(content)
+            .author("author")
+            .build();
+
+    String url = "http://localhost:" + port + "/api/v1/posts";
+
+//        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+//
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(responseEntity.getBody()).isGreaterThan(0L);
+        
+    mvc.perform(post(url)
+    .contentType(MediaType.APPLICATION_JSON_UTF8)
+    .content(new ObjectMapper().writeValueAsString(requestDto)))
+            .andExpect(status().isOk());
+
+    List<Posts> all = postsRepository.findAll();
+    assertThat(all.get(0).getTitle()).isEqualTo(title);
+    assertThat(all.get(0).getContent()).isEqualTo(content);
+}
+```
+
+>   `Posts_등록된다()`의 수정부분과 동일한 부분의 `Posts_수정된다()`도 수정한다.
+>
+>   @BeforeEach는 매번 테스트가 시작되기 전에 MockMvc 인스턴스를 생성한다.
+>
+>   mvc.perform은 생성된 MockMvc를 통해 API를 테스트한다. 본문(Body)영역은 문자열로 표현하기 위해  ObjectMapper를 통해 문자열 JSON으로 변환한다.
+>
+>   MediaType.APPLICATION_JSON_UTF8이 Deprecated되었는데, 이와 관련된 [링크](http://honeymon.io/tech/2019/10/23/spring-deprecated-media-type.html)를 살펴본다.
+
+다시 전체 테스트를 수행해보면 Posts 테스트도 정상 수행됬다.
+
+**문제 3. @WebMvcTest에서 CustomOAuth2UserService를 찾을 수 없음**
+Hello가 리턴된다의 실패 메시지를 확인해보면 첫 번째로 해결한 것과 동일한 메시지가 출력된다. HelloControllerTest는 1번과는 조금 다르게 [**@WebMvcTest*](#Footnote)를 사용한다. 1번을 통해 스프링 시큐리티 설정은 잘 작동했지만 @WebMvcTest는 CustomOAuth2UserService를 스캔하지 않기 때문이다. <u>@WebMvcTest는 WebSecurityConfigurerAdapter, WebMvcConfigurer를 비롯한 @ControllerAdvice, @Controller를 읽는다. 즉, @Repository, @Service, @Component는 스캔대상이 아니다.</u> 그러니 SecurityConfig는 읽었지만 그를 생성하기 위한 CustomOAuth2UserService는 읽을수가 없어 에러가 발생한 것이다. 이 문제를 해결하기 위해 스캔대상에서 SecurityConfig를 제거한다.
+HelloControllerTest에서 다음의 코드를 수정한다.
+
+```java
+@WebMvcTest(controllers = HelloController.class, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
+})
+```
+
+언제 삭제될지 모르니 사용하지 않는걸 추천한다.
+여기서도 마찬가지로 @WithMockUser를 사용해서 가짜로 인증된 사용자를 생성한다.
+
+```java
+@WithMockUser(roles = "USER")
+@Test
+```
+
+이렇게 한 뒤 테스트를 돌려보면 추가 에러가 발생한다. `java.lang.IllegalArgumentException: At least one JPA`라는 에러가 발생하는데, 이 에러는 @EnableJpaAuditing으로 인해 발생한다. 이를 사용하기 위해선 최소 하나의 @Entity 클래스가 필요하다. 하지만 @WebMvcTest다보니 당연히 없다. @EnableJpaAuditing이 @SpringBootApplication과 함께 있다보니 @WebMvcTest에서도 스캔하게 되었다. 그래서  @EnableJpaAuditing을 분리해야 한다. Application.java에서 해당 어노테이션을 제거하고 config 패키지에 JpaConfig를 생성하여 다음의 코드를 입력한다.
+
+```java
+package com.tunahg.book.springboot.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+@Configuration
+@EnableJpaAuditing
+public class JpaConfig {
+}
+```
+
+>   @WebMvcTest는 일반적인 @Configuration은 스캔하지 않는다.
+
+다시 전체 테스트를 수행해보면 모든 테스트를 통과하는 것을 확인할 수 있다.
+
 # Footnote
 
 *   ***승인된 리디렉션 URI**
@@ -648,3 +787,11 @@ public static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, 
     스프링 부트 2 버전의 시큐리티에서는 기본적으로 `{도메인}/login/oauth2/code/{소셜서비스코드}`로 리다이렉트 URL을 지원한다.
     사용자가 별도로 리다이렉트 URL을 지원하는 Controller를 만들 필요가 없다.
     AWS 서버에 배포하게 되면 localhost 외에 추가로 주소를 추가해야한다.
+
+*   ***전체 테스트**
+    이 부분에서 우선 CompileJava에서 .builder()가 cannot find symbol이 나타나는 경우가 있다.
+    이 경우는 Annotation Processor가 build.gradle에 등록되지 않아서 생기는 문제다. 그러므로 Command + ,의 Setting에서 Annotation Processor를 검색하여 Enable로 변경하고, build.gradle에 AnnotationProcessor가 등록되지 않았다면 직접 의존성에 `annotationProcessor('org.projectlombok:lombok')`을 추가한다.
+
+
+*   ***@WebMvcTest의 secure옵션**
+    2.1부터  Deprecated되었다.
