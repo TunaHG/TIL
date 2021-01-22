@@ -574,6 +574,73 @@ spring.session.store-type=jdbc
 
 세션 저장소를 데이터베이스로 교체했다. 물론 지금은 동일하게 스프링을 재시작하면 세션이 풀린다. H2 기반으로 스프링이 재실행될 때 H2도 재시작되기 때문이다. 이후 AWS로 배포하게 되면 AWS의 데이터베이스인 RDS를 사용하게 되니 이때부터는 세션이 풀리지 않는다.
 
+## Naver Login
+
+마지막으로 네이버 로그인을 추가한다.
+
+### NAVER API registration
+
+[네이버 오픈 API](https://developers.naver.com/apps/#/register?api=nvlogin)으로 이동하여 각 항목을 채운다.
+애플리케이션 이름을 설정하고, 사용 API를 선택하는 부분에서 네아로를 선택한다. 제공정보는 회원이름, 이메일, 프로필 사진을 필수로 선택한다. 이후 아래의 환경 추가로 PC 웹을 추가하고 서비스 URL로 `http://localhost:8080`을 CallbackURL로 `http://localhost:8080/login/oauth2/code/naver`를 입력한다.
+등록을 완료하면 Client ID와 Client Secret이 발급된다. 해당 키값들을 application-oauth.properties에 등록한다. 네이버에서는 스프링 시큐리티를 공식 지원하지 않기 때문에 그동안 Common-OAuth2Provider에서 해주던 값들도 전부 수동으로 입력해야 한다.
+
+```properties
+# naver
+# registration
+spring.security.oauth2.client.registration.naver.client-id={ClientId}
+spring.security.oauth2.client.registration.naver.client-secret={ClientSecret}
+spring.security.oauth2.client.registration.naver.redirect-uri={baseUrl}/{action}/oauth2/code/{registrationId}
+spring.security.oauth2.client.registration.naver.authorization-grant-type=authorizaion_code
+spring.security.oauth2.client.registration.naver.scope=name,email,profile_image
+spring.security.oauth2.client.registration.naver.client-name=Naver
+
+# provider
+spring.security.oauth2.client.provider.naver.authorization-uri=https://nid.naver.com/oauth2.0/authorize
+spring.security.oauth2.client.provider.naver.token-uri=https://nid.naver.com/oauth2.0/token
+spring.security.oauth2.client.provider.naver.user-info-uri=https://openapi.naver.com/v1/nid/me
+spring.security.oauth2.client.provider.naver.user_name_attribute=response
+```
+
+>   user_name_attribute=response는 기준이 되는 user_name의 이름을 네이버에서는 response로 해야한다. 네이버의 회원 조회시 반환되는 JSON 형태 때문이다.
+
+**스프링 시큐리티에서는 하위 필드를 명시할 수 없다.** 최상위 필드만 user_name으로 지정 가능하다. 하지만 네이버의 응답값 최상위 필드는 resultCode, message, response이다. 그렇기 때문에 스프링 시큐리티에서 인식 가능한 필드를 저 3개 중에 골라야 한다. 본문에서 담고 있는 response를 user_name으로 지정하고 이후 자바 코드로 response의 id를 user_name으로 지정한다.
+
+### Registering Spring Security settings
+
+구글 로그인을 등록하면서 대부분 코드가 확장성있게 작성되다보니 네이버는 쉽게 등록이 가능하다. OAuthAttributes에 다음과 같이 네이버인지 판단하는 코드와 네이버 생성자만 추가해주면 된다.
+
+```java
+public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+    if("naver".equals(registrationId)) {
+        return ofNaver("id", attributes);
+    }
+    return ofGoogle(userNameAttributeName, attributes);
+}
+
+public static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
+    Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+    return OAuthAttributes.builder()
+            .name((String) response.get("name"))
+            .email((String) response.get("email"))
+            .picture((String) response.get("profile_image"))
+            .attributes(response)
+            .nameAttributeKey(userNameAttributeName)
+            .build();
+}
+```
+
+마지막으로 index.mustache에 네이버 로그인 버튼을 추가한다.
+
+```html
+{{^userName}}
+    <a href="/oauth2/authorization/google" class="btn btn-success active" role="button">Google Login</a>
+    <a href="/oauth2/authorization/naver" class="btn btn-secondary active" role="button">Naver Login</a>
+{{/userName}}
+```
+
+>   /oauth2/authorization/naver는 application-oauth.properties에 등록한 redirect-uri값에 맞춰서 자동으로 등록된 네이버 로그인 URL이다. /oauth2/authorization/까지는 고정이고 마지막  Path만 각 소셜로그인 코드를 사용하면 된다.
+
 # Footnote
 
 *   ***승인된 리디렉션 URI**
