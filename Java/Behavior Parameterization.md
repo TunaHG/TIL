@@ -86,10 +86,42 @@ public static List<Apple> filterApplesByColor(List<Apple> inventory, Color color
 <u>참 또는 거짓을 반환하는 함수</u>를 **프레디케이트**라고 한다. 
 이러한 프레디케이트를 고려하여 선택 조건을 결정하는 인터페이스를 정의한다.
 
+```java
+public interface ApplePredicate {
+  boolean test(Apple apple);
+}
+
+public class AppleHeavyWeightPredicate implements ApplePredicate {
+  public boolean test(Apple apple) {
+    return apple.getWeight() > 150;
+  }
+}
+
+public class AppleGreenColorPredicate implements ApplePredicate {
+  public boolean test(Apple apple) {
+    return GREEN.equals(apple.getColor());
+  }
+}
+```
+
 조건에 따라 filter 메소드가 다르게 동작할 것이라고 예상할 수 있다. 이를 **전략 디자인 패턴**이라고 한다.
 전략 디자인 패턴은 <u>각 알고리즘(전략)을 캡슐화하는 알고리즘 패밀리를 정의해둔 다음에 런타임에 알고리즘을 선택하는 기법</u>이다.
 프레디케이트 인터페이스가 알고리즘 패밀리에 해당하며 선택 조건을 의미하는 하위 클래스가 전략에 해당한다.
 Filter 메소드에서 프레디케이트 인터페이스 객체를 받아 조건을 검사하도록 메소드를 수정해야 한다. 이렇게 동작 파라미터화 즉, 메소드가 다양한 동작(전략)을 받아서 내부적으로 다양한 동작을 수행할 수 있다. 이렇게 filter 메소드가 프레디케이트 객체를 인수로 받도록 수정하면 filter 메소드 내부에서 컬렉션을 반복하는 로직과 컬렉션의 각 요소에 적용할 동작을 분리할 수 있다는 점에서 소프트웨어 엔지니어링적으로 큰 이득을 얻는다.
+
+### 네 번째 시도, 추상적 조건으로 필터링
+
+```java
+public static List<Apple> filterApples(List<Apple> inventory, ApplePredicate p) {
+  List<Apple> result = new ArrayList<>();
+  for(Apple apple: inventory) {
+    if(p.test(apple)) {
+      result.add(apple);
+    }
+  }
+  return result;
+}
+```
 
 이러한 구현에서 중요한 것은 선택 조건을 의미하는 test 메소드다. Filter 메소드의 새로운 동작을 정의하는 것이 test 메소드인데, 메소드는 객체만 인수로 받으므로 test 메소드를 프레디케이트 객체로 감싸서 전달해야 한다.
 Test 메소드를 구현하는 객체를 이용해서 불리언 표현식을 전달할 수 있으므로 이는 코드를 전달할 수 있는 것이나 다름 없다. 람다와 함께 사용하면 여러 개의 프레디케이트 클래스를 정의하지 않고도 조건에 해당하는 표현식을 filter 메소드로 전달하는 방법이 있다.
