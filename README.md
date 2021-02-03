@@ -1,5 +1,9 @@
 # TIL (Today I Learned)
 
+> TIL은 앞으로 노션으로 정리하기로 했습니다.
+>
+> This Repository is Deprecated.
+
 > 매일 배운 내용을 정리하자!
 
 ## 목록
