@@ -56,7 +56,7 @@ Java Program 실행과정
 >
 > 이러한 실행과정 속에서 JVM은 필요에 따라 Thread Synchronization과 GC같은 관리작업을 수행한다.
 
-![image-20201228150731553](C:\TIL\Interview\images\Java\image-20201228150731553.png)
+![image-20201228150731553](../images/Java/image-20201228150731553.png)
 
 ### JVM 구성
 
@@ -84,7 +84,7 @@ Java Program 실행과정
 
 > 프로그램을 수행하기 위해 OS에서 할당받은 메모리 공간
 
-![image-20201228152110547](C:\TIL\Interview\images\Java\image-20201228152110547.png)
+![image-20201228152110547](https://github.com/TunaHG/TIL/blob/master/Interview/images/Java/image-20201228152110547.png)
 
 * **PC Register**
   Thread가 시작될 때 생성되며 Thread마다 하나씩 존재한다.
@@ -129,7 +129,7 @@ Java Program 실행과정
   객체를 저장하는 가상 메모리 공간이다.
   new 연산자로 생성된 객체와 배열을 저장한다. 물론 Class Area에 올라온 클래스들만 객체로 생성할 수 있다.
   Heap은 세 부분으로 나눌 수 있다.
-  ![image-20201228153722615](C:\TIL\Interview\images\Java\image-20201228153722615.png)
+  ![image-20201228153722615](https://github.com/TunaHG/TIL/blob/master/Interview/images/Java/image-20201228153722615.png)
 
   * **Permanent Generation**
     생성된 객체들의 정보의 주소값이 저장된 공간이다.
@@ -184,7 +184,7 @@ GC는 Heap 내의 객체 중에서 Garbage를 찾아내고 찾아낸 Garbage를 
 **어떤 Heap 영역에 할당된 객체가 유효한 참조가 있으면 reachability, 없으면 unreachability로 판단**한다.
 하나의 객체는 다른 객체를 참조하고, 다른 객체는 또 다른 객체를 참조할 수 있기 때문에 참조 사슬이 형성이 되는데 이 **참조 사슬 중 최초에 참조한 것을 Root Set**이라고 칭한다.
 Heap 영역에 있는 객체들은 총 4가지 경우에 대한 참조를 하게 된다.
-![image-20201228154355308](C:\TIL\Interview\images\Java\image-20201228154355308.png)|
+![image-20201228154355308](https://github.com/TunaHG/TIL/blob/master/Interview/images/Java/image-20201228154355308.png)|
 
 1. Heap 내의 다른 객체에 의한 참조
 2. Java 스택, 즉 Java 메소드 실행 시에 사용하는 지역변수와 파라미터들에 의한 참조
