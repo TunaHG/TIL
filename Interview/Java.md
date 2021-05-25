@@ -56,7 +56,7 @@ Java Program 실행과정
 >
 > 이러한 실행과정 속에서 JVM은 필요에 따라 Thread Synchronization과 GC같은 관리작업을 수행한다.
 
-![image-20201228150731553](../images/Java/image-20201228150731553.png)
+![image-20201228150731553](https://github.com/TunaHG/TIL/blob/master/Interview/images/Java/image-20201228150731553.png)
 
 ### JVM 구성
 
